@@ -9,7 +9,15 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      required: true,
+    },
+    {
+      name: 'sourceUrl',
+      type: 'text',
+      index: true,
+      admin: {
+        readOnly: true,
+        description: '移行元の外部画像URL。重複排除・冪等な再取り込みに使う。',
+      },
     },
   ],
   upload: true,
