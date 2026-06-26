@@ -12,6 +12,10 @@
 # testing
 /coverage
 
+# local SQLite databases
+satsuma-powder-admin.db
+test.db
+
 # next.js
 /.next/
 /out/
