@@ -400,6 +400,20 @@ async function main() {
     }
   }
 
+  // 4) about（Ghost の page slug=about）→ Payload Global "about"
+  const aboutPage = posts.find((p) => p.slug === 'about' && (p.type ?? '') === 'page')
+  if (aboutPage) {
+    try {
+      // __GHOST_URL__ プレースホルダは相対URLへ（例: /rss.xml）
+      const html = (aboutPage.html ?? '').replace(/__GHOST_URL__/g, '')
+      const content = await htmlToLexical(html, 'about')
+      await payload.updateGlobal({ slug: 'about', data: { content } })
+      console.log('   about: Global を更新しました')
+    } catch (error) {
+      console.error('   ❌ about global の更新に失敗:', (error as Error).message)
+    }
+  }
+
   console.log('\n✨ 移行完了')
   console.log(
     `   media: created=${summary.media.created} reused=${summary.media.reused} failed=${summary.media.failed}`,

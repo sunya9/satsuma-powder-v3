@@ -24,7 +24,8 @@ const nextConfig: NextConfig = {
     return webpackConfig
   },
   turbopack: {
-    root: path.resolve(dirname),
+    // モノレポのルート（pnpm-lock.yaml と hoist された node_modules がある場所）
+    root: path.resolve(dirname, '../..'),
   },
 }
 
