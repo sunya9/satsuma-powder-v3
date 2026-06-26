@@ -1,0 +1,78 @@
+import { config } from '../lib/config'
+import { formatDate } from '../lib/date'
+
+interface Props {
+  coverImage?: string | null
+  header?: { title?: string; description?: string | null; date?: string | null }
+  children?: unknown
+}
+
+const PILL = 'inline-block rounded-full px-4 py-1 text-sm border border-[color-mix(in_srgb,currentColor_40%,transparent)]'
+
+export function AppLayout({ coverImage, header, children }: Props) {
+  // http(s) のみ許可し、url() を壊す文字を除去してから差し込む（CSS インジェクション防御）。
+  const safeCover =
+    coverImage && /^https?:\/\//i.test(coverImage)
+      ? coverImage.replace(/["'()\\\s]/g, encodeURIComponent)
+      : undefined
+  const hasCover = Boolean(safeCover)
+  const nocover = !hasCover && Boolean(header)
+
+  return (
+    <>
+      <header
+        class={[
+          'bg-center bg-no-repeat bg-cover py-[7vw]',
+          hasCover ? 'text-white' : '',
+          nocover ? 'header-grid' : '',
+        ].join(' ')}
+        style={
+          hasCover
+            ? `background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url("${safeCover}")`
+            : undefined
+        }
+      >
+        <div class="site-container">
+          {!header ? (
+            <>
+              <h1 class="mb-4 text-[clamp(1.5rem,3vw,2.666rem)] leading-tight">{config.title}</h1>
+              <p>{config.description}</p>
+            </>
+          ) : (
+            <>
+              <h1 class="mb-4 text-[clamp(1.5rem,3vw,2.666rem)] leading-tight">{header.title}</h1>
+              {header.description && <p>{header.description}</p>}
+              {header.date && (
+                <time datetime={header.date} class={PILL}>
+                  {formatDate(header.date)}
+                </time>
+              )}
+            </>
+          )}
+        </div>
+      </header>
+
+      <main class="my-12">
+        <div class="site-container">{children}</div>
+      </main>
+
+      <footer class="my-20 text-muted">
+        <div class="site-container">
+          {header && (
+            <p>
+              <a class="button" href="/">
+                ホームに戻る
+              </a>
+            </p>
+          )}
+          <p>
+            ©&nbsp;
+            <a class="text-accent hover:text-accent/60" href={`https://twitter.com/${config.twitterHandle}`}>
+              @{config.twitterHandle}
+            </a>
+          </p>
+        </div>
+      </footer>
+    </>
+  )
+}
