@@ -5,7 +5,7 @@ import {
   mapPost,
   isMigratablePost,
   buildRelationIndex,
-} from '@/migrations/ghost/mappers'
+} from '@/scripts/ghost/mappers'
 
 /**
  * Ghost エクスポートレコード → Payload create データへの純粋写像のテスト。
