@@ -55,7 +55,7 @@ GHOST_EXPORT=<ghost エクスポートの絶対パス> pnpm --filter cms migrate
   - `VITE_SITE_URL`（公開 URL = https://private.unsweets.net）
 
 ```sh
-pnpm --filter web deploy        # scripts/deploy.sh: .env.deploy を読んで build && wrangler deploy
+pnpm --filter web deploy:prod        # scripts/deploy.sh: .env.deploy を読んで build && wrangler deploy
 ```
 
 `scripts/deploy.sh` が `.env.deploy` を読み込んでビルド→デプロイする。`public/_redirects`（旧 URL → `/blog/:slug` ほか）は Workers の静的アセットでもそのまま効く。
