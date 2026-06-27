@@ -6,7 +6,6 @@ interface Props {
   withoutYear?: boolean
 }
 
-/** 記事リスト（年別一覧・最近の投稿で共用）。 */
 export function Articles({ posts, withoutYear }: Props) {
   return (
     <ul role="feed" aria-busy="false" class="list-none pl-0">

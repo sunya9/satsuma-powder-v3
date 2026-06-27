@@ -2,7 +2,6 @@ import { jsxRenderer } from 'hono/jsx-renderer'
 import { Link } from 'honox/server'
 import { config } from '../lib/config'
 
-// クライアント JS は載せない（islands 不使用・サーバー描画のみ）。
 export default jsxRenderer(({ children, title, description, path, image, type }) => {
   const pageTitle = title && title !== config.title ? `${title} | ${config.title}` : config.title
   const desc = description ?? config.description

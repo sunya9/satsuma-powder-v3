@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects
+/rss /rss.xml 301
+/:year/:month/:day/:slug /blog/:slug 301

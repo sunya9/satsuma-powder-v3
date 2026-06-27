@@ -9,15 +9,16 @@
   },
   "private": true,
   "dependencies": {
+    "@tailwindcss/vite": "^4.2.2",
     "hono": "^4.12.27",
-    "honox": "0.1.56"
+    "honox": "0.1.56",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260420.1",
     "@hono/vite-build": "^1.11.1",
     "@hono/vite-dev-server": "^0.25.2",
-    "@tailwindcss/vite": "^4.2.2",
-    "tailwindcss": "^4.2.2",
+    "@hono/vite-ssg": "^0.3.3",
     "vite": "^8.0.9",
     "wrangler": "^4.83.0"
   }

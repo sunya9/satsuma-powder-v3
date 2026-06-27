@@ -1,12 +1,8 @@
-/**
- * Payload の Lexical JSON（SerializedEditorState）をサーバー側で hono/jsx 要素へ変換する。
- * React も dangerouslySetInnerHTML も使わず、各ノードに Tailwind クラスを付与して描画する。
- */
+// Render Payload Lexical JSON to hono/jsx (no dangerouslySetInnerHTML).
 import { mediaUrl, type LexicalState, type Media } from './payload'
 
 type Node = Record<string, any>
 
-// Lexical のテキスト書式ビットマスク
 const IS_BOLD = 1
 const IS_ITALIC = 2
 const IS_STRIKETHROUGH = 4
@@ -85,7 +81,7 @@ function renderNode(node: Node): unknown {
     case 'link':
     case 'autolink': {
       const raw = String(node.fields?.url ?? '#').trim()
-      // 安全な scheme のみ許可（javascript: 等を弾く防御）
+      // Allow safe schemes only (block javascript: etc).
       const url = /^(https?:|mailto:|tel:|\/|#)/i.test(raw) ? raw : '#'
       const newTab = Boolean(node.fields?.newTab)
       return (
@@ -121,7 +117,6 @@ function renderNode(node: Node): unknown {
   }
 }
 
-/** Lexical コンテンツを描画するコンポーネント。 */
 export function LexicalContent({ state }: { state?: LexicalState | null }) {
   if (!state?.root?.children) return null
   return <>{renderChildren(state.root.children as Node[])}</>
