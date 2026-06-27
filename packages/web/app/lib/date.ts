@@ -1,7 +1,4 @@
-/**
- * 日付を JST で整形する。Cloudflare Workers でも動くよう Intl のみ使用（依存なし）。
- * withoutYear=false → "y年MM月dd日" / true → "MM月dd日"
- */
+// Intl only (no deps) so it runs on Cloudflare Workers.
 export function formatDate(dateString: string, withoutYear = false): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Tokyo',
@@ -14,7 +11,6 @@ export function formatDate(dateString: string, withoutYear = false): string {
   return withoutYear ? `${m}月${d}日` : `${y}年${m}月${d}日`
 }
 
-/** JST での年を返す（年別グルーピング用。UTC ずれを避ける）。 */
 export function getYearJST(dateString: string): number {
   const y = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric' }).format(
     new Date(dateString),

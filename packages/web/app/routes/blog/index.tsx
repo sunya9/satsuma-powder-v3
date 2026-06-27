@@ -5,7 +5,7 @@ import { getYearJST } from '../../lib/date'
 import { payloadRepo, type PostSummary } from '../../lib/payload'
 
 export default createRoute(async (c) => {
-  // getPosts は publishedAt 降順。年ごとにまとめると Map の挿入順がそのまま年の降順になる。
+  // posts are publishedAt-desc, so Map insertion order is already year-desc.
   const posts = await payloadRepo.getPosts()
   const byYear = new Map<number, PostSummary[]>()
   for (const post of posts) {

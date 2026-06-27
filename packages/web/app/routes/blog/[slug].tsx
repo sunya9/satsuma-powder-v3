@@ -1,10 +1,16 @@
+import { ssgParams } from 'hono/ssg'
 import { createRoute } from 'honox/factory'
 import { AppLayout } from '../../components/AppLayout'
 import { Article } from '../../components/Article'
 import { config } from '../../lib/config'
 import { mediaUrl, payloadRepo } from '../../lib/payload'
 
-export default createRoute(async (c) => {
+export default createRoute(
+  ssgParams(async () => {
+    const posts = await payloadRepo.getPosts()
+    return posts.map((post) => ({ slug: post.slug }))
+  }),
+  async (c) => {
   const slug = c.req.param('slug')
   const post = await payloadRepo.getPost(slug)
   if (!post) return c.notFound()

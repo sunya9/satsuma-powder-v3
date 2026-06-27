@@ -1,7 +1,4 @@
-/**
- * Lexical JSON を HTML 文字列へ直列化する（RSS の content:encoded 用）。
- * 画面描画は lexical.tsx（hono/jsx）、こちらは文字列が要る箇所専用。
- */
+// Serialize Lexical JSON to an HTML string (for RSS content:encoded).
 import { mediaUrl, type LexicalState, type Media } from './payload'
 
 type Node = Record<string, any>

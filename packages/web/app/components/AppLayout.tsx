@@ -10,7 +10,7 @@ interface Props {
 const PILL = 'inline-block rounded-full px-4 py-1 text-sm border border-[color-mix(in_srgb,currentColor_40%,transparent)]'
 
 export function AppLayout({ coverImage, header, children }: Props) {
-  // http(s) のみ許可し、url() を壊す文字を除去してから差し込む（CSS インジェクション防御）。
+  // Allow only http(s) and strip url()-breaking chars (CSS injection defense).
   const safeCover =
     coverImage && /^https?:\/\//i.test(coverImage)
       ? coverImage.replace(/["'()\\\s]/g, encodeURIComponent)

@@ -1,12 +1,5 @@
-/**
- * Payload CMS (apps/cms) の REST API クライアント。
- * 旧 v2 の `ghostRepo` インターフェースを踏襲し、画面側をほぼ無改修で移植できるようにする。
- *
- * ベースURLは VITE_PAYLOAD_URL（未設定ならローカル cms の http://localhost:3000）。
- */
 const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? 'http://localhost:3000').replace(/\/$/, '')
 
-/** Lexical の SerializedEditorState（中身は lexical.tsx で解釈）。 */
 export interface LexicalState {
   root: { children: unknown[]; [k: string]: unknown }
 }
@@ -47,7 +40,7 @@ async function api<T>(collection: string, params: Record<string, string | number
   return res.json() as Promise<T>
 }
 
-/** media の url を絶対URL化する（Payload は /api/media/file/... の相対を返す）。 */
+// Payload returns relative media URLs; make them absolute.
 export function mediaUrl(media?: Media | null): string | undefined {
   if (!media?.url) return undefined
   return media.url.startsWith('http') ? media.url : `${PAYLOAD_URL}${media.url}`
@@ -58,7 +51,6 @@ export interface About {
 }
 
 export const payloadRepo = {
-  /** about Global（サイト紹介文）。 */
   async getAbout(): Promise<About | undefined> {
     try {
       const url = new URL(`${PAYLOAD_URL}/api/globals/about`)
@@ -71,7 +63,6 @@ export const payloadRepo = {
     }
   },
 
-  /** 公開記事を publishedAt 降順で取得（size 指定で件数制限、既定は全件）。 */
   async getPosts(size = Infinity): Promise<PostSummary[]> {
     const out: PostSummary[] = []
     let page = 1
@@ -90,13 +81,11 @@ export const payloadRepo = {
     return out
   },
 
-  /** 最新 N 件を本文・画像・著者・タグ込みで取得（RSS 用）。 */
   async getRecentFull(limit = 15): Promise<Post[]> {
     const res = await api<ListResponse<Post>>('posts', { depth: 2, limit, sort: '-publishedAt' })
     return res.docs
   },
 
-  /** slug で記事1件を取得（本文・画像・著者・タグを populate するため depth=2）。 */
   async getPost(slug: string): Promise<Post | undefined> {
     const res = await api<ListResponse<Post>>('posts', {
       depth: 2,
@@ -106,7 +95,6 @@ export const payloadRepo = {
     return res.docs[0]
   },
 
-  /** 直前（より古い）記事。 */
   async getOlderPost(publishedAt?: string | null): Promise<PostSummary | undefined> {
     if (!publishedAt) return undefined
     const res = await api<ListResponse<PostSummary>>('posts', {
@@ -118,7 +106,6 @@ export const payloadRepo = {
     return res.docs[0]
   },
 
-  /** 直後（より新しい）記事。 */
   async getNewerPost(publishedAt?: string | null): Promise<PostSummary | undefined> {
     if (!publishedAt) return undefined
     const res = await api<ListResponse<PostSummary>>('posts', {
