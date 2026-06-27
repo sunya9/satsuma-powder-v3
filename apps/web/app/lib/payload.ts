@@ -97,7 +97,29 @@ export function getSite(): Promise<Site> {
   return sitePromise
 }
 
-let allPostsPromise: Promise<PostSummary[]> | undefined
+// Fetched once per build: all published posts with relations, ordered by -publishedAt.
+// Every post route reads from this instead of issuing its own query (cuts ~600 requests to ~2).
+let fullPostsPromise: Promise<{ ordered: Post[]; bySlug: Map<string, Post> }> | undefined
+function allFullPosts() {
+  fullPostsPromise ??= (async () => {
+    const ordered: Post[] = []
+    let page = 1
+    while (true) {
+      const res = await api<ListResponse<Post>>('posts', {
+        depth: 2,
+        limit: 100,
+        page,
+        sort: '-publishedAt',
+        ...PUBLISHED,
+      })
+      ordered.push(...res.docs)
+      if (!res.hasNextPage) break
+      page = res.nextPage ?? page + 1
+    }
+    return { ordered, bySlug: new Map(ordered.map((p) => [p.slug, p])) }
+  })()
+  return fullPostsPromise
+}
 
 export const payloadRepo = {
   async getAbout(): Promise<About | undefined> {
@@ -112,70 +134,31 @@ export const payloadRepo = {
     }
   },
 
-  // Memoized once per build: the full published list is requested by several routes.
   async getPosts(size = Infinity): Promise<PostSummary[]> {
-    allPostsPromise ??= (async () => {
-      const out: PostSummary[] = []
-      let page = 1
-      while (true) {
-        const res = await api<ListResponse<PostSummary>>('posts', {
-          depth: 0,
-          limit: 100,
-          page,
-          sort: '-publishedAt',
-          ...PUBLISHED,
-        })
-        out.push(...res.docs)
-        if (!res.hasNextPage) break
-        page = res.nextPage ?? page + 1
-      }
-      return out
-    })()
-    const all = await allPostsPromise
-    return Number.isFinite(size) ? all.slice(0, size) : all
+    const { ordered } = await allFullPosts()
+    return Number.isFinite(size) ? ordered.slice(0, size) : ordered
   },
 
   async getRecentFull(limit = 15): Promise<Post[]> {
-    const res = await api<ListResponse<Post>>('posts', {
-      depth: 2,
-      limit,
-      sort: '-publishedAt',
-      ...PUBLISHED,
-    })
-    return res.docs
+    const { ordered } = await allFullPosts()
+    return ordered.slice(0, limit)
   },
 
   async getPost(slug: string): Promise<Post | undefined> {
-    const res = await api<ListResponse<Post>>('posts', {
-      depth: 2,
-      limit: 1,
-      'where[slug][equals]': slug,
-      ...PUBLISHED,
-    })
-    return res.docs[0]
+    const { bySlug } = await allFullPosts()
+    return bySlug.get(slug)
   },
 
+  // Neighbors come from the in-memory ordered list (-publishedAt).
   async getOlderPost(publishedAt?: string | null): Promise<PostSummary | undefined> {
     if (!publishedAt) return undefined
-    const res = await api<ListResponse<PostSummary>>('posts', {
-      depth: 0,
-      limit: 1,
-      sort: '-publishedAt',
-      'where[publishedAt][less_than]': publishedAt,
-      ...PUBLISHED,
-    })
-    return res.docs[0]
+    const { ordered } = await allFullPosts()
+    return ordered.find((p) => (p.publishedAt ?? '') < publishedAt)
   },
 
   async getNewerPost(publishedAt?: string | null): Promise<PostSummary | undefined> {
     if (!publishedAt) return undefined
-    const res = await api<ListResponse<PostSummary>>('posts', {
-      depth: 0,
-      limit: 1,
-      sort: 'publishedAt',
-      'where[publishedAt][greater_than]': publishedAt,
-      ...PUBLISHED,
-    })
-    return res.docs[0]
+    const { ordered } = await allFullPosts()
+    return [...ordered].reverse().find((p) => (p.publishedAt ?? '') > publishedAt)
   },
 }

@@ -1,6 +1,7 @@
 import { Resvg } from '@resvg/resvg-js'
 import satori from 'satori'
-import { getSite } from './payload'
+import { formatDate } from './date'
+import { getSite, payloadRepo } from './payload'
 
 let iconPromise: Promise<string | undefined> | undefined
 function iconDataUri(url?: string): Promise<string | undefined> {
@@ -74,10 +75,25 @@ function template(opts: { siteTitle: string; title: string; subtitle: string; ic
   )
 }
 
+// Fetch the subset once, covering every glyph that can appear in any OG image
+// (site title/description + all post titles and dates). Reused across all images.
+let ogFontPromise: Promise<ArrayBuffer> | undefined
+function ogFont(): Promise<ArrayBuffer> {
+  ogFontPromise ??= (async () => {
+    const [site, posts] = await Promise.all([getSite(), payloadRepo.getPosts()])
+    const text =
+      site.title +
+      site.description +
+      posts.map((p) => p.title + (p.publishedAt ? formatDate(p.publishedAt) : '')).join('')
+    return loadFontSubset([...new Set(text)].join(''))
+  })()
+  return ogFontPromise
+}
+
 export async function ogPng(opts: { title: string; subtitle: string }): Promise<ArrayBuffer> {
   const site = await getSite()
   const icon = await iconDataUri(site.iconUrl)
-  const font = await loadFontSubset(site.title + opts.title + opts.subtitle)
+  const font = await ogFont()
   const svg = await satori(
     template({ siteTitle: site.title, title: opts.title, subtitle: opts.subtitle, icon }) as never,
     { width: 1200, height: 630, fonts: [{ name: 'Noto Sans JP', data: font, weight: 400, style: 'normal' }] },
