@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload'
-import { slugField } from 'payload'
 import { authenticated } from '../access/authenticated'
-import { slugify } from '../fields/slug'
+import { autoIdSlug } from '../fields/slug'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -14,8 +13,7 @@ export const Posts: CollectionConfig = {
   },
   fields: [
     { name: 'title', type: 'text', required: true },
-    // Auto-generated from title, so not required at create time.
-    slugField({ required: false, slugify }),
+    autoIdSlug,
     {
       name: 'content',
       type: 'richText',
