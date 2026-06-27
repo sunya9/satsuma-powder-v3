@@ -2,6 +2,7 @@
   "name": "satsuma-powder-v3",
   "private": true,
   "description": "satsuma-powder-v3 monorepo — Payload CMS (apps/cms) and HonoX frontend (apps/web)",
+  "packageManager": "pnpm@10.28.0",
   "scripts": {
     "dev": "pnpm --filter cms dev",
     "build": "pnpm --filter cms build",
@@ -10,6 +11,7 @@
     "web": "pnpm --filter web",
     "test": "pnpm --filter cms test:int",
     "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm --filter cms lint",
     "migrate:ghost": "pnpm --filter cms migrate:ghost",
     "seed:admin": "pnpm --filter cms seed:admin"
   },
