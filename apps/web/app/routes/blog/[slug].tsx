@@ -13,6 +13,7 @@ export default createRoute(
   }),
   async (c) => {
   const slug = c.req.param('slug')
+  if (!slug) return c.notFound()
   const post = await payloadRepo.getPost(slug)
   if (!post) return c.notFound()
 

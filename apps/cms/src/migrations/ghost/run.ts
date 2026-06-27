@@ -318,12 +318,24 @@ async function main() {
       limit: 1,
       depth: 0,
     })
+    // Payload's typing wants draft:true (literal) or the property omitted (= publish).
+    const draftOpt = draft ? { draft: true as const } : {}
+    // Data is dynamic here (migration), so cast to the per-collection arg type.
     if (found.docs[0]) {
-      const doc = await payload.update({ collection, id: found.docs[0].id, data, draft })
+      const doc = await payload.update({
+        collection,
+        id: found.docs[0].id,
+        data,
+        ...draftOpt,
+      } as unknown as Parameters<typeof payload.update>[0])
       summary[collection].updated += 1
       return doc.id
     }
-    const doc = await payload.create({ collection, data, draft })
+    const doc = await payload.create({
+      collection,
+      data,
+      ...draftOpt,
+    } as unknown as Parameters<typeof payload.create>[0])
     summary[collection].created += 1
     return doc.id
   }
