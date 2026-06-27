@@ -3,6 +3,7 @@ import { createRoute } from 'honox/factory'
 import { AppLayout } from '../../components/AppLayout'
 import { Article } from '../../components/Article'
 import { config } from '../../lib/config'
+import { contentHash } from '../../lib/hash'
 import { mediaUrl, payloadRepo } from '../../lib/payload'
 
 export default createRoute(
@@ -32,7 +33,7 @@ export default createRoute(
       description: post.excerpt ?? undefined,
       path: `/blog/${post.slug}`,
       type: 'article',
-      image: `${config.url}/blog/${post.slug}/opengraph-image`,
+      image: `${config.url}/blog/${post.slug}/opengraph-image.png?${contentHash(post.title + (post.publishedAt ?? ''))}`,
     },
   )
 })

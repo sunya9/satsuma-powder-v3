@@ -1,12 +1,15 @@
 import { jsxRenderer } from 'hono/jsx-renderer'
 import { Link } from 'honox/server'
 import { config } from '../lib/config'
+import { contentHash } from '../lib/hash'
+
+const SITE_OG = `${config.url}/opengraph-image.png?${contentHash(config.title + config.description)}`
 
 export default jsxRenderer(({ children, title, description, path, image, type }) => {
   const pageTitle = title && title !== config.title ? `${title} | ${config.title}` : config.title
   const desc = description ?? config.description
   const url = `${config.url}${path ?? ''}`
-  const ogImage = image ?? `${config.url}/opengraph-image`
+  const ogImage = image ?? SITE_OG
   const ogType = type ?? 'website'
 
   return (
