@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
+import { authenticated } from '../access/authenticated'
 
 // Article author profiles, separate from the admin login Users collection.
 export const Authors: CollectionConfig = {
@@ -9,7 +10,7 @@ export const Authors: CollectionConfig = {
     defaultColumns: ['name', 'email', 'updatedAt'],
   },
   access: {
-    read: () => true,
+    read: authenticated,
   },
   fields: [
     { name: 'name', type: 'text', required: true },

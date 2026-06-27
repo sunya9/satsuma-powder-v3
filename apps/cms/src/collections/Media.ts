@@ -1,9 +1,11 @@
 import type { CollectionConfig } from 'payload'
+import { authenticated } from '../access/authenticated'
 
+// Images are served publicly straight from R2, so the cms API itself can stay private.
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
-    read: () => true,
+    read: authenticated,
   },
   fields: [
     {
