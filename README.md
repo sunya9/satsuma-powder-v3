@@ -52,3 +52,5 @@ CD は各プラットフォームの Git 連携に委ねる。
 - `apps/web` → Cloudflare Workers の静的アセット配信。`pnpm --filter web deploy`（build 後に `wrangler deploy`）。設定は `apps/web/wrangler.jsonc`。
 
 CI（typecheck / lint / test）は GitHub Actions（`.github/workflows/ci.yml`）で実行する。
+
+手順の詳細は [`docs/DEPLOY.md`](docs/DEPLOY.md) を参照。
