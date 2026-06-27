@@ -95,9 +95,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     about: About;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
     about: AboutSelect<false> | AboutSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -526,10 +528,38 @@ export interface About {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  title: string;
+  description?: string | null;
+  twitterHandle?: string | null;
+  icon?: (number | null) | Media;
+  coverImage?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about_select".
  */
 export interface AboutSelect<T extends boolean = true> {
   content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  twitterHandle?: T;
+  icon?: T;
+  coverImage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

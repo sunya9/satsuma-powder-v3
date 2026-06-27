@@ -2,14 +2,14 @@ import { jsxRenderer } from 'hono/jsx-renderer'
 import { Link } from 'honox/server'
 import { config } from '../lib/config'
 import { contentHash } from '../lib/hash'
+import { getSite } from '../lib/payload'
 
-const SITE_OG = `${config.url}/opengraph-image.png?${contentHash(config.title + config.description)}`
-
-export default jsxRenderer(({ children, title, description, path, image, type }) => {
-  const pageTitle = title && title !== config.title ? `${title} | ${config.title}` : config.title
-  const desc = description ?? config.description
+export default jsxRenderer(async ({ children, title, description, path, image, type }) => {
+  const site = await getSite()
+  const pageTitle = title && title !== site.title ? `${title} | ${site.title}` : site.title
+  const desc = description ?? site.description
   const url = `${config.url}${path ?? ''}`
-  const ogImage = image ?? SITE_OG
+  const ogImage = image ?? `${config.url}/opengraph-image.png?${contentHash(site.title + site.description)}`
   const ogType = type ?? 'website'
 
   return (
@@ -24,13 +24,13 @@ export default jsxRenderer(({ children, title, description, path, image, type })
           rel="alternate"
           type="application/rss+xml"
           href={`${config.url}/rss.xml`}
-          title={`${config.title}のRSS`}
+          title={`${site.title}のRSS`}
         />
 
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={desc} />
         <meta property="og:url" content={url} />
-        <meta property="og:site_name" content={config.title} />
+        <meta property="og:site_name" content={site.title} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
@@ -42,7 +42,7 @@ export default jsxRenderer(({ children, title, description, path, image, type })
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" content={ogImage} />
 
-        <link rel="icon" href={config.icon} />
+        {site.iconUrl && <link rel="icon" href={site.iconUrl} />}
         <Link href="/app/style.css" rel="stylesheet" />
       </head>
       <body class="bg-paper text-ink">{children}</body>

@@ -1,14 +1,14 @@
 import { createRoute } from 'honox/factory'
 import { config } from '../lib/config'
 import { lexicalToHtml } from '../lib/lexical-html'
-import { mediaUrl, payloadRepo } from '../lib/payload'
+import { getSite, mediaUrl, payloadRepo } from '../lib/payload'
 
 const cdata = (s?: string | null) =>
   `<![CDATA[${String(s ?? '').replace(/\]\]>/g, ']]]]><![CDATA[>')}]]>`
 const attr = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
 
 export default createRoute(async (c) => {
-  const posts = await payloadRepo.getRecentFull(15)
+  const [posts, site] = await Promise.all([payloadRepo.getRecentFull(15), getSite()])
 
   const items = posts
     .map((post) => {
@@ -36,10 +36,12 @@ export default createRoute(async (c) => {
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">' +
     '<channel>' +
-    `<title>${cdata(config.title)}</title>` +
-    `<description>${cdata(config.description)}</description>` +
+    `<title>${cdata(site.title)}</title>` +
+    `<description>${cdata(site.description)}</description>` +
     `<link>${config.url}/</link>` +
-    `<image><url>${config.icon}</url><title>${cdata(config.title)}</title><link>${config.url}/</link></image>` +
+    (site.iconUrl
+      ? `<image><url>${attr(site.iconUrl)}</url><title>${cdata(site.title)}</title><link>${config.url}/</link></image>`
+      : '') +
     '<generator>HonoX</generator>' +
     `<atom:link href="${config.url}/rss.xml" rel="self" type="application/rss+xml"/>` +
     '<ttl>60</ttl>' +

@@ -1,5 +1,5 @@
-import { config } from '../lib/config'
 import { formatDate } from '../lib/date'
+import { getSite } from '../lib/payload'
 
 interface Props {
   coverImage?: string | null
@@ -9,7 +9,8 @@ interface Props {
 
 const PILL = 'inline-block rounded-full px-4 py-1 text-sm border border-[color-mix(in_srgb,currentColor_40%,transparent)]'
 
-export function AppLayout({ coverImage, header, children }: Props) {
+export async function AppLayout({ coverImage, header, children }: Props) {
+  const site = await getSite()
   // Allow only http(s) and strip url()-breaking chars (CSS injection defense).
   const safeCover =
     coverImage && /^https?:\/\//i.test(coverImage)
@@ -35,8 +36,8 @@ export function AppLayout({ coverImage, header, children }: Props) {
         <div class="site-container">
           {!header ? (
             <>
-              <h1 class="mb-4 text-[clamp(1.5rem,3vw,2.666rem)] leading-tight">{config.title}</h1>
-              <p>{config.description}</p>
+              <h1 class="mb-4 text-[clamp(1.5rem,3vw,2.666rem)] leading-tight">{site.title}</h1>
+              <p>{site.description}</p>
             </>
           ) : (
             <>
@@ -67,8 +68,8 @@ export function AppLayout({ coverImage, header, children }: Props) {
           )}
           <p>
             ©&nbsp;
-            <a class="text-accent hover:text-accent/60" href={`https://twitter.com/${config.twitterHandle}`}>
-              @{config.twitterHandle}
+            <a class="text-accent hover:text-accent/60" href={`https://twitter.com/${site.twitterHandle}`}>
+              @{site.twitterHandle}
             </a>
           </p>
         </div>
