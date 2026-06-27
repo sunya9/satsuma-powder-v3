@@ -1,10 +1,11 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "web",
+  "name": "satsuma-powder-v3-web",
   "compatibility_date": "2026-06-26",
   // Static-only: the build output (dist) is fully pre-rendered (SSG), so this is
   // an assets-only Worker (no `main`). `_redirects`/`_headers` in dist are honored.
   "assets": {
     "directory": "./dist"
-  }
+  },
+  "routes": [{ "pattern": "private.unsweets.net", "custom_domain": true }]
 }
