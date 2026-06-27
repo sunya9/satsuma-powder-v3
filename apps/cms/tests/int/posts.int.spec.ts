@@ -24,16 +24,25 @@ describe('Blog schema (Ghost migration)', () => {
     }
   })
 
-  it('creates a post and auto-generates the slug from the title', async () => {
+  it('auto-assigns a slug when none is provided', async () => {
     const post = await payload.create({
       collection: 'posts',
-      data: {
-        title: 'Hello Ghost Migration',
-      },
+      data: { title: 'Hello Ghost Migration' },
     })
 
     expect(post.id).toBeDefined()
-    expect(post.slug).toBe('hello-ghost-migration')
+    // Not derived from the title — an auto-assigned id.
+    expect(post.slug).toMatch(/^[a-z0-9]+$/)
+    expect(post.slug).not.toBe('hello-ghost-migration')
+  })
+
+  it('keeps an explicit slug', async () => {
+    const post = await payload.create({
+      collection: 'posts',
+      data: { title: 'Custom Slug Post', slug: 'my-custom-slug' },
+    })
+
+    expect(post.slug).toBe('my-custom-slug')
   })
 
   it('defaults a newly created post to draft status', async () => {

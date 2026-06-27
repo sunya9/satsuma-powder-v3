@@ -188,9 +188,8 @@ export interface Post {
   id: number;
   title: string;
   /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   * 空欄なら自動でIDを割り当てます。SEO用に任意で指定可。
    */
-  generateSlug?: boolean | null;
   slug?: string | null;
   content?: {
     root: {
@@ -410,7 +409,6 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
-  generateSlug?: T;
   slug?: T;
   content?: T;
   excerpt?: T;
