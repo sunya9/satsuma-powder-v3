@@ -10,12 +10,14 @@ export default createRoute(
     return posts.map((post) => ({ slug: post.slug }))
   }),
   async (c) => {
-    const post = await payloadRepo.getPost(c.req.param('slug'))
+    const slug = c.req.param('slug')
+    if (!slug) return c.notFound()
+    const post = await payloadRepo.getPost(slug)
     if (!post) return c.notFound()
     const png = await ogPng({
       title: post.title,
       subtitle: post.publishedAt ? formatDate(post.publishedAt) : '',
     })
-    return c.body(png, 200, { 'Content-Type': 'image/png' })
+    return new Response(png, { headers: { 'Content-Type': 'image/png' } })
   },
 )
