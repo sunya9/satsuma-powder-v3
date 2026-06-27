@@ -38,6 +38,9 @@ export default buildConfig({
       // Required for remote Turso (libsql://); unset for a local file: DB.
       authToken: process.env.DATABASE_AUTH_TOKEN,
     },
+    // Dev auto-syncs the schema; production applies committed migrations instead.
+    push: process.env.NODE_ENV !== 'production',
+    migrationDir: path.resolve(dirname, 'migrations'),
   }),
   sharp,
   plugins: [
