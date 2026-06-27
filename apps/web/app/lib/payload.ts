@@ -78,6 +78,7 @@ export function getSite(): Promise<Site> {
     const url = new URL(`${PAYLOAD_URL}/api/globals/site-settings`)
     url.searchParams.set('depth', '1')
     const res = await fetch(url.toString(), { headers: authHeaders })
+    if (!res.ok) throw new Error(`SiteSettings ${res.status} (check PAYLOAD_API_KEY)`)
     const d = (await res.json()) as {
       title?: string
       description?: string
@@ -96,6 +97,8 @@ export function getSite(): Promise<Site> {
   return sitePromise
 }
 
+let allPostsPromise: Promise<PostSummary[]> | undefined
+
 export const payloadRepo = {
   async getAbout(): Promise<About | undefined> {
     try {
@@ -109,23 +112,27 @@ export const payloadRepo = {
     }
   },
 
+  // Memoized once per build: the full published list is requested by several routes.
   async getPosts(size = Infinity): Promise<PostSummary[]> {
-    const out: PostSummary[] = []
-    let page = 1
-    while (out.length < size) {
-      const limit = Math.min(size - out.length, 100)
-      const res = await api<ListResponse<PostSummary>>('posts', {
-        depth: 0,
-        limit,
-        page,
-        sort: '-publishedAt',
-        ...PUBLISHED,
-      })
-      out.push(...res.docs)
-      if (!res.hasNextPage) break
-      page = res.nextPage ?? page + 1
-    }
-    return out
+    allPostsPromise ??= (async () => {
+      const out: PostSummary[] = []
+      let page = 1
+      while (true) {
+        const res = await api<ListResponse<PostSummary>>('posts', {
+          depth: 0,
+          limit: 100,
+          page,
+          sort: '-publishedAt',
+          ...PUBLISHED,
+        })
+        out.push(...res.docs)
+        if (!res.hasNextPage) break
+        page = res.nextPage ?? page + 1
+      }
+      return out
+    })()
+    const all = await allPostsPromise
+    return Number.isFinite(size) ? all.slice(0, size) : all
   },
 
   async getRecentFull(limit = 15): Promise<Post[]> {

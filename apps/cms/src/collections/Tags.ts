@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 import { authenticated } from '../access/authenticated'
+import { slugify } from '../fields/slug'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
@@ -13,7 +14,7 @@ export const Tags: CollectionConfig = {
   },
   fields: [
     { name: 'name', type: 'text', required: true },
-    slugField({ useAsSlug: 'name', required: false }),
+    slugField({ useAsSlug: 'name', required: false, slugify }),
     { name: 'description', type: 'textarea' },
     {
       name: 'featureImage',

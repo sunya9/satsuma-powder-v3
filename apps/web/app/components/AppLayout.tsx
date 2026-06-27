@@ -66,12 +66,17 @@ export async function AppLayout({ coverImage, header, children }: Props) {
               </a>
             </p>
           )}
-          <p>
-            ©&nbsp;
-            <a class="text-accent hover:text-accent/60" href={`https://twitter.com/${site.twitterHandle}`}>
-              @{site.twitterHandle}
-            </a>
-          </p>
+          {site.twitterHandle && (
+            <p>
+              ©&nbsp;
+              <a
+                class="text-accent hover:text-accent/60"
+                href={`https://twitter.com/${site.twitterHandle}`}
+              >
+                @{site.twitterHandle}
+              </a>
+            </p>
+          )}
         </div>
       </footer>
     </>

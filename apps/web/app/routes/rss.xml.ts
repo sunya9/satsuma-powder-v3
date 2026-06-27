@@ -39,6 +39,10 @@ export default createRoute(async (c) => {
     `<title>${cdata(site.title)}</title>` +
     `<description>${cdata(site.description)}</description>` +
     `<link>${config.url}/</link>` +
+    '<language>ja</language>' +
+    (posts[0]?.publishedAt
+      ? `<lastBuildDate>${new Date(posts[0].publishedAt).toUTCString()}</lastBuildDate>`
+      : '') +
     (site.iconUrl
       ? `<image><url>${attr(site.iconUrl)}</url><title>${cdata(site.title)}</title><link>${config.url}/</link></image>`
       : '') +
