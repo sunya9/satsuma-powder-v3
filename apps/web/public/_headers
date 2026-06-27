@@ -1,0 +1,4 @@
+/opengraph-image
+  Content-Type: image/png
+/blog/*/opengraph-image
+  Content-Type: image/png
