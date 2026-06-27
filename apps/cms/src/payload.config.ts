@@ -34,8 +34,7 @@ export default buildConfig({
   db: sqliteAdapter({
     client: {
       url: process.env.DATABASE_URL || '',
-      // 本番は Turso (libsql) を利用する想定。libsql://… のリモートDBには認証トークンが必要。
-      // ローカルの file: DB では未設定でよい。
+      // Required for remote Turso (libsql://); unset for a local file: DB.
       authToken: process.env.DATABASE_AUTH_TOKEN,
     },
   }),
@@ -48,19 +47,16 @@ export default buildConfig({
       generateTitle: ({ doc }) => (doc?.title as string) ?? '',
       generateDescription: ({ doc }) => (doc?.excerpt as string) ?? '',
     }),
-    // media コレクションのアップロード先を S3 / Cloudflare R2 にする。
-    // 本番(Vercel)は FS が ephemeral なため必須。env が未設定のローカルでは無効化され、
-    // 既定のローカルディスク(media/)へフォールバックする。
+    // Store media on S3/R2. Falls back to local disk when S3_BUCKET is unset
+    // (Vercel's filesystem is ephemeral, so this is required in production).
     s3Storage({
       enabled: Boolean(process.env.S3_BUCKET),
       collections: { media: true },
       bucket: process.env.S3_BUCKET || '',
       config: {
-        // R2 のエンドポイント例: https://<accountid>.r2.cloudflarestorage.com
         endpoint: process.env.S3_ENDPOINT,
-        // R2 は region 'auto'。S3 は実リージョン。
         region: process.env.S3_REGION || 'auto',
-        // R2 / 多くの S3 互換ストレージは path-style が必要。
+        // R2 and most S3-compatible stores need path-style.
         forcePathStyle: true,
         credentials: {
           accessKeyId: process.env.S3_ACCESS_KEY_ID || '',

@@ -1,10 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 
-/**
- * Ghost の Author に相当するコレクション。
- * 管理ログイン用の Users とは分離し、記事の著者プロフィールを管理する。
- */
+// Article author profiles, separate from the admin login Users collection.
 export const Authors: CollectionConfig = {
   slug: 'authors',
   admin: {

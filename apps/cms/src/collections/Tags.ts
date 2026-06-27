@@ -1,9 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 
-/**
- * Ghost の Tag に相当するコレクション。記事の分類に使う。
- */
 export const Tags: CollectionConfig = {
   slug: 'tags',
   admin: {

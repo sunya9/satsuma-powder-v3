@@ -1,13 +1,4 @@
-/**
- * ローカルテスト用の admin ユーザーを作成する seed スクリプト（**本番では使わない想定**）。
- *
- * 使い方:
- *   pnpm seed:admin
- *   SEED_ADMIN_EMAIL=me@example.com SEED_ADMIN_PASSWORD=secret pnpm seed:admin
- *
- * - 同じ email が既に存在すれば何もしない（冪等）。
- * - 誤って本番で流さないよう NODE_ENV=production では実行を拒否する。
- */
+// Create a local-only admin user (idempotent). Refuses to run with NODE_ENV=production.
 import 'dotenv/config'
 import { getPayload } from 'payload'
 

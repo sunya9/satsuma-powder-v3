@@ -1,19 +1,9 @@
-/**
- * Ghost エクスポート JSON → Payload への一度きりの移行スクリプト（Local API 使用）。
- *
- * 使い方:
- *   pnpm migrate:ghost              # 本実行（DB へ投入 + 画像を media へ取り込み）
- *   pnpm migrate:ghost --dry-run    # 件数と変換健全性のみ確認（DB 書き込み・画像DLなし）
- *   GHOST_EXPORT=path/to/export.json pnpm migrate:ghost
- *
- * 設計:
- * - 入力レコード → Payload データへの写像は ./mappers の純粋関数に委譲（単体テスト済み）。
- * - 画像（feature image / 著者画像 / 本文 <img>）はすべて外部URLから **ダウンロードして media コレクションへ取り込む**。
- *   保存先は payload.config の storage アダプタ（本番は S3 / Cloudflare R2、ローカルは media/）。
- *   外部URL依存を排し、ストレージを R2 に一本化するため。
- * - media は `sourceUrl` で重複排除し、entity は slug で findOrUpdate する冪等設計。
- * - 本文 <img> は標準の Lexical upload ノード（media 参照）へ変換する。
- */
+// One-shot Ghost-export -> Payload migration (Local API).
+//   pnpm migrate:ghost [--dry-run]   |   GHOST_EXPORT=path/to/export.json pnpm migrate:ghost
+//
+// All images (feature / author / inline <img>) are downloaded into the media collection so the
+// site no longer depends on external URLs (storage adapter points media at R2 in production).
+// Idempotent: media deduped by sourceUrl, entities upserted by slug.
 import 'dotenv/config'
 import { readFileSync } from 'fs'
 import path from 'path'
@@ -59,10 +49,9 @@ function loadGhostData() {
   }
 }
 
-// ───────────────────────── 本文画像（<img>）の抽出 ─────────────────────────
-// convertHTMLToLexical に <img> を渡すと media 参照の upload ノードになるが、変換時点では
-// media ドキュメントが無いため値が空になり無効化される。そこで変換前に <img> を一意マーカーへ
-// 置換して URL/alt を控え、media へ取り込んだ後にマーカーを upload ノードへ復元する。
+// convertHTMLToLexical turns <img> into an upload node whose value is empty (no media doc yet),
+// which fails validation. So replace each <img> with a marker, ingest the image, then restore
+// the marker as an upload node referencing the created media.
 const MARKER_RE = /@@EXTIMG_(\d+)@@/
 const MARKER_SPLIT_RE = /(@@EXTIMG_\d+@@)/
 
@@ -90,7 +79,6 @@ function extractExternalImages(
   return { html: doc.body.innerHTML, images }
 }
 
-// media 参照の Lexical upload ノードを組み立てる。
 function uploadNode(mediaId: PayloadID) {
   return {
     type: 'upload',
@@ -114,9 +102,8 @@ const emptyParagraph = () => ({
   children: [] as unknown[],
 })
 
-// ルート段落に紛れたマーカーを、解決済み media ID の upload ノードへ展開する。
-// インライン画像はマーカー前後でテキスト段落とブロックに分割する。
-// media 解決に失敗した（mediaIds[n] が無い）マーカーは破棄する。
+// Expand root-level markers into upload nodes, splitting paragraphs around inline images.
+// Markers whose media failed to resolve are dropped.
 function expandImageMarkers(root: { children: any[] }, mediaIds: (PayloadID | undefined)[]): void {
   const out: any[] = []
   for (const node of root.children) {
@@ -159,8 +146,7 @@ function expandImageMarkers(root: { children: any[] }, mediaIds: (PayloadID | un
   root.children = out
 }
 
-// ルート直下に昇格できない位置（例: bookmark card のリンク内サムネイル）に残ったマーカーを除去する。
-// @returns 除去（スキップ）したマーカー数
+// Strip markers that couldn't be promoted to root level (e.g. thumbnails inside bookmark cards).
 function stripLeftoverMarkers(node: any): number {
   let count = 0
   if (node.type === 'text' && typeof node.text === 'string' && MARKER_RE.test(node.text)) {
@@ -171,7 +157,6 @@ function stripLeftoverMarkers(node: any): number {
   return count
 }
 
-// ───────────────────────── 画像ダウンロード ─────────────────────────
 const MIME_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
   'image/jpg': 'jpg',
@@ -254,7 +239,7 @@ async function main() {
     media: { created: 0, reused: 0, failed: 0 },
   }
 
-  // 外部画像URL → media ID。sourceUrl で重複排除し、ダウンロードして media へ取り込む。
+  // Download an external image into media, deduped by sourceUrl; returns its media id.
   const mediaCache = new Map<string, PayloadID | undefined>()
   const ensureMedia = async (
     sourceUrl?: string,
@@ -301,7 +286,6 @@ async function main() {
     }
   }
 
-  // Ghost の html を Lexical へ変換し、本文画像を media へ取り込んで upload ノードへ復元する。
   const htmlToLexical = async (html?: string | null, label = '') => {
     if (!html || html.trim() === '') return undefined
     const { html: cleaned, images } = extractExternalImages(html, JSDOM)
@@ -322,7 +306,6 @@ async function main() {
     return state
   }
 
-  // slug で findOrUpdate する冪等 upsert。
   const upsert = async (
     collection: CollectionSlug,
     data: Record<string, unknown>,
@@ -345,7 +328,7 @@ async function main() {
     return doc.id
   }
 
-  // 1) authors
+  // authors
   const authorIdByGhostId = new Map<string, PayloadID>()
   for (const user of users) {
     try {
@@ -359,7 +342,7 @@ async function main() {
     }
   }
 
-  // 2) tags
+  // tags
   const tagIdByGhostId = new Map<string, PayloadID>()
   for (const tag of tags) {
     try {
@@ -373,7 +356,7 @@ async function main() {
     }
   }
 
-  // 3) posts（リレーションは sort_order 昇順で解決）
+  // posts
   const authorsByPost = buildRelationIndex(postsAuthors, 'author_id')
   const tagsByPost = buildRelationIndex(postsTags, 'tag_id')
 
@@ -400,11 +383,11 @@ async function main() {
     }
   }
 
-  // 4) about（Ghost の page slug=about）→ Payload Global "about"
+  // about: Ghost page (slug=about) -> about Global
   const aboutPage = posts.find((p) => p.slug === 'about' && (p.type ?? '') === 'page')
   if (aboutPage) {
     try {
-      // __GHOST_URL__ プレースホルダは相対URLへ（例: /rss.xml）
+      // __GHOST_URL__ placeholder -> relative URL (e.g. /rss.xml)
       const html = (aboutPage.html ?? '').replace(/__GHOST_URL__/g, '')
       const content = await htmlToLexical(html, 'about')
       await payload.updateGlobal({ slug: 'about', data: { content } })

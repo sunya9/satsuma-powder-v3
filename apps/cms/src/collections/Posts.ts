@@ -1,13 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 
-/**
- * Ghost の Post に相当するブログ記事コレクション。
- *
- * - slug: title から自動生成 (slugField)
- * - versions.drafts: Ghost の下書き/公開ワークフローに対応
- * - SEO/OGP のメタフィールドは payload.config の seoPlugin が `meta` グループとして注入する
- */
 export const Posts: CollectionConfig = {
   slug: 'posts',
   admin: {
@@ -15,7 +8,6 @@ export const Posts: CollectionConfig = {
     defaultColumns: ['title', 'authors', '_status', 'publishedAt'],
   },
   access: {
-    // 匿名アクセスでは公開済みの記事のみ閲覧可能。ログインユーザーは下書きも閲覧できる。
     read: ({ req: { user } }) => {
       if (user) return true
       return { _status: { equals: 'published' } }
@@ -23,12 +15,11 @@ export const Posts: CollectionConfig = {
   },
   fields: [
     { name: 'title', type: 'text', required: true },
-    // slug は title から自動生成される。create 入力時点では未指定のため required: false。
+    // Auto-generated from title, so not required at create time.
     slugField({ required: false }),
     {
       name: 'content',
       type: 'richText',
-      // 移行時の堅牢性を優先し任意。本文必須にしたい場合は required: true に変更する。
     },
     {
       name: 'excerpt',
