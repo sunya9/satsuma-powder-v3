@@ -16,19 +16,19 @@ describe('ghost mappers', () => {
     it('maps fields and preserves the Ghost slug', () => {
       const result = mapAuthor({
         id: 'u1',
-        name: 'xyz',
-        slug: 'xyz',
-        email: 'mugen.xyz@gmail.com',
-        profile_image: 'https://www.gravatar.com/avatar/abc?s=250',
+        name: 'Test Author',
+        slug: 'test-author',
+        email: 'author@example.com',
+        profile_image: 'https://example.com/avatar.png',
         bio: null,
-        website: 'https://unsweets.net',
+        website: 'https://example.com',
       })
       expect(result).toEqual({
-        name: 'xyz',
-        slug: 'xyz',
-        profileImage: 'https://www.gravatar.com/avatar/abc?s=250',
-        email: 'mugen.xyz@gmail.com',
-        website: 'https://unsweets.net',
+        name: 'Test Author',
+        slug: 'test-author',
+        profileImage: 'https://example.com/avatar.png',
+        email: 'author@example.com',
+        website: 'https://example.com',
         // bio は null のため省略される
       })
     })
