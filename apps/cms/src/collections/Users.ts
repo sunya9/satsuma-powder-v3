@@ -5,9 +5,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
-  auth: true,
-  fields: [
-    // Email added by default
-    // Add more fields as needed
-  ],
+  // API key lets the web SSG build authenticate (Authorization: users API-Key <key>).
+  auth: { useAPIKey: true },
+  fields: [],
 }

@@ -13,6 +13,7 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "migrate:ghost": "cross-env NODE_OPTIONS=--no-deprecation tsx src/migrations/ghost/run.ts",
     "seed:admin": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/admin.ts",
+    "seed:api-key": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/api-key.ts",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",

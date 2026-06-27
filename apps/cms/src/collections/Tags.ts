@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
+import { authenticated } from '../access/authenticated'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
@@ -8,7 +9,7 @@ export const Tags: CollectionConfig = {
     defaultColumns: ['name', 'updatedAt'],
   },
   access: {
-    read: () => true,
+    read: authenticated,
   },
   fields: [
     { name: 'name', type: 'text', required: true },

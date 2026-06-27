@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
+import { authenticated } from '../access/authenticated'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -8,10 +9,7 @@ export const Posts: CollectionConfig = {
     defaultColumns: ['title', 'authors', '_status', 'publishedAt'],
   },
   access: {
-    read: ({ req: { user } }) => {
-      if (user) return true
-      return { _status: { equals: 'published' } }
-    },
+    read: authenticated,
   },
   fields: [
     { name: 'title', type: 'text', required: true },

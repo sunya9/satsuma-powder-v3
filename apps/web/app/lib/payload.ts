@@ -1,11 +1,23 @@
 const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? 'http://localhost:3000').replace(/\/$/, '')
 
+// Build-time-only secret (never VITE_-prefixed, so it stays out of any client bundle).
+const API_KEY = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+  ?.env?.PAYLOAD_API_KEY
+const authHeaders: HeadersInit = API_KEY ? { Authorization: `users API-Key ${API_KEY}` } : {}
+
+// Only published posts on the public site (an authenticated request can otherwise see drafts).
+const PUBLISHED = { 'where[_status][equals]': 'published' } as const
+
+// Public R2 base URL. When set, images are served directly from R2 (no cms at runtime).
+const R2_PUBLIC = (import.meta.env.VITE_R2_PUBLIC_URL ?? '').replace(/\/$/, '')
+
 export interface LexicalState {
   root: { children: unknown[]; [k: string]: unknown }
 }
 
 export interface Media {
   url?: string | null
+  filename?: string | null
   alt?: string | null
   width?: number | null
   height?: number | null
@@ -35,13 +47,14 @@ interface ListResponse<T> {
 async function api<T>(collection: string, params: Record<string, string | number>): Promise<T> {
   const url = new URL(`${PAYLOAD_URL}/api/${collection}`)
   for (const [key, value] of Object.entries(params)) url.searchParams.set(key, String(value))
-  const res = await fetch(url.toString())
+  const res = await fetch(url.toString(), { headers: authHeaders })
   if (!res.ok) throw new Error(`Payload API ${res.status}: ${url.pathname}${url.search}`)
   return res.json() as Promise<T>
 }
 
-// Payload returns relative media URLs; make them absolute.
 export function mediaUrl(media?: Media | null): string | undefined {
+  // Serve directly from R2 when configured, so the runtime never touches the cms.
+  if (R2_PUBLIC && media?.filename) return `${R2_PUBLIC}/${media.filename}`
   if (!media?.url) return undefined
   return media.url.startsWith('http') ? media.url : `${PAYLOAD_URL}${media.url}`
 }
@@ -55,7 +68,7 @@ export const payloadRepo = {
     try {
       const url = new URL(`${PAYLOAD_URL}/api/globals/about`)
       url.searchParams.set('depth', '2')
-      const res = await fetch(url.toString())
+      const res = await fetch(url.toString(), { headers: authHeaders })
       if (!res.ok) return undefined
       return (await res.json()) as About
     } catch {
@@ -73,6 +86,7 @@ export const payloadRepo = {
         limit,
         page,
         sort: '-publishedAt',
+        ...PUBLISHED,
       })
       out.push(...res.docs)
       if (!res.hasNextPage) break
@@ -82,7 +96,12 @@ export const payloadRepo = {
   },
 
   async getRecentFull(limit = 15): Promise<Post[]> {
-    const res = await api<ListResponse<Post>>('posts', { depth: 2, limit, sort: '-publishedAt' })
+    const res = await api<ListResponse<Post>>('posts', {
+      depth: 2,
+      limit,
+      sort: '-publishedAt',
+      ...PUBLISHED,
+    })
     return res.docs
   },
 
@@ -91,6 +110,7 @@ export const payloadRepo = {
       depth: 2,
       limit: 1,
       'where[slug][equals]': slug,
+      ...PUBLISHED,
     })
     return res.docs[0]
   },
@@ -102,6 +122,7 @@ export const payloadRepo = {
       limit: 1,
       sort: '-publishedAt',
       'where[publishedAt][less_than]': publishedAt,
+      ...PUBLISHED,
     })
     return res.docs[0]
   },
@@ -113,6 +134,7 @@ export const payloadRepo = {
       limit: 1,
       sort: 'publishedAt',
       'where[publishedAt][greater_than]': publishedAt,
+      ...PUBLISHED,
     })
     return res.docs[0]
   },
