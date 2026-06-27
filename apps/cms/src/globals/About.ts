@@ -1,9 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
-/**
- * サイトの「about（サイトについて）」。記事一覧に混ぜず、単一ドキュメントの Global で持つ。
- * 本文は richText(Lexical) なので、フロントは記事と同じレンダラで描画できる。
- */
+// Site "about" as a singleton Global rather than a post.
 export const About: GlobalConfig = {
   slug: 'about',
   access: {

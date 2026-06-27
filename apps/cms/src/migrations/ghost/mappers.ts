@@ -1,9 +1,4 @@
-/**
- * Ghost エクスポート (db[0].data) の各レコードを Payload の create データへ変換する純粋関数群。
- *
- * I/O やリレーション解決、HTML→Lexical 変換は run.ts (I/O層) が担当し、
- * ここは「入力レコード → 出力データ」の写像と正規化のみに専念する（単体テスト可能に保つため）。
- */
+// Pure record-to-record mappers (Ghost export -> Payload create data); I/O lives in run.ts.
 
 export interface GhostUser {
   id: string
@@ -27,9 +22,8 @@ export interface GhostPost {
   id: string
   title: string
   slug: string
-  /** 'published' | 'draft' | ... */
   status: string
-  /** 'post' | 'page'。未指定は post 扱い。 */
+  // 'post' | 'page'
   type?: string
   visibility?: string
   custom_excerpt?: string | null
@@ -38,15 +32,14 @@ export interface GhostPost {
   html?: string | null
 }
 
-/** posts_authors / posts_tags の中間テーブル行。 */
 export interface GhostRelation {
   post_id: string
   sort_order?: number
-  // author_id / tag_id などの対象 ID キーは buildRelationIndex の引数で指定する
+  // Target id key (author_id / tag_id) is passed to buildRelationIndex.
   [key: string]: unknown
 }
 
-/** null / 空白のみの文字列を undefined に正規化する（Payload に空文字を送らない）。 */
+// Normalize null / blank strings to undefined so Payload never gets empty strings.
 const clean = (value?: string | null): string | undefined => {
   if (value == null) return undefined
   const trimmed = value.trim()
@@ -115,16 +108,12 @@ export function mapPost(post: GhostPost): MappedPost {
   }
 }
 
-/** 移行対象は type=post のみ（type=page は除外）。未指定は post 扱い。 */
+// Only type=post is migrated; pages are excluded.
 export function isMigratablePost(post: GhostPost): boolean {
   return (post.type ?? 'post') === 'post'
 }
 
-/**
- * posts_authors / posts_tags を `post_id -> [target_id...]`（sort_order 昇順）に索引化する。
- * @param relations 中間テーブル行の配列
- * @param targetKey 対象 ID のキー名（'author_id' | 'tag_id'）
- */
+// Index relations as post_id -> [target_id...], ordered by sort_order.
 export function buildRelationIndex<T extends GhostRelation>(
   relations: T[],
   targetKey: keyof T,
