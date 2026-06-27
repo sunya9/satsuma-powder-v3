@@ -74,7 +74,7 @@ function template(opts: { siteTitle: string; title: string; subtitle: string; ic
   )
 }
 
-export async function ogPng(opts: { title: string; subtitle: string }): Promise<Uint8Array> {
+export async function ogPng(opts: { title: string; subtitle: string }): Promise<ArrayBuffer> {
   const site = await getSite()
   const icon = await iconDataUri(site.iconUrl)
   const font = await loadFontSubset(site.title + opts.title + opts.subtitle)
@@ -82,5 +82,8 @@ export async function ogPng(opts: { title: string; subtitle: string }): Promise<
     template({ siteTitle: site.title, title: opts.title, subtitle: opts.subtitle, icon }) as never,
     { width: 1200, height: 630, fonts: [{ name: 'Noto Sans JP', data: font, weight: 400, style: 'normal' }] },
   )
-  return new Resvg(svg).render().asPng()
+  // Return a standalone ArrayBuffer — an unambiguous BodyInit under both DOM
+  // and @cloudflare/workers-types (Uint8Array<ArrayBufferLike> is not).
+  const png = new Resvg(svg).render().asPng()
+  return png.buffer.slice(png.byteOffset, png.byteOffset + png.byteLength) as ArrayBuffer
 }
