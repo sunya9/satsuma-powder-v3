@@ -4,7 +4,7 @@
   "description": "satsuma-powder-v3 monorepo — Payload CMS (apps/cms) and HonoX frontend (apps/web)",
   "packageManager": "pnpm@10.28.0",
   "scripts": {
-    "dev": "pnpm --filter cms dev",
+    "dev": "pnpm --filter cms --filter web dev",
     "build": "pnpm --filter cms build",
     "start": "pnpm --filter cms start",
     "cms": "pnpm --filter cms",
