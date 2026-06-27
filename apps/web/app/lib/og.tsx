@@ -7,6 +7,7 @@ function iconDataUri(url?: string): Promise<string | undefined> {
   iconPromise ??= (async () => {
     if (!url) return undefined
     const res = await fetch(url)
+    if (!res.ok) throw new Error(`OG icon fetch ${res.status}: ${url}`)
     const mime = res.headers.get('content-type') ?? 'image/png'
     return `data:${mime};base64,${Buffer.from(await res.arrayBuffer()).toString('base64')}`
   })()
@@ -14,12 +15,16 @@ function iconDataUri(url?: string): Promise<string | undefined> {
 }
 
 // Google Fonts css2 with text= returns a truetype subset (satori cannot read woff2).
+// A legacy User-Agent ensures truetype (not woff2) is offered.
 async function loadFontSubset(text: string): Promise<ArrayBuffer> {
   const url = `https://fonts.googleapis.com/css2?family=Noto+Sans+JP&text=${encodeURIComponent(text)}`
-  const css = await (await fetch(url)).text()
-  const match = css.match(/src:\s*url\(([^)]+)\)\s*format\(['"]?truetype['"]?\)/)
+  const cssRes = await fetch(url, { headers: { 'User-Agent': 'Mozilla/4.0 (compatible)' } })
+  if (!cssRes.ok) throw new Error(`Google Fonts CSS ${cssRes.status}`)
+  const match = (await cssRes.text()).match(/src:\s*url\(([^)]+)\)\s*format\(['"]?truetype['"]?\)/)
   if (!match) throw new Error(`No truetype subset for "${text.slice(0, 20)}…"`)
-  return (await fetch(match[1])).arrayBuffer()
+  const fontRes = await fetch(match[1])
+  if (!fontRes.ok) throw new Error(`Font subset fetch ${fontRes.status}`)
+  return fontRes.arrayBuffer()
 }
 
 type El = { type: string; props: Record<string, unknown> }

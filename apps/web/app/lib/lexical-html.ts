@@ -1,13 +1,8 @@
 // Serialize Lexical JSON to an HTML string (for RSS content:encoded).
+import { IS_BOLD, IS_CODE, IS_ITALIC, IS_STRIKETHROUGH, IS_UNDERLINE, safeUrl } from './lexical-shared'
 import { mediaUrl, type LexicalState, type Media } from './payload'
 
 type Node = Record<string, any>
-
-const IS_BOLD = 1
-const IS_ITALIC = 2
-const IS_STRIKETHROUGH = 4
-const IS_UNDERLINE = 8
-const IS_CODE = 16
 
 function escapeHtml(s: string): string {
   return s
@@ -55,11 +50,8 @@ function node(n: Node): string {
     case 'listitem':
       return `<li>${children(n.children)}</li>`
     case 'link':
-    case 'autolink': {
-      const raw = String(n.fields?.url ?? '#').trim()
-      const url = /^(https?:|mailto:|tel:|\/|#)/i.test(raw) ? raw : '#'
-      return `<a href="${escapeHtml(url)}">${children(n.children)}</a>`
-    }
+    case 'autolink':
+      return `<a href="${escapeHtml(safeUrl(n.fields?.url))}">${children(n.children)}</a>`
     case 'upload': {
       const src = mediaUrl(n.value as Media)
       if (!src) return ''

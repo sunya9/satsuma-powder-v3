@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 import { authenticated } from '../access/authenticated'
+import { slugify } from '../fields/slug'
 
 // Article author profiles, separate from the admin login Users collection.
 export const Authors: CollectionConfig = {
@@ -14,7 +15,7 @@ export const Authors: CollectionConfig = {
   },
   fields: [
     { name: 'name', type: 'text', required: true },
-    slugField({ useAsSlug: 'name', required: false }),
+    slugField({ useAsSlug: 'name', required: false, slugify }),
     { name: 'bio', type: 'textarea' },
     {
       name: 'profileImage',
