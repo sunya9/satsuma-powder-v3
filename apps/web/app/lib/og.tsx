@@ -1,17 +1,16 @@
 import { Resvg } from '@resvg/resvg-js'
 import satori from 'satori'
+import { getSite } from './payload'
 
-export const SITE_TITLE = '粉蜜柑。'
-const ICON_URL =
-  'https://firebasestorage.googleapis.com/v0/b/sunya9-blog.appspot.com/o/assets%2F2021%2F12%2FProfileImage4-circle-ghost.png?generation=1639172821700900&alt=media'
-
-let iconPromise: Promise<string> | undefined
-const icon = () => (iconPromise ??= fetchDataUri(ICON_URL))
-
-async function fetchDataUri(url: string): Promise<string> {
-  const res = await fetch(url)
-  const mime = res.headers.get('content-type') ?? 'image/png'
-  return `data:${mime};base64,${Buffer.from(await res.arrayBuffer()).toString('base64')}`
+let iconPromise: Promise<string | undefined> | undefined
+function iconDataUri(url?: string): Promise<string | undefined> {
+  iconPromise ??= (async () => {
+    if (!url) return undefined
+    const res = await fetch(url)
+    const mime = res.headers.get('content-type') ?? 'image/png'
+    return `data:${mime};base64,${Buffer.from(await res.arrayBuffer()).toString('base64')}`
+  })()
+  return iconPromise
 }
 
 // Google Fonts css2 with text= returns a truetype subset (satori cannot read woff2).
@@ -29,7 +28,15 @@ const h = (type: string, style: Record<string, unknown>, children?: unknown): El
   props: children === undefined ? { style } : { style, children },
 })
 
-function template(opts: { title: string; subtitle: string; icon: string }): El {
+function template(opts: { siteTitle: string; title: string; subtitle: string; icon?: string }): El {
+  const header: unknown[] = []
+  if (opts.icon)
+    header.push({
+      type: 'img',
+      props: { src: opts.icon, width: 88, height: 88, style: { borderRadius: '50%' } },
+    })
+  header.push(h('div', { marginLeft: 24, fontSize: 34, color: '#27120a' }, opts.siteTitle))
+
   return h(
     'div',
     {
@@ -53,13 +60,7 @@ function template(opts: { title: string; subtitle: string; icon: string }): El {
           padding: 64,
         },
         [
-          h('div', { display: 'flex', alignItems: 'center' }, [
-            {
-              type: 'img',
-              props: { src: opts.icon, width: 88, height: 88, style: { borderRadius: '50%' } },
-            },
-            h('div', { marginLeft: 24, fontSize: 34, color: '#27120a' }, SITE_TITLE),
-          ]),
+          h('div', { display: 'flex', alignItems: 'center' }, header),
           h('div', { display: 'flex', fontSize: 60, lineHeight: 1.25, color: '#27120a' }, opts.title),
           h('div', { display: 'flex', fontSize: 30, color: '#4e4449' }, opts.subtitle),
         ],
@@ -69,12 +70,12 @@ function template(opts: { title: string; subtitle: string; icon: string }): El {
 }
 
 export async function ogPng(opts: { title: string; subtitle: string }): Promise<Uint8Array> {
-  const ic = await icon()
-  const font = await loadFontSubset(SITE_TITLE + opts.title + opts.subtitle)
-  const svg = await satori(template({ ...opts, icon: ic }) as never, {
-    width: 1200,
-    height: 630,
-    fonts: [{ name: 'Noto Sans JP', data: font, weight: 400, style: 'normal' }],
-  })
+  const site = await getSite()
+  const icon = await iconDataUri(site.iconUrl)
+  const font = await loadFontSubset(site.title + opts.title + opts.subtitle)
+  const svg = await satori(
+    template({ siteTitle: site.title, title: opts.title, subtitle: opts.subtitle, icon }) as never,
+    { width: 1200, height: 630, fonts: [{ name: 'Noto Sans JP', data: font, weight: 400, style: 'normal' }] },
+  )
   return new Resvg(svg).render().asPng()
 }

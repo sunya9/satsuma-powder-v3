@@ -63,6 +63,39 @@ export interface About {
   content?: LexicalState | null
 }
 
+export interface Site {
+  title: string
+  description: string
+  twitterHandle: string
+  iconUrl?: string
+  coverUrl?: string
+}
+
+// Memoized once per build/process: site metadata lives in the cms SiteSettings global.
+let sitePromise: Promise<Site> | undefined
+export function getSite(): Promise<Site> {
+  sitePromise ??= (async () => {
+    const url = new URL(`${PAYLOAD_URL}/api/globals/site-settings`)
+    url.searchParams.set('depth', '1')
+    const res = await fetch(url.toString(), { headers: authHeaders })
+    const d = (await res.json()) as {
+      title?: string
+      description?: string
+      twitterHandle?: string
+      icon?: Media | null
+      coverImage?: Media | null
+    }
+    return {
+      title: d.title ?? '',
+      description: d.description ?? '',
+      twitterHandle: d.twitterHandle ?? '',
+      iconUrl: mediaUrl(d.icon),
+      coverUrl: mediaUrl(d.coverImage),
+    }
+  })()
+  return sitePromise
+}
+
 export const payloadRepo = {
   async getAbout(): Promise<About | undefined> {
     try {

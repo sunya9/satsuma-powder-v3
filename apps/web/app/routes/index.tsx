@@ -1,14 +1,17 @@
 import { createRoute } from 'honox/factory'
 import { AppLayout } from '../components/AppLayout'
 import { Articles } from '../components/Articles'
-import { config } from '../lib/config'
 import { LexicalContent } from '../lib/lexical'
-import { payloadRepo } from '../lib/payload'
+import { getSite, payloadRepo } from '../lib/payload'
 
 export default createRoute(async (c) => {
-  const [posts, about] = await Promise.all([payloadRepo.getPosts(5), payloadRepo.getAbout()])
+  const [posts, about, site] = await Promise.all([
+    payloadRepo.getPosts(5),
+    payloadRepo.getAbout(),
+    getSite(),
+  ])
   return c.render(
-    <AppLayout coverImage={config.coverImage}>
+    <AppLayout coverImage={site.coverUrl}>
       {about?.content && <LexicalContent state={about.content} />}
       <section aria-labelledby="recent-entries">
         <h2 id="recent-entries" class="my-[1em] text-[2rem] font-normal text-strong">

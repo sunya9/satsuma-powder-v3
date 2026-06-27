@@ -39,8 +39,12 @@ function loadGhostData() {
   const raw = JSON.parse(readFileSync(exportPath, 'utf8'))
   const data = raw?.db?.[0]?.data
   if (!data) throw new Error(`Ghost export の構造が不正です: ${exportPath}`)
+  const settings = Object.fromEntries(
+    ((data.settings ?? []) as { key: string; value: string | null }[]).map((s) => [s.key, s.value]),
+  ) as Record<string, string | null | undefined>
   return {
     exportPath,
+    settings,
     users: (data.users ?? []) as GhostUser[],
     tags: (data.tags ?? []) as GhostTag[],
     posts: (data.posts ?? []) as GhostPost[],
@@ -198,7 +202,7 @@ async function main() {
   const sanitizedConfig = await config
   const editorConfig = await editorConfigFactory.default({ config: sanitizedConfig })
 
-  const { exportPath, users, tags, posts, postsAuthors, postsTags } = loadGhostData()
+  const { exportPath, settings, users, tags, posts, postsAuthors, postsTags } = loadGhostData()
   const migratablePosts = posts.filter(isMigratablePost)
   const skippedPages = posts.length - migratablePosts.length
 
@@ -407,6 +411,25 @@ async function main() {
     } catch (error) {
       console.error('   ❌ about global の更新に失敗:', (error as Error).message)
     }
+  }
+
+  // Ghost settings -> SiteSettings Global
+  try {
+    const icon = await ensureMedia(settings.icon ?? undefined, 'site icon')
+    const coverImage = await ensureMedia(settings.cover_image ?? undefined, 'site cover')
+    await payload.updateGlobal({
+      slug: 'site-settings',
+      data: {
+        title: settings.title ?? '',
+        description: settings.description ?? '',
+        twitterHandle: (settings.twitter ?? '').replace(/^@/, ''),
+        icon: (icon ?? null) as number | null,
+        coverImage: (coverImage ?? null) as number | null,
+      },
+    })
+    console.log('   site-settings: Global を更新しました')
+  } catch (error) {
+    console.error('   ❌ site-settings global の更新に失敗:', (error as Error).message)
   }
 
   console.log('\n✨ 移行完了')
