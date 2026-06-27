@@ -6,7 +6,7 @@
     "build": "vite build --mode client && vite build",
     "typecheck": "tsc --noEmit",
     "preview": "wrangler dev",
-    "deploy": "pnpm run build && wrangler deploy"
+    "deploy": "sh scripts/deploy.sh"
   },
   "private": true,
   "dependencies": {

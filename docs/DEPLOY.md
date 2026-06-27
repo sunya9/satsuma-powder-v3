@@ -47,18 +47,20 @@ GHOST_EXPORT=<ghost エクスポートの絶対パス> pnpm --filter cms migrate
 
 ## 5. web → Cloudflare Workers
 
-- `apps/web/wrangler.jsonc` の assets-only 構成。`dist` を静的配信する。
-- build は cms の API を読むため、以下を build 時の env として渡す（出力は静的なので runtime には残らない）。
+- `apps/web/wrangler.jsonc` の assets-only 構成。`dist` を静的配信し、`private.unsweets.net` を custom domain ルートに宣言。
+- build は cms の API を読むため、以下を build 時の env として渡す（出力は静的なので runtime には残らない）。`apps/web/.env.deploy`（gitignored）にまとめておく。
   - `VITE_PAYLOAD_URL`（本番 cms の URL）
   - `PAYLOAD_API_KEY`（手順 4 の `WEB_API_KEY` と同じ値）
   - `VITE_R2_PUBLIC_URL`（R2 の公開ドメイン）
-  - `VITE_SITE_URL`（公開 URL）
+  - `VITE_SITE_URL`（公開 URL = https://private.unsweets.net）
 
 ```sh
-pnpm --filter web deploy        # build && wrangler deploy
+pnpm --filter web deploy        # scripts/deploy.sh: .env.deploy を読んで build && wrangler deploy
 ```
 
-`public/_redirects`（旧 URL → `/blog/:slug` ほか）は Workers の静的アセットでもそのまま効く。
+`scripts/deploy.sh` が `.env.deploy` を読み込んでビルド→デプロイする。`public/_redirects`（旧 URL → `/blog/:slug` ほか）は Workers の静的アセットでもそのまま効く。
+
+初回の DNS 切替は Cloudflare dashboard で Worker に custom domain を追加（既存レコードを置換）。切替後はエッジに残る旧キャッシュを Purge する。
 
 ## 6. 確認
 
