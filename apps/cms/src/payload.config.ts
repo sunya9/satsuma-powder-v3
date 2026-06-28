@@ -14,6 +14,11 @@ import { Tags } from './collections/Tags'
 import { Authors } from './collections/Authors'
 import { About } from './globals/About'
 import { SiteSettings } from './globals/SiteSettings'
+import type { Config } from './payload-types'
+
+declare module 'payload' {
+  export interface GeneratedTypes extends Config {}
+}
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -31,6 +36,8 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
+    // Drop the payload augmentation so apps/web can import these types; added manually below.
+    declare: false,
   },
   db: sqliteAdapter({
     client: {
