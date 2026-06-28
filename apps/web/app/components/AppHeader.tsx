@@ -8,8 +8,12 @@ interface Props {
 }
 
 export function AppHeader({ coverImage, children }: PropsWithChildren<Props>) {
-  const hasCover = !!coverImage;
-  const safeCover = coverImage?.replace(/["'()\\\s]/g, encodeURIComponent)
+  // http(s) only; escape url()/declaration-breaking chars (CSS-injection safe).
+  const safeCover =
+    coverImage && /^https?:\/\//i.test(coverImage)
+      ? coverImage.replace(/[;"'()\\\s]/g, encodeURIComponent)
+      : undefined;
+  const hasCover = !!safeCover;
 
   return (
     <header
@@ -19,7 +23,7 @@ export function AppHeader({ coverImage, children }: PropsWithChildren<Props>) {
       })}
       style={{
         // backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url(var(--safe-cover))",
-        "--safe-cover": coverImage || undefined,
+        "--safe-cover": safeCover,
       }}
     >
       <div class="site-container">{children}</div>
