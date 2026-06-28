@@ -1,9 +1,9 @@
-import { formatDate } from '../lib/date'
-import type { PostSummary } from '../lib/payload'
+import { formatDate } from "#lib/date";
+import type { PostSummary } from "#lib/payload";
 
 interface Props {
-  posts: PostSummary[]
-  withoutYear?: boolean
+  posts: PostSummary[];
+  withoutYear?: boolean;
 }
 
 export function Articles({ posts, withoutYear }: Props) {
@@ -15,18 +15,30 @@ export function Articles({ posts, withoutYear }: Props) {
           aria-posinset={index + 1}
           aria-setsize={posts.length}
           aria-labelledby={String(post.id)}
-          class="border-line [&:not(:first-child)]:border-t"
+          class="border-line divide-y"
         >
-          <a href={`/blog/${post.slug}`} id={String(post.id)} class="block py-3 no-underline">
+          <a href={`/blog/${post.slug}`} class="block py-3 no-underline">
             {post.publishedAt && (
-              <time datetime={post.publishedAt} class="block text-muted">
+              <time
+                datetime={post.publishedAt}
+                class="block text-muted"
+                style={{
+                  viewTransitionName: `post-${post.id}-date`,
+                }}
+              >
                 {formatDate(post.publishedAt, withoutYear)}
               </time>
             )}
-            {post.title}
+            <span
+              style={{
+                viewTransitionName: `post-${post.id}-title`,
+              }}
+            >
+              {post.title}
+            </span>
           </a>
         </li>
       ))}
     </ul>
-  )
+  );
 }

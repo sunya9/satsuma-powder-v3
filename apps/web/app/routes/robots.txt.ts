@@ -1,5 +1,5 @@
 import { createRoute } from 'honox/factory'
-import { config } from '../lib/config'
+import { config } from '#lib/config'
 
 export default createRoute((c) =>
   c.body(`User-agent: *\nAllow: /\n\nSitemap: ${config.url}/sitemap.xml\n`, 200, {

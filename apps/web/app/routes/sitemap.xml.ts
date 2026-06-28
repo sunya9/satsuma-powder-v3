@@ -1,6 +1,6 @@
 import { createRoute } from 'honox/factory'
-import { config } from '../lib/config'
-import { payloadRepo } from '../lib/payload'
+import { config } from '#lib/config'
+import { payloadRepo } from '#lib/payload'
 
 export default createRoute(async (c) => {
   const posts = await payloadRepo.getPosts()

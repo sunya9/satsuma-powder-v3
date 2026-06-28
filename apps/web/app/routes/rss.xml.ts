@@ -1,7 +1,7 @@
 import { createRoute } from 'honox/factory'
-import { config } from '../lib/config'
-import { lexicalToHtml } from '../lib/lexical-html'
-import { getSite, mediaUrl, payloadRepo } from '../lib/payload'
+import { config } from '#lib/config'
+import { lexicalToHtml } from '#lib/lexical-html'
+import { getSite, mediaUrl, payloadRepo } from '#lib/payload'
 
 const cdata = (s?: string | null) =>
   `<![CDATA[${String(s ?? '').replace(/\]\]>/g, ']]]]><![CDATA[>')}]]>`

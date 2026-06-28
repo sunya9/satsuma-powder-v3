@@ -1,8 +1,8 @@
 import { ssgParams } from 'hono/ssg'
 import { createRoute } from 'honox/factory'
-import { formatDate } from '../../../lib/date'
-import { ogPng } from '../../../lib/og'
-import { payloadRepo } from '../../../lib/payload'
+import { formatDate } from '#lib/date'
+import { ogPng } from '#lib/og'
+import { payloadRepo } from '#lib/payload'
 
 export default createRoute(
   ssgParams(async () => {

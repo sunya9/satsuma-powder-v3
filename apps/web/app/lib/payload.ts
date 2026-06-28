@@ -1,3 +1,5 @@
+import type { Author, Media, Post as CmsPost, Tag } from '@cms/payload-types'
+
 const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? 'http://localhost:3000').replace(/\/$/, '')
 
 // Build-time-only secret (never VITE_-prefixed, so it stays out of any client bundle).
@@ -11,32 +13,19 @@ const PUBLISHED = { 'where[_status][equals]': 'published' } as const
 // Public R2 base URL. When set, images are served directly from R2 (no cms at runtime).
 const R2_PUBLIC = (import.meta.env.VITE_R2_PUBLIC_URL ?? '').replace(/\/$/, '')
 
-export interface LexicalState {
-  root: { children: unknown[]; [k: string]: unknown }
-}
-
-export interface Media {
-  url?: string | null
-  filename?: string | null
-  alt?: string | null
-  width?: number | null
-  height?: number | null
-}
-
-export interface PostSummary {
-  id: string | number
-  title: string
+// Derived from the generated cms types; slug and relations narrowed for the
+// web's published, depth=2 data.
+export type { Media }
+export type LexicalState = NonNullable<CmsPost['content']>
+export type PostSummary = Pick<CmsPost, 'id' | 'title' | 'publishedAt'> & {
   slug: string
-  publishedAt?: string | null
 }
-
-export interface Post extends PostSummary {
-  content?: LexicalState | null
-  excerpt?: string | null
-  featureImage?: Media | null
-  authors?: { name?: string | null }[] | null
-  tags?: { name?: string | null; slug?: string | null }[] | null
-}
+export type Post = PostSummary &
+  Pick<CmsPost, 'content' | 'excerpt'> & {
+    featureImage?: Media | null
+    authors?: Author[] | null
+    tags?: Tag[] | null
+  }
 
 interface ListResponse<T> {
   docs: T[]

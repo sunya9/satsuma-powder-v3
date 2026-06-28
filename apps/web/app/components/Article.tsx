@@ -1,6 +1,6 @@
-import { formatDate } from '../lib/date'
-import { LexicalContent } from '../lib/lexical'
-import type { Post, PostSummary } from '../lib/payload'
+import { formatDate } from '#lib/date'
+import { LexicalContent } from '#lib/lexical'
+import type { Post, PostSummary } from '#lib/payload'
 
 interface Props {
   post: Post

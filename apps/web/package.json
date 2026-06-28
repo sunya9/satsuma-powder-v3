@@ -1,6 +1,9 @@
 {
   "name": "web",
   "type": "module",
+  "imports": {
+    "#*": "./app/*"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode client && vite build",
@@ -12,9 +15,12 @@
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.2.2",
+    "clsx": "^2.1.1",
+    "csstype": "^3.2.3",
     "hono": "^4.12.27",
     "honox": "0.1.56",
     "satori": "^0.26.0",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {

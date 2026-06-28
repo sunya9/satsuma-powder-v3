@@ -1,6 +1,6 @@
 import { createRoute } from 'honox/factory'
-import { ogPng } from '../lib/og'
-import { getSite } from '../lib/payload'
+import { ogPng } from '#lib/og'
+import { getSite } from '#lib/payload'
 
 export default createRoute(async (c) => {
   const site = await getSite()
