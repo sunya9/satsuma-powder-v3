@@ -5,6 +5,7 @@ import { contentHash } from "#lib/hash";
 import { getSite } from "#lib/payload";
 import { LinkButton } from "#components/LinkButton";
 import { Hr } from "#components/Hr";
+import { html } from "hono/html";
 
 export default jsxRenderer(
   async ({ children, title, description, path, image, type }) => {
@@ -21,6 +22,22 @@ export default jsxRenderer(
     return (
       <html lang="ja">
         <head>
+          {import.meta.env.PROD &&
+            html`
+              <script
+                async
+                src="https://www.googletagmanager.com/gtag/js?id=G-QTR9Z69TYK"
+              ></script>
+              <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag() {
+                  dataLayer.push(arguments);
+                }
+                gtag("js", new Date());
+
+                gtag("config", "G-QTR9Z69TYK");
+              </script>
+            `}
           <meta charset="utf-8" />
           <meta
             name="viewport"
