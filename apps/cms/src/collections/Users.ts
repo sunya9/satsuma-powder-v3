@@ -6,6 +6,11 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   // API key lets the web SSG build authenticate (Authorization: users API-Key <key>).
-  auth: { useAPIKey: true },
+  // Lock the account after repeated failures to blunt brute-force on /api/users/login.
+  auth: {
+    useAPIKey: true,
+    maxLoginAttempts: 5,
+    lockTime: 15 * 60 * 1000,
+  },
   fields: [],
 }
