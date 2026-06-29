@@ -1,15 +1,13 @@
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
-import { Article } from "#components/Article";
 import { config } from "#lib/config";
 import { contentHash } from "#lib/hash";
-import { mediaUrl, payloadRepo } from "#lib/payload";
-import {
-  AppHeader,
-  AppHeaderTime,
-  AppHeaderTitle,
-} from "#components/AppHeader";
+import { mediaUrl, payloadRepo, type PostSummary } from "#lib/payload";
 import { AppMain } from "#components/AppMain";
+import { LexicalContent } from "#lib/lexical";
+import type { JSX } from "hono/jsx";
+import { cn } from "#lib/util";
+import { formatDate } from "#lib/date";
 
 export default createRoute(
   ssgParams(async () => {
@@ -26,20 +24,70 @@ export default createRoute(
       payloadRepo.getOlderPost(post.publishedAt).catch(() => undefined),
       payloadRepo.getNewerPost(post.publishedAt).catch(() => undefined),
     ]);
+    const hasRelated = Boolean(olderPost || newerPost);
 
     return c.render(
       <>
-        <AppHeader coverImage={post.featureImage?.url}>
-          <AppHeaderTitle
-            style={{ viewTransitionName: `post-${post.id}-title` }}
-          >
-            {post.title}
-          </AppHeaderTitle>
-          <p>{post.excerpt}</p>
-          {post.publishedAt && <AppHeaderTime date={post.publishedAt} />}
-        </AppHeader>
         <AppMain>
-          <Article post={post} olderPost={olderPost} newerPost={newerPost} />
+          <article>
+            <header>
+              {post.featureImage && (
+                <img
+                  src={mediaUrl(post.featureImage)}
+                  alt={post.featureImage.alt || undefined}
+                  class="object-cover max-h-[calc(var(--container-site)/1.618)] mx-auto w-full mb-8"
+                />
+              )}
+              {post.publishedAt && (
+                <time
+                  datetime={post.publishedAt}
+                  class="mt-2 text-muted"
+                  style={{
+                    viewTransitionName: `post-${post.id}-date`,
+                  }}
+                >
+                  {formatDate(post.publishedAt)}
+                </time>
+              )}
+              <h1
+                class="text-4xl"
+                style={{
+                  viewTransitionName: `post-${post.id}-title`,
+                }}
+              >
+                {post.title}
+              </h1>
+            </header>
+            <LexicalContent class="mt-8" state={post.content} />
+          </article>
+          {hasRelated && (
+            <nav aria-label="前後の記事" class="mt-8 grid grid-cols-2 gap-2">
+              {newerPost && (
+                <NavLink post={newerPost} class="col-start-1" rel="prev" />
+              )}
+              {olderPost && (
+                <NavLink
+                  post={olderPost}
+                  class="col-start-2 text-right"
+                  rel="next"
+                />
+              )}
+            </nav>
+          )}
+          {newerPost && (
+            <link
+              rel="prefetch"
+              href={`/blog/${newerPost.slug}`}
+              as="document"
+            />
+          )}
+          {olderPost && (
+            <link
+              rel="prefetch"
+              href={`/blog/${olderPost.slug}`}
+              as="document"
+            />
+          )}
         </AppMain>
       </>,
       {
@@ -52,3 +100,29 @@ export default createRoute(
     );
   },
 );
+
+function NavLink({
+  class: className,
+  post,
+  ...props
+}: Omit<JSX.IntrinsicElements["a"], "href"> & { post: PostSummary }) {
+  return (
+    <a
+      href={`/blog/${post.slug}`}
+      class={cn(
+        "block border border-line p-3 no-underline hover:border-cream",
+        className,
+      )}
+      {...props}
+    >
+      <span class="block text-muted text-sm">
+        {post.publishedAt && (
+          <time datetime={post.publishedAt}>
+            {formatDate(post.publishedAt)}
+          </time>
+        )}
+      </span>
+      {post.title}
+    </a>
+  );
+}

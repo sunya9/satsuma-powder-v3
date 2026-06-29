@@ -4,38 +4,39 @@ import type { PostSummary } from "#lib/payload";
 interface Props {
   posts: PostSummary[];
   withoutYear?: boolean;
+  class?: string;
 }
 
-export function Articles({ posts, withoutYear }: Props) {
+export function Articles({ posts, withoutYear, class: className }: Props) {
   return (
-    <ul role="feed" aria-busy="false" class="list-none pl-0">
+    <ul role="feed" aria-busy="false" class={className}>
       {posts.map((post, index) => (
         <li
           role="article"
           aria-posinset={index + 1}
           aria-setsize={posts.length}
           aria-labelledby={String(post.id)}
-          class="border-line divide-y"
+          class="block py-3"
         >
-          <a href={`/blog/${post.slug}`} class="block py-3 no-underline">
-            {post.publishedAt && (
-              <time
-                datetime={post.publishedAt}
-                class="block text-muted"
-                style={{
-                  viewTransitionName: `post-${post.id}-date`,
-                }}
-              >
-                {formatDate(post.publishedAt, withoutYear)}
-              </time>
-            )}
-            <span
+          {post.publishedAt && (
+            <time
+              datetime={post.publishedAt}
+              class="block text-muted"
               style={{
-                viewTransitionName: `post-${post.id}-title`,
+                viewTransitionName: `post-${post.id}-date`,
               }}
             >
-              {post.title}
-            </span>
+              {formatDate(post.publishedAt, withoutYear)}
+            </time>
+          )}
+          <a
+            href={`/blog/${post.slug}`}
+            style={{
+              viewTransitionName: `post-${post.id}-title`,
+            }}
+            class="text-link"
+          >
+            {post.title}
           </a>
         </li>
       ))}

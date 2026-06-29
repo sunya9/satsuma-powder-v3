@@ -1,9 +1,10 @@
 import { createRoute } from "honox/factory";
-import { Articles } from "#components/Articles";
-import { LexicalContent } from "#lib/lexical";
-import { getSite, payloadRepo } from "#lib/payload";
+import { Articles } from "../components/Articles";
+import { LexicalContent } from "../lib/lexical";
+import { getSite, payloadRepo } from "../lib/payload";
 import { AppHeader, AppHeaderTitle } from "#components/AppHeader";
 import { AppMain } from "#components/AppMain";
+import { LinkButton } from "#components/LinkButton";
 
 export default createRoute(async (c) => {
   const [posts, about, site] = await Promise.all([
@@ -13,27 +14,23 @@ export default createRoute(async (c) => {
   ]);
   return c.render(
     <>
-      <AppHeader coverImage={site.coverUrl}>
+      <AppHeader>
         <AppHeaderTitle>{site.title}</AppHeaderTitle>
         <p>{site.description}</p>
       </AppHeader>
       <AppMain>
         {about?.content && <LexicalContent state={about.content} />}
-        <section aria-labelledby="recent-entries">
-          <h2
-            id="recent-entries"
-            class="my-[1em] text-[2rem] font-normal text-strong"
-          >
-            最近の投稿
-          </h2>
-          <Articles posts={posts} />
-        </section>
-        <hr class="invisible" />
-        <p>
-          <a class="button" href="/blog">
+        <div class="mt-8">
+          <section aria-labelledby="recent-entries" class="space-y-4">
+            <h2 id="recent-entries" class="text-3xl">
+              最近の投稿
+            </h2>
+            <Articles posts={posts} />
+          </section>
+          <LinkButton class="mt-8" href="/blog">
             全ての投稿
-          </a>
-        </p>
+          </LinkButton>
+        </div>
       </AppMain>
     </>,
   );

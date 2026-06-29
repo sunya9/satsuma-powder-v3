@@ -21,22 +21,20 @@ export default createRoute(async (c) => {
     <>
       <AppHeader>
         <AppHeaderTitle>全ての投稿</AppHeaderTitle>
+        <p>現在{posts.length}件の記事があります。</p>
       </AppHeader>
       <AppMain>
         {[...byYear.entries()].map(([year, yearPosts]) => {
           const yearId = `year-${year}`;
           return (
-            <section aria-labelledby={yearId}>
+            <section aria-labelledby={yearId} class="relative">
               <h2
                 id={yearId}
-                class="my-[1em] text-[2rem] font-normal text-strong"
+                class="sticky top-0 pt-4 mt-4 text-3xl font-normal text-strong bg-paper z-10"
               >
-                {year}年{" "}
-                <small class="text-[0.7em] font-normal">
-                  {yearPosts.length}件
-                </small>
+                {year}年 <small class="text-base">{yearPosts.length}件</small>
               </h2>
-              <Articles posts={yearPosts} withoutYear />
+              <Articles posts={yearPosts} class="my-4" withoutYear />
             </section>
           );
         })}

@@ -3,6 +3,8 @@ import { Link } from "honox/server";
 import { config } from "#lib/config";
 import { contentHash } from "#lib/hash";
 import { getSite } from "#lib/payload";
+import { LinkButton } from "#components/LinkButton";
+import { Hr } from "#components/Hr";
 
 export default jsxRenderer(
   async ({ children, title, description, path, image, type }) => {
@@ -15,7 +17,7 @@ export default jsxRenderer(
       image ??
       `${config.url}/opengraph-image.png?${contentHash(site.title + site.description)}`;
     const ogType = type ?? "website";
-    const isIndex = path === "/";
+    const isIndex = !path;
     return (
       <html lang="ja">
         <head>
@@ -52,29 +54,27 @@ export default jsxRenderer(
           {site.iconUrl && <link rel="icon" href={site.iconUrl} />}
           <Link href="/app/style.css" rel="stylesheet" />
           <style>{"@view-transition { navigation: auto }"}</style>
+          <meta name="text-scale" content="scale" />
         </head>
         <body class="bg-paper text-ink">
           {children}
           <footer class="my-20 text-muted">
-            <div class="site-container">
+            <div class="site-container space-y-4">
               {!isIndex && (
                 <p>
-                  <a class="button" href="/">
-                    ホームに戻る
-                  </a>
+                  <LinkButton href="/">ホームに戻る</LinkButton>
                 </p>
               )}
-              {site.twitterHandle && (
-                <p>
-                  ©&nbsp;
-                  <a
-                    class="text-accent hover:text-accent/60"
-                    href={`https://twitter.com/${site.twitterHandle}`}
-                  >
-                    @{site.twitterHandle}
-                  </a>
-                </p>
-              )}
+              <Hr />
+              <p>
+                ©&nbsp;
+                <a
+                  class="text-link"
+                  href={`https://twitter.com/${site.twitterHandle}`}
+                >
+                  @{site.twitterHandle}
+                </a>
+              </p>
             </div>
           </footer>
         </body>

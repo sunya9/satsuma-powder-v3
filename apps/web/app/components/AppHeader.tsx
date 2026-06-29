@@ -1,7 +1,6 @@
 import type { Child, JSX, PropsWithChildren } from "hono/jsx";
 import { cn } from "#lib/util";
 import { formatDate } from "#lib/date";
-import type { HtmlAttributes } from "csstype";
 
 interface Props {
   coverImage?: string | null;
@@ -14,16 +13,27 @@ export function AppHeader({ coverImage, children }: PropsWithChildren<Props>) {
       ? coverImage.replace(/[;"'()\\\s]/g, encodeURIComponent)
       : undefined;
   const hasCover = !!safeCover;
-
   return (
     <header
-      class={cn("bg-center bg-no-repeat bg-cover py-[7vw] bg-", {
-        "text-white": hasCover,
-        "header-grid": !hasCover,
-      })}
+      class={cn(
+        " h-[clamp(--spacing(64),30vw,--spacing(128))] flex-col place-content-center",
+        {
+          "bg-center bg-no-repeat bg-cover text-white from-black/30 to-black/80":
+            hasCover,
+          [cn(
+            "bg-ink/0.5 inset-shadow-paper inset-shadow-sm border-b-line border-b",
+            "[--dot-size:2px] [--dot-space:24px] [--dot-color:rgb(from_var(--color-ink)_r_g_b/5%)]",
+            "bg-[radial-gradient(rgb(from_var(--color-paper)_r_g_b/5%),var(--color-paper)),radial-gradient(circle,var(--dot-color)_var(--dot-size),transparent_var(--dot-size)),radial-gradient(circle,var(--dot-color)_var(--dot-size),transparent_var(--dot-size))]",
+            "bg-size-[contain,var(--dot-space)_var(--dot-space),var(--dot-space)_var(--dot-space)]",
+            "bg-position-[center,0_0,calc(var(--dot-space)/2)_calc(var(--dot-space)/2)]",
+          )]: !hasCover,
+        },
+      )}
       style={{
-        // backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url(var(--safe-cover))",
-        "--safe-cover": safeCover,
+        backgroundImage:
+          safeCover &&
+          "linear-gradient(var(--tw-gradient-from), var(--tw-gradient-to)), var(--safe-cover)",
+        "--safe-cover": safeCover && `url(${safeCover})`,
       }}
     >
       <div class="site-container">{children}</div>
@@ -39,7 +49,7 @@ export function AppHeaderTitle({
   return (
     <h1
       class={cn(
-        "mb-4 text-[clamp(1.5rem,3vw,2.666rem)] leading-tight",
+        "mb-4 text-[clamp(var(--text-2xl),3vw,var(--text-4xl))] leading-tight [word-break:auto-phrase]",
         className,
       )}
       {...props}
@@ -53,7 +63,7 @@ export function AppHeaderTime({ date }: { date: string }) {
   return (
     <time
       datetime={date}
-      class="inline-block rounded-full px-4 py-1 text-sm border border-[color-mix(in_srgb,currentColor_40%,transparent)]"
+      class="mt-2 inline-block rounded-full px-4 py-1 text-sm border border-[color-mix(in_srgb,currentColor_40%,transparent)]"
     >
       {formatDate(date)}
     </time>
