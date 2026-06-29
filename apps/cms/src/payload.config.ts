@@ -30,6 +30,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  serverURL: process.env.SERVER_URL,
   collections: [Users, Media, Posts, Tags, Authors],
   globals: [About, SiteSettings],
   editor: lexicalEditor(),
