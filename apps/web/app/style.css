@@ -10,11 +10,29 @@
   --color-cream: #f8f5e3;
   --color-line: #fbfaf3;
   --container-site: 38ic;
+
+  /* Harmonic type scale: size = --text-root × 8/n (overtone series).
+     Line-heights are 4px-grid (--spacing) multiples. Tweak the two bases to rescale. */
+  --text-root: 1rem;
+  --text-xs: calc(var(--text-root) * 8 / 10);
+  --text-xs--line-height: calc(var(--spacing) * 4);
+  --text-sm: calc(var(--text-root) * 8 / 9);
+  --text-sm--line-height: calc(var(--spacing) * 5);
+  --text-base: calc(var(--text-root) * 8 / 8);
+  --text-base--line-height: calc(var(--spacing) * 7);
+  --text-lg: calc(var(--text-root) * 8 / 7);
+  --text-lg--line-height: calc(var(--spacing) * 6);
+  --text-xl: calc(var(--text-root) * 8 / 6);
+  --text-xl--line-height: calc(var(--spacing) * 7);
+  --text-2xl: calc(var(--text-root) * 8 / 5);
+  --text-2xl--line-height: calc(var(--spacing) * 8);
+  --text-3xl: calc(var(--text-root) * 8 / 4);
+  --text-3xl--line-height: calc(var(--spacing) * 10);
+  --text-4xl: calc(var(--text-root) * 8 / 3);
+  --text-4xl--line-height: calc(var(--spacing) * 12);
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
   line-height: 1.75;
   font-weight: 300;
   letter-spacing: 0.1px;
@@ -27,37 +45,21 @@ body {
   color: #fff;
 }
 
-@utility container {
-  @variant site {
-    margin-inline: auto;
-    padding-inline: 1rem;
-
-  }
+@utility site-container {
+  max-inline-size: var(--container-site);
+  margin-inline-start: clamp(0px, calc((100% - var(--container-site)) / 2), --spacing(64));
+  margin-inline-end: auto;
+  padding-inline: --spacing(4);
 }
 
-.button {
-  display: inline-block;
-  border: 1px solid var(--color-accent);
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  color: var(--color-accent);
-}
-.button:hover {
-  color: hsl(26 54% 19% / 0.6);
+@utility text-link {
+  @apply text-accent underline underline-offset-2  hover:text-accent/70;
 }
 
-.invisible {
-  visibility: hidden;
-}
-
-/* Grid-paper background for the no-cover header. */
-.header-grid {
-  background-color: #f5f5f0;
-  background-size: 60px 60px;
-  background-repeat: repeat;
-  background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.06) 0, rgba(0, 0, 0, 0.06) 1px, transparent 1px),
-    linear-gradient(to right, rgba(0, 0, 0, 0.06) 0, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: inset 0 -2px 10px -10px rgba(0, 0, 0, 0.5);
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  @apply outline-none ring-2 ring-offset-1 ring-accent/50;
 }
