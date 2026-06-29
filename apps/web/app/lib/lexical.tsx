@@ -78,7 +78,7 @@ function renderNode(node: Node): unknown {
       const tag = HEADING_SIZE[node.tag] ? node.tag : "h2";
       const Tag = tag as "h2";
       return (
-        <Tag class={`${HEADING_SIZE[tag]} my-[1em] font-normal text-strong`}>
+        <Tag class={`${HEADING_SIZE[tag]} my-4 text-strong text-balance`}>
           {renderChildren(node.children)}
         </Tag>
       );
@@ -147,6 +147,8 @@ function renderNode(node: Node): unknown {
           alt={media?.alt ?? ""}
           loading="lazy"
           class="mx-auto my-6 block h-auto max-h-[max(333px,33svh)]"
+          width={media.width || undefined}
+          height={media.height || undefined}
         />
       );
     }

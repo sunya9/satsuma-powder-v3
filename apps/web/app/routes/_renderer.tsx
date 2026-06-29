@@ -55,6 +55,8 @@ export default jsxRenderer(
           <Link href="/app/style.css" rel="stylesheet" />
           <style>{"@view-transition { navigation: auto }"}</style>
           <meta name="text-scale" content="scale" />
+          <meta name="color-scheme" content="light" />
+          <meta name="theme-color" content="hsl(26 54% 19%)" />
         </head>
         <body class="bg-paper text-ink">
           {children}

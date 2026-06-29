@@ -38,12 +38,13 @@ export default createRoute(
                   class="object-cover max-h-[calc(var(--container-site)/1.618)] mx-auto w-full mb-8"
                   width={post.featureImage.width || undefined}
                   height={post.featureImage.height || undefined}
+                  fetchpriority="high"
                 />
               )}
               {post.publishedAt && (
                 <time
                   datetime={post.publishedAt}
-                  class="mt-2 text-muted"
+                  class="mt-2 text-muted tabular-nums text-sm"
                   style={{
                     viewTransitionName: `post-${post.id}-date`,
                   }}
@@ -52,7 +53,7 @@ export default createRoute(
                 </time>
               )}
               <h1
-                class="text-4xl"
+                class="text-4xl mt-1 text-strong"
                 style={{
                   viewTransitionName: `post-${post.id}-title`,
                 }}
@@ -60,7 +61,7 @@ export default createRoute(
                 {post.title}
               </h1>
             </header>
-            <LexicalContent class="mt-8" state={post.content} />
+            <LexicalContent class="mt-4" state={post.content} />
           </article>
           {hasRelated && (
             <nav aria-label="前後の記事" class="mt-8 grid grid-cols-2 gap-2">
@@ -117,13 +118,14 @@ function NavLink({
       )}
       {...props}
     >
-      <span class="block text-muted text-sm">
-        {post.publishedAt && (
-          <time datetime={post.publishedAt}>
-            {formatDate(post.publishedAt)}
-          </time>
-        )}
-      </span>
+      {post.publishedAt && (
+        <time
+          datetime={post.publishedAt}
+          class="tabular-nums block text-muted text-sm"
+        >
+          {formatDate(post.publishedAt)}
+        </time>
+      )}
       {post.title}
     </a>
   );

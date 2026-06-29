@@ -1,4 +1,4 @@
-@import 'tailwindcss' source('../app');
+@import "tailwindcss" source("../app");
 
 /* Design tokens ported from v2. */
 @theme {
@@ -11,32 +11,48 @@
   --color-line: #fbfaf3;
   --container-site: 38ic;
 
-  /* Harmonic type scale: size = --text-root × 8/n (overtone series).
-     Line-heights are 4px-grid (--spacing) multiples. Tweak the two bases to rescale. */
+  /* Harmonic type scale: size = --text-root × H / (H - step), where H is the base
+     denominator. Change --text-harmonic to retune the whole scale; steps are fixed.
+     Line-heights are 4px-grid (--spacing) multiples. */
   --text-root: 1rem;
-  --text-xs: calc(var(--text-root) * 8 / 10);
+  --text-harmonic: 10;
+  --text-xs: calc(
+    var(--text-root) * var(--text-harmonic) / (var(--text-harmonic) + 2)
+  );
   --text-xs--line-height: calc(var(--spacing) * 4);
-  --text-sm: calc(var(--text-root) * 8 / 9);
+  --text-sm: calc(
+    var(--text-root) * var(--text-harmonic) / (var(--text-harmonic) + 1)
+  );
   --text-sm--line-height: calc(var(--spacing) * 5);
-  --text-base: calc(var(--text-root) * 8 / 8);
+  --text-base: calc(
+    var(--text-root) * var(--text-harmonic) / var(--text-harmonic)
+  );
   --text-base--line-height: calc(var(--spacing) * 7);
-  --text-lg: calc(var(--text-root) * 8 / 7);
+  --text-lg: calc(
+    var(--text-root) * var(--text-harmonic) / (var(--text-harmonic) - 1)
+  );
   --text-lg--line-height: calc(var(--spacing) * 6);
-  --text-xl: calc(var(--text-root) * 8 / 6);
+  --text-xl: calc(
+    var(--text-root) * var(--text-harmonic) / (var(--text-harmonic) - 2)
+  );
   --text-xl--line-height: calc(var(--spacing) * 7);
-  --text-2xl: calc(var(--text-root) * 8 / 5);
+  --text-2xl: calc(
+    var(--text-root) * var(--text-harmonic) / (var(--text-harmonic) - 3)
+  );
   --text-2xl--line-height: calc(var(--spacing) * 8);
-  --text-3xl: calc(var(--text-root) * 8 / 4);
+  --text-3xl: calc(
+    var(--text-root) * var(--text-harmonic) / (var(--text-harmonic) - 4)
+  );
   --text-3xl--line-height: calc(var(--spacing) * 10);
-  --text-4xl: calc(var(--text-root) * 8 / 3);
+  --text-4xl: calc(
+    var(--text-root) * var(--text-harmonic) / (var(--text-harmonic) - 5)
+  );
   --text-4xl--line-height: calc(var(--spacing) * 12);
 }
 
 body {
   line-height: 1.75;
-  font-weight: 300;
-  letter-spacing: 0.1px;
-  font-feature-settings: 'pkna' 1;
+  font-feature-settings: "pkna" 1;
   text-rendering: geometricPrecision;
 }
 
@@ -47,7 +63,11 @@ body {
 
 @utility site-container {
   max-inline-size: var(--container-site);
-  margin-inline-start: clamp(0px, calc((100% - var(--container-site)) / 2), --spacing(64));
+  margin-inline-start: clamp(
+    0px,
+    calc((100% - var(--container-site)) / 2),
+    --spacing(64)
+  );
   margin-inline-end: auto;
   padding-inline: --spacing(4);
 }
@@ -62,4 +82,12 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   @apply outline-none ring-2 ring-offset-1 ring-accent/50;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }

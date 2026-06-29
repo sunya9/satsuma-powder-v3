@@ -21,7 +21,7 @@ export function Articles({ posts, withoutYear, class: className }: Props) {
           {post.publishedAt && (
             <time
               datetime={post.publishedAt}
-              class="block text-muted"
+              class="block text-muted tabular-nums text-sm"
               style={{
                 viewTransitionName: `post-${post.id}-date`,
               }}
