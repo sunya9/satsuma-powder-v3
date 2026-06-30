@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { autoIdSlug } from '../fields/slug'
 import { createAfterChangeRevalidate, createAfterDeleteRevalidate } from '../hooks/revalidate'
+import { createSetPublishedAt } from '../hooks/published-at'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -73,6 +74,8 @@ export const Posts: CollectionConfig = {
     },
   ],
   hooks: {
+    // Stamp publishedAt the first time a post becomes published.
+    beforeChange: [createSetPublishedAt()],
     // Rebuild the Cloudflare SSG site only when a post's published state changes.
     afterChange: [createAfterChangeRevalidate({ onlyPublished: true })],
     afterDelete: [createAfterDeleteRevalidate({ onlyPublished: true })],
