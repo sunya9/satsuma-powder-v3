@@ -49,7 +49,7 @@ pnpm --filter web dev
 CD は各プラットフォームの Git 連携に委ねる。
 
 - `apps/cms` → Vercel。Root Directory を `apps/cms` に設定する（プロジェクト設定）。ビルド設定は `apps/cms/vercel.json`（`buildCommand` = `pnpm --filter cms run ci`。`payload migrate` のあとに build）。
-- `apps/web` → Cloudflare Workers の静的アセット配信。`pnpm --filter web deploy:prod`（build 後に `wrangler deploy`）。設定は `apps/web/wrangler.jsonc`。
+- `apps/web` → Cloudflare Workers（Workers Builds）。main への push で Cloudflare が自動でビルド → `npx wrangler deploy` する。設定は `apps/web/wrangler.jsonc`。Payload のコンテンツ更新時は Deploy Hook 経由で SSG が自動再ビルドされる（[`docs/DEPLOY.md`](docs/DEPLOY.md) 参照）。
 
 CI（typecheck / lint / test）は GitHub Actions（`.github/workflows/ci.yml`）で実行する。
 

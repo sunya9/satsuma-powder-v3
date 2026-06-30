@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
+import { createGlobalAfterChangeRevalidate } from '../hooks/revalidate'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -13,4 +14,7 @@ export const SiteSettings: GlobalConfig = {
     { name: 'icon', type: 'upload', relationTo: 'media' },
     { name: 'coverImage', type: 'upload', relationTo: 'media' },
   ],
+  hooks: {
+    afterChange: [createGlobalAfterChangeRevalidate()],
+  },
 }

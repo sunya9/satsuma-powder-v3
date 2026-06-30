@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { slugify } from '../fields/slug'
+import { createAfterChangeRevalidate, createAfterDeleteRevalidate } from '../hooks/revalidate'
 
 // Article author profiles, separate from the admin login Users collection.
 export const Authors: CollectionConfig = {
@@ -26,5 +27,9 @@ export const Authors: CollectionConfig = {
     { name: 'email', type: 'email' },
     { name: 'website', type: 'text' },
   ],
+  hooks: {
+    afterChange: [createAfterChangeRevalidate()],
+    afterDelete: [createAfterDeleteRevalidate()],
+  },
   timestamps: true,
 }

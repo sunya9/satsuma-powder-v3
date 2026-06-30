@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { slugify } from '../fields/slug'
+import { createAfterChangeRevalidate, createAfterDeleteRevalidate } from '../hooks/revalidate'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
@@ -23,5 +24,9 @@ export const Tags: CollectionConfig = {
       admin: { description: 'タグのカバー画像。移行時に外部画像を media へ取り込む。' },
     },
   ],
+  hooks: {
+    afterChange: [createAfterChangeRevalidate()],
+    afterDelete: [createAfterDeleteRevalidate()],
+  },
   timestamps: true,
 }

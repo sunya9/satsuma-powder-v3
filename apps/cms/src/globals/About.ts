@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
+import { createGlobalAfterChangeRevalidate } from '../hooks/revalidate'
 
 // Site "about" as a singleton Global rather than a post.
 export const About: GlobalConfig = {
@@ -14,4 +15,7 @@ export const About: GlobalConfig = {
       admin: { description: 'トップページに表示するサイト紹介文。' },
     },
   ],
+  hooks: {
+    afterChange: [createGlobalAfterChangeRevalidate()],
+  },
 }

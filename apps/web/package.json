@@ -8,8 +8,7 @@
     "dev": "vite",
     "build": "vite build --mode client && vite build",
     "typecheck": "tsc --noEmit",
-    "preview": "wrangler dev",
-    "deploy:prod": "sh scripts/deploy.sh"
+    "preview": "wrangler dev"
   },
   "private": true,
   "dependencies": {

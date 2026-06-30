@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { autoIdSlug } from '../fields/slug'
+import { createAfterChangeRevalidate, createAfterDeleteRevalidate } from '../hooks/revalidate'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -71,6 +72,11 @@ export const Posts: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
   ],
+  hooks: {
+    // Rebuild the Cloudflare SSG site only when a post's published state changes.
+    afterChange: [createAfterChangeRevalidate({ onlyPublished: true })],
+    afterDelete: [createAfterDeleteRevalidate({ onlyPublished: true })],
+  },
   versions: {
     drafts: true,
   },
