@@ -35,7 +35,7 @@ export default createRoute(
                 <img
                   src={mediaUrl(post.featureImage)}
                   alt={post.featureImage.alt || undefined}
-                  class="object-cover max-h-[calc(var(--container-site)/1.618)] mx-auto w-full mb-8"
+                  class="object-cover aspect-[1.618/1] h-auto w-full mb-8"
                   width={post.featureImage.width || undefined}
                   height={post.featureImage.height || undefined}
                   fetchpriority="high"
