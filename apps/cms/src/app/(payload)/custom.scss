@@ -1,0 +1,8 @@
+:root {
+  // Payload's default --font-body / --font-serif are Latin-only stacks, so
+  // Japanese falls back to the browser serif (mincho). The Lexical editor body
+  // (.rich-text-lexical .editor-container) uses --font-serif specifically, so
+  // both must be overridden to the OS gothic UI font.
+  --font-body: system-ui, sans-serif;
+  --font-serif: system-ui, sans-serif;
+}
