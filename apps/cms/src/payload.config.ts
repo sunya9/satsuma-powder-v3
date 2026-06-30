@@ -14,6 +14,7 @@ import { Tags } from './collections/Tags'
 import { Authors } from './collections/Authors'
 import { About } from './globals/About'
 import { SiteSettings } from './globals/SiteSettings'
+import { canRunJobs } from './access/canRunJobs'
 import type { Config } from './payload-types'
 
 declare module 'payload' {
@@ -34,6 +35,18 @@ export default buildConfig({
   collections: [Users, Media, Posts, Tags, Authors],
   globals: [About, SiteSettings],
   editor: lexicalEditor(),
+  jobs: {
+    access: {
+      // The external Cloudflare Cron worker calls /api/payload-jobs/run with a
+      // Bearer CRON_SECRET; logged-in admins may also trigger it manually.
+      run: ({ req }) =>
+        canRunJobs({
+          hasUser: Boolean(req.user),
+          authHeader: req.headers.get('authorization'),
+          secret: process.env.CRON_SECRET,
+        }),
+    },
+  },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

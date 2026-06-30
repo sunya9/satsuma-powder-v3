@@ -81,7 +81,10 @@ export const Posts: CollectionConfig = {
     afterDelete: [createAfterDeleteRevalidate({ onlyPublished: true })],
   },
   versions: {
-    drafts: true,
+    drafts: {
+      // Enables scheduled publish/unpublish from the admin UI (needs the jobs runner).
+      schedulePublish: true,
+    },
   },
   timestamps: true,
 }

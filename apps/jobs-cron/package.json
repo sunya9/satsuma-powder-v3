@@ -1,0 +1,13 @@
+{
+  "name": "jobs-cron",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260420.1",
+    "typescript": "5.7.3",
+    "wrangler": "^4.105.0"
+  }
+}

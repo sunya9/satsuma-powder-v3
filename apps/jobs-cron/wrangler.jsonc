@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "satsuma-powder-v3-jobs-cron",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-26",
+  // Triggers Payload's jobs runner so scheduled publish/unpublish executes.
+  // Vercel Hobby cron is too coarse (~1/day), so this external cron runs every 5 min.
+  "triggers": { "crons": ["*/5 * * * *"] },
+  // CMS_URL is non-secret. CRON_SECRET is a Worker secret (dashboard or `wrangler secret put`).
+  "vars": { "CMS_URL": "https://payload.unsweets.net" }
+}
