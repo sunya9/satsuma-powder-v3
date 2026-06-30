@@ -6,19 +6,19 @@ import { describe, it, beforeAll, expect } from 'vitest'
 let payload: Payload
 
 /**
- * Ghost からの移行に向けた Posts スキーマの振る舞いを検証する統合テスト。
- * - Posts / Tags / Authors の3コレクション
- * - slug の自動生成
+ * Integration test verifying the Posts schema behavior for the Ghost migration.
+ * - The three collections: Posts / Tags / Authors
+ * - Automatic slug generation
  * - draft/publish (versions.drafts)
- * - リレーション (authors / tags)
+ * - Relations (authors / tags)
  * - SEO meta (plugin-seo)
  */
 describe('Blog schema (Ghost migration)', () => {
   beforeAll(async () => {
     payload = await getPayload({ config: await config })
 
-    // 固定タイトルで作成する slug は unique 制約を持つため、前回実行の残留データがあると
-    // 再実行時に衝突する。テスト対象コレクションを毎回クリーンにしてから開始する。
+    // Slugs created from fixed titles have a unique constraint, so leftover data from a
+    // previous run would collide on re-run. Clean the target collections before each start.
     for (const collection of ['posts', 'authors', 'tags'] as const) {
       await payload.delete({ collection, where: { id: { exists: true } } })
     }

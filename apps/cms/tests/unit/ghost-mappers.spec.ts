@@ -8,8 +8,8 @@ import {
 } from '@/scripts/ghost/mappers'
 
 /**
- * Ghost エクスポートレコード → Payload create データへの純粋写像のテスト。
- * I/O を伴わないため DB は不要。
+ * Tests for the pure mapping from Ghost export records to Payload create data.
+ * No I/O is involved, so a DB is not required.
  */
 describe('ghost mappers', () => {
   describe('mapAuthor', () => {
@@ -29,7 +29,7 @@ describe('ghost mappers', () => {
         profileImage: 'https://example.com/avatar.png',
         email: 'author@example.com',
         website: 'https://example.com',
-        // bio は null のため省略される
+        // bio is omitted because it is null
       })
     })
 

@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
     return webpackConfig
   },
   turbopack: {
-    // モノレポのルート（pnpm-lock.yaml と hoist された node_modules がある場所）
+    // Monorepo root (where pnpm-lock.yaml and the hoisted node_modules live)
     root: path.resolve(dirname, '../..'),
   },
 }

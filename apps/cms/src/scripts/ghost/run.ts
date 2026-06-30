@@ -38,7 +38,7 @@ function loadGhostData() {
     : path.resolve(process.cwd(), DEFAULT_EXPORT)
   const raw = JSON.parse(readFileSync(exportPath, 'utf8'))
   const data = raw?.db?.[0]?.data
-  if (!data) throw new Error(`Ghost export の構造が不正です: ${exportPath}`)
+  if (!data) throw new Error(`Invalid Ghost export structure: ${exportPath}`)
   const settings = Object.fromEntries(
     ((data.settings ?? []) as { key: string; value: string | null }[]).map((s) => [s.key, s.value]),
   ) as Record<string, string | null | undefined>
@@ -208,7 +208,7 @@ async function main() {
 
   console.log(`📦 Ghost export: ${exportPath}`)
   console.log(
-    `   authors=${users.length} tags=${tags.length} posts=${migratablePosts.length} (page等を${skippedPages}件除外)`,
+    `   authors=${users.length} tags=${tags.length} posts=${migratablePosts.length} (excluded ${skippedPages} pages/etc.)`,
   )
 
   if (DRY_RUN) {
@@ -224,13 +224,13 @@ async function main() {
         root: { children: any[] }
       }
       console.log(
-        `   ✅ html→Lexical 変換サンプル OK: "${sample?.title}" root.children=${converted.root.children.length}`,
+        `   ✅ html→Lexical conversion sample OK: "${sample?.title}" root.children=${converted.root.children.length}`,
       )
     } catch (error) {
-      console.error('   ❌ html→Lexical 変換サンプル 失敗:', error)
+      console.error('   ❌ html→Lexical conversion sample failed:', error)
     }
-    console.log(`   本文画像 ≈ ${totalImages} 枚 + feature/著者画像を media へ取り込む想定。`)
-    console.log('🚫 --dry-run のため DB への書き込み・画像DLは行いません。')
+    console.log(`   body images ≈ ${totalImages} + feature/author images to be ingested into media.`)
+    console.log('🚫 --dry-run: skipping DB writes and image downloads.')
     return
   }
 
@@ -270,7 +270,7 @@ async function main() {
       if (!file) {
         summary.media.failed += 1
         mediaCache.set(sourceUrl, undefined)
-        console.warn(`   ⚠️  画像取得失敗（スキップ）: ${sourceUrl.slice(0, 80)}`)
+        console.warn(`   ⚠️  image download failed (skipped): ${sourceUrl.slice(0, 80)}`)
         return undefined
       }
       const doc = await payload.create({
@@ -285,7 +285,7 @@ async function main() {
     } catch (error) {
       summary.media.failed += 1
       mediaCache.set(sourceUrl, undefined)
-      console.warn(`   ⚠️  画像取り込み失敗（スキップ）: ${sourceUrl.slice(0, 60)} : ${(error as Error).message}`)
+      console.warn(`   ⚠️  image ingest failed (skipped): ${sourceUrl.slice(0, 60)} : ${(error as Error).message}`)
       return undefined
     }
   }
@@ -303,7 +303,7 @@ async function main() {
       const leftover = stripLeftoverMarkers(state.root)
       if (leftover) {
         console.warn(
-          `   ⚠️  "${label}": ブロック化できない位置の画像 ${leftover} 枚をスキップ（bookmark card のサムネイル等）`,
+          `   ⚠️  "${label}": skipped ${leftover} images at non-blockable positions (e.g. bookmark card thumbnails)`,
         )
       }
     }
@@ -354,7 +354,7 @@ async function main() {
       authorIdByGhostId.set(user.id, id)
     } catch (error) {
       summary.authors.failed += 1
-      console.error(`   ❌ author "${user.name}" の移行に失敗:`, (error as Error).message)
+      console.error(`   ❌ failed to migrate author "${user.name}":`, (error as Error).message)
     }
   }
 
@@ -368,7 +368,7 @@ async function main() {
       tagIdByGhostId.set(tag.id, id)
     } catch (error) {
       summary.tags.failed += 1
-      console.error(`   ❌ tag "${tag.name}" の移行に失敗:`, (error as Error).message)
+      console.error(`   ❌ failed to migrate tag "${tag.name}":`, (error as Error).message)
     }
   }
 
@@ -395,7 +395,7 @@ async function main() {
       )
     } catch (error) {
       summary.posts.failed += 1
-      console.error(`   ❌ post "${post.title}" の移行に失敗:`, (error as Error).message)
+      console.error(`   ❌ failed to migrate post "${post.title}":`, (error as Error).message)
     }
   }
 
@@ -407,9 +407,9 @@ async function main() {
       const html = (aboutPage.html ?? '').replace(/__GHOST_URL__/g, '')
       const content = await htmlToLexical(html, 'about')
       await payload.updateGlobal({ slug: 'about', data: { content } })
-      console.log('   about: Global を更新しました')
+      console.log('   about: Global updated')
     } catch (error) {
-      console.error('   ❌ about global の更新に失敗:', (error as Error).message)
+      console.error('   ❌ failed to update about global:', (error as Error).message)
     }
   }
 
@@ -427,12 +427,12 @@ async function main() {
         coverImage: (coverImage ?? null) as number | null,
       },
     })
-    console.log('   site-settings: Global を更新しました')
+    console.log('   site-settings: Global updated')
   } catch (error) {
-    console.error('   ❌ site-settings global の更新に失敗:', (error as Error).message)
+    console.error('   ❌ failed to update site-settings global:', (error as Error).message)
   }
 
-  console.log('\n✨ 移行完了')
+  console.log('\n✨ Migration complete')
   console.log(
     `   media: created=${summary.media.created} reused=${summary.media.reused} failed=${summary.media.failed}`,
   )

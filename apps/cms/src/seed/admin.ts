@@ -9,7 +9,7 @@ const PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'password'
 
 async function main() {
   if (process.env.NODE_ENV === 'production') {
-    console.error('🚫 seed:admin は本番(NODE_ENV=production)では実行できません。ローカルテスト専用です。')
+    console.error('🚫 seed:admin cannot run in production (NODE_ENV=production). Local testing only.')
     process.exit(1)
   }
 
@@ -21,12 +21,12 @@ async function main() {
     limit: 1,
   })
   if (existing.docs[0]) {
-    console.log(`✔ admin ユーザーは既に存在します: ${EMAIL}（何もしません）`)
+    console.log(`✔ admin user already exists: ${EMAIL} (no action taken)`)
     return
   }
 
   await payload.create({ collection: 'users', data: { email: EMAIL, password: PASSWORD } })
-  console.log('✨ ローカルテスト用 admin を作成しました')
+  console.log('✨ Created admin user for local testing')
   console.log(`   email:    ${EMAIL}`)
   console.log(`   password: ${PASSWORD}`)
 }
