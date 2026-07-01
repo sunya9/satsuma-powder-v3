@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "satsuma-powder-v3-cms",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-26",
+  "compatibility_flags": [
+    // Node.js APIs for Payload/Next.js server code.
+    "nodejs_compat",
+    // Fail fetches to private IPs instead of routing them internally.
+    "global_fetch_strictly_public",
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  // SERVER_URL is non-secret. Secrets (PAYLOAD_SECRET, DATABASE_URL,
+  // DATABASE_AUTH_TOKEN, CRON_SECRET, S3_*) are Worker secrets set in the
+  // dashboard; the Git-connected build also needs DATABASE_URL /
+  // DATABASE_AUTH_TOKEN / PAYLOAD_SECRET as build variables for `payload migrate`.
+  "vars": { "SERVER_URL": "https://payload.unsweets.net" },
+  // No "routes" yet: the custom domain stays on Vercel until cutover.
+  // Attach payload.unsweets.net from the dashboard when ready.
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true,
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1,
+    },
+  },
+}

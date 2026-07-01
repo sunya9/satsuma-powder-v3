@@ -30,8 +30,10 @@ next-env.d.ts
 # vercel
 .vercel
 
-# cloudflare wrangler
+# cloudflare wrangler / opennext
 .wrangler/
+.open-next/
+.dev.vars
 
 # local uploads (本番は R2)
 media/

@@ -5,7 +5,6 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -63,7 +62,8 @@ export default buildConfig({
     push: process.env.NODE_ENV !== 'production',
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
-  sharp,
+  // No sharp: it can't run on Cloudflare Workers (native/multithreaded).
+  // Media uploads store originals as-is; no resize/crop/focal-point in admin.
   plugins: [
     seoPlugin({
       collections: ['posts'],

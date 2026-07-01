@@ -14,6 +14,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Packages with workerd-specific export conditions must stay external so
+  // OpenNext's bundler picks their Workers build (see opennext.js.org/cloudflare/howtos/workerd).
+  // @libsql/client resolves to its fetch-based web client on workerd, which is
+  // how the Turso (libsql://) connection works without native bindings.
+  serverExternalPackages: ['jose', '@libsql/client'],
+  // File tracing resolves with node conditions only, so the workerd variants
+  // (web.mjs etc.) of @libsql packages get dropped; include them explicitly
+  // or OpenNext's bundler fails resolving them.
+  outputFileTracingIncludes: {
+    '/**': ['../../node_modules/.pnpm/@libsql+*/**/*.{mjs,cjs,js,json}'],
+  },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

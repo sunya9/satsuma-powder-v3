@@ -25,7 +25,14 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'src/migrations/**', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    ignores: [
+      '.next/',
+      '.open-next/',
+      '.wrangler/',
+      'src/migrations/**',
+      'src/payload-types.ts',
+      'src/payload-generated-schema.ts',
+    ],
   },
 ]
 
