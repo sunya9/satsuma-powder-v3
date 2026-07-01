@@ -24,9 +24,9 @@
   // DATABASE_AUTH_TOKEN, CRON_SECRET, S3_*) are Worker secrets set in the
   // dashboard; the Git-connected build also needs DATABASE_URL /
   // DATABASE_AUTH_TOKEN / PAYLOAD_SECRET as build variables for `payload migrate`.
-  "vars": { "SERVER_URL": "https://payload.unsweets.net" },
-  // No "routes" yet: the custom domain stays on Vercel until cutover.
-  // Attach payload.unsweets.net from the dashboard when ready.
+  "vars": { "SERVER_URL": "https://payload-cms.unsweets.net" },
+  // No "routes" yet: attach payload-cms.unsweets.net from the dashboard.
+  // The old payload.unsweets.net stays on Vercel until decommission.
   "observability": {
     "enabled": false,
     "head_sampling_rate": 1,
