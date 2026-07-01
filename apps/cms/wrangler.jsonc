@@ -1,8 +1,15 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "satsuma-powder-v3-cms",
-  "main": ".open-next/worker.js",
+  "main": "custom-worker.ts",
   "compatibility_date": "2026-06-26",
+  // Triggers Payload's jobs runner so scheduled publish/unpublish executes.
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "services": [
+    // Self-reference: the cron handler calls our own /api/payload-jobs/run
+    // through this binding (a Worker cannot fetch() its own hostname).
+    { "binding": "WORKER_SELF_REFERENCE", "service": "satsuma-powder-v3-cms" },
+  ],
   "compatibility_flags": [
     // Node.js APIs for Payload/Next.js server code.
     "nodejs_compat",

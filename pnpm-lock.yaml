@@ -111,18 +111,6 @@ importers:
         specifier: ^4.105.0
         version: 4.105.0(@cloudflare/workers-types@4.20260626.1)
 
-  apps/jobs-cron:
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20260420.1
-        version: 4.20260626.1
-      typescript:
-        specifier: 5.7.3
-        version: 5.7.3
-      wrangler:
-        specifier: ^4.106.0
-        version: 4.106.0(@cloudflare/workers-types@4.20260626.1)
-
   apps/web:
     dependencies:
       '@resvg/resvg-js':
@@ -5539,16 +5527,6 @@ packages:
       '@cloudflare/workers-types':
         optional: true
 
-  wrangler@4.106.0:
-    resolution: {integrity: sha512-b6EVbsvbmAUY4bUQXT3+f8oFP8x+J5rEa5z3Akeh+6vyKiN4x8+PyZ53DPpnqdxhIihhq/a00Yq5chGJ19QXBQ==}
-    engines: {node: '>=22.0.0'}
-    hasBin: true
-    peerDependencies:
-      '@cloudflare/workers-types': ^4.20260630.1
-    peerDependenciesMeta:
-      '@cloudflare/workers-types':
-        optional: true
-
   wrap-ansi@9.0.2:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
@@ -6474,12 +6452,6 @@ snapshots:
       unenv: 2.0.0-rc.24
     optionalDependencies:
       workerd: 1.20260625.1
-
-  '@cloudflare/unenv-preset@2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260630.1)':
-    dependencies:
-      unenv: 2.0.0-rc.24
-    optionalDependencies:
-      workerd: 1.20260630.1
 
   '@cloudflare/workerd-darwin-64@1.20260625.1':
     optional: true
@@ -10629,6 +10601,7 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    optional: true
 
   minimatch@10.2.5:
     dependencies:
@@ -12025,6 +11998,7 @@ snapshots:
       '@cloudflare/workerd-linux-64': 1.20260630.1
       '@cloudflare/workerd-linux-arm64': 1.20260630.1
       '@cloudflare/workerd-windows-64': 1.20260630.1
+    optional: true
 
   wrangler@4.105.0(@cloudflare/workers-types@4.20260626.1):
     dependencies:
@@ -12036,23 +12010,6 @@ snapshots:
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.24
       workerd: 1.20260625.1
-    optionalDependencies:
-      '@cloudflare/workers-types': 4.20260626.1
-      fsevents: 2.3.3
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  wrangler@4.106.0(@cloudflare/workers-types@4.20260626.1):
-    dependencies:
-      '@cloudflare/kv-asset-handler': 0.5.0
-      '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260630.1)
-      blake3-wasm: 2.1.5
-      esbuild: 0.28.1
-      miniflare: 4.20260630.0
-      path-to-regexp: 6.3.0
-      unenv: 2.0.0-rc.24
-      workerd: 1.20260630.1
     optionalDependencies:
       '@cloudflare/workers-types': 4.20260626.1
       fsevents: 2.3.3
