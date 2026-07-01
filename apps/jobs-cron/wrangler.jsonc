@@ -7,5 +7,20 @@
   // Vercel Hobby cron is too coarse (~1/day), so this external cron runs every 5 min.
   "triggers": { "crons": ["*/5 * * * *"] },
   // CMS_URL is non-secret. CRON_SECRET is a Worker secret (dashboard or `wrangler secret put`).
-  "vars": { "CMS_URL": "https://payload.unsweets.net" }
+  "vars": { "CMS_URL": "https://payload.unsweets.net" },
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true,
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1,
+    },
+  },
 }
