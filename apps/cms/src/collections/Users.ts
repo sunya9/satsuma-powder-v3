@@ -11,6 +11,8 @@ export const Users: CollectionConfig = {
     useAPIKey: true,
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
+    // Default is 2h, which forces re-login constantly on a single-admin blog.
+    tokenExpiration: 60 * 60 * 24 * 30, // 30 days (seconds)
   },
   fields: [],
 }
