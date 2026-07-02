@@ -14,6 +14,7 @@ import { Authors } from './collections/Authors'
 import { About } from './globals/About'
 import { SiteSettings } from './globals/SiteSettings'
 import { canRunJobs } from './access/canRunJobs'
+import { cloudflareLogger } from './logger'
 import type { Config } from './payload-types'
 
 declare module 'payload' {
@@ -47,6 +48,8 @@ export default buildConfig({
     },
   },
   secret: process.env.PAYLOAD_SECRET || '',
+  // Dev keeps the colorized pretty logger; Workers Logs need plain JSON.
+  logger: process.env.NODE_ENV === 'production' ? cloudflareLogger : undefined,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
     // Drop the payload augmentation so apps/web can import these types; added manually below.
