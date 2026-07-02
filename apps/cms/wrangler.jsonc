@@ -20,10 +20,21 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS",
   },
+  // Media storage: direct R2 binding (no S3 credentials involved).
+  // "remote": dev/preview connect to the real bucket (needs wrangler login),
+  // so existing media renders locally. Deployed workers are unaffected.
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "konamikan",
+      "remote": true,
+    },
+  ],
   // SERVER_URL is non-secret. Secrets (PAYLOAD_SECRET, DATABASE_URL,
-  // DATABASE_AUTH_TOKEN, CRON_SECRET, S3_*) are Worker secrets set in the
-  // dashboard; the Git-connected build also needs DATABASE_URL /
-  // DATABASE_AUTH_TOKEN / PAYLOAD_SECRET as build variables for `payload migrate`.
+  // DATABASE_AUTH_TOKEN, CRON_SECRET, CLOUDFLARE_DEPLOY_HOOK_URL) are Worker
+  // secrets set in the dashboard; the Git-connected build also needs
+  // DATABASE_URL / DATABASE_AUTH_TOKEN / PAYLOAD_SECRET as build variables
+  // for `payload migrate`.
   "vars": { "SERVER_URL": "https://payload-cms.unsweets.net" },
   // No "routes" yet: attach payload-cms.unsweets.net from the dashboard.
   // The old payload.unsweets.net stays on Vercel until decommission.

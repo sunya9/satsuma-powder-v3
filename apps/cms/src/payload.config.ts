@@ -1,10 +1,12 @@
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { seoPlugin } from '@payloadcms/plugin-seo'
-import { s3Storage } from '@payloadcms/storage-s3'
+import { r2Storage } from '@payloadcms/storage-r2'
+import { type CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
+import type { GetPlatformProxyOptions } from 'wrangler'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -23,6 +25,32 @@ declare module 'payload' {
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Node-side loads (dev, payload CLI, `next build`) get bindings from
+// wrangler's platform proxy; only workerd has the real runtime context.
+// Adapted from the official with-cloudflare-d1 template. The obfuscated
+// specifier keeps Next's bundler from pulling wrangler into the server build.
+// No remoteBindings: unlike the template's D1, our DB is Turso via env vars,
+// and nothing reads R2 from Node in production (migrate/build don't touch it).
+function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
+    ({ getPlatformProxy }) =>
+      getPlatformProxy({
+        environment: process.env.CLOUDFLARE_ENV,
+        // Parallel `next build` workers each boot a proxy and deadlock on the
+        // shared .wrangler/state SQLite; keep state in memory outside dev.
+        persist: process.env.NODE_ENV === 'development' ? undefined : false,
+        // Dev talks to the real R2 bucket ("remote": true bindings); tests and
+        // CI stay on the local simulation.
+        remoteBindings: process.env.NODE_ENV === 'development',
+      } satisfies GetPlatformProxyOptions),
+  )
+}
+
+const isWorkerd = globalThis.navigator?.userAgent === 'Cloudflare-Workers'
+const cloudflare = isWorkerd
+  ? await getCloudflareContext({ async: true })
+  : await getCloudflareContextFromWrangler()
 
 export default buildConfig({
   admin: {
@@ -75,22 +103,11 @@ export default buildConfig({
       generateTitle: ({ doc }) => (doc?.title as string) ?? '',
       generateDescription: ({ doc }) => (doc?.excerpt as string) ?? '',
     }),
-    // Store media on S3/R2. Falls back to local disk when S3_BUCKET is unset
-    // (Vercel's filesystem is ephemeral, so this is required in production).
-    s3Storage({
-      enabled: Boolean(process.env.S3_BUCKET),
+    // Store media in R2 through the Workers binding; dev/CLI get a local
+    // simulation from wrangler (object keys match what storage-s3 wrote).
+    r2Storage({
+      bucket: cloudflare.env.R2,
       collections: { media: true },
-      bucket: process.env.S3_BUCKET || '',
-      config: {
-        endpoint: process.env.S3_ENDPOINT,
-        region: process.env.S3_REGION || 'auto',
-        // R2 and most S3-compatible stores need path-style.
-        forcePathStyle: true,
-        credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
-        },
-      },
     }),
   ],
 })

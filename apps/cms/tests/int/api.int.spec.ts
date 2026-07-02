@@ -1,3 +1,5 @@
+// @vitest-environment node
+// payload.config now boots wrangler getPlatformProxy, which breaks under jsdom.
 import { getPayload, Payload } from 'payload'
 import config from '@/payload.config'
 
