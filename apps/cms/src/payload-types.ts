@@ -652,6 +652,7 @@ export interface About {
     };
     [k: string]: unknown;
   } | null;
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -675,6 +676,7 @@ export interface SiteSetting {
  */
 export interface AboutSelect<T extends boolean = true> {
   content?: T;
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

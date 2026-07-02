@@ -41,6 +41,19 @@ describe('shouldRevalidate', () => {
   it('onlyPublished=true: returns false when status is unknown', () => {
     expect(shouldRevalidate({ onlyPublished: true })).toBe(false)
   })
+
+  it('autosave never revalidates, even for a published doc', () => {
+    expect(shouldRevalidate({ autosave: true, status: 'published' })).toBe(false)
+    expect(
+      shouldRevalidate({
+        autosave: true,
+        onlyPublished: true,
+        status: 'draft',
+        previousStatus: 'published',
+      }),
+    ).toBe(false)
+    expect(shouldRevalidate({ autosave: true, onlyPublished: false })).toBe(false)
+  })
 })
 
 describe('createAfterChangeRevalidate', () => {
@@ -65,6 +78,16 @@ describe('createAfterChangeRevalidate', () => {
       doc: { _status: 'draft' },
       previousDoc: { _status: 'draft' },
       req: makeReq(),
+    } as never)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('does not POST on an autosave request (draft version of a published post)', async () => {
+    const hook = createAfterChangeRevalidate({ onlyPublished: true })
+    await hook({
+      doc: { _status: 'draft' },
+      previousDoc: { _status: 'published' },
+      req: { ...makeReq(), query: { autosave: 'true' } },
     } as never)
     expect(fetch).not.toHaveBeenCalled()
   })

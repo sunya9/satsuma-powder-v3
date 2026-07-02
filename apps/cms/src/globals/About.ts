@@ -16,6 +16,14 @@ export const About: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [createGlobalAfterChangeRevalidate()],
+    // onlyPublished: with drafts enabled, only publish/unpublish should rebuild
+    // the site; draft saves and autosaves must not.
+    afterChange: [createGlobalAfterChangeRevalidate({ onlyPublished: true })],
+  },
+  versions: {
+    drafts: {
+      // Draft versions only; the revalidate hook skips autosave requests.
+      autosave: true,
+    },
   },
 }

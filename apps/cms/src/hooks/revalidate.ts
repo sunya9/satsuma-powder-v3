@@ -14,6 +14,7 @@ type RevalidateDecision = {
   onlyPublished?: boolean
   status?: string
   previousStatus?: string
+  autosave?: boolean
 }
 
 // Pure decision: should this change trigger a Cloudflare SSG rebuild?
@@ -21,7 +22,11 @@ export function shouldRevalidate({
   onlyPublished,
   status,
   previousStatus,
+  autosave,
 }: RevalidateDecision): boolean {
+  // Autosave only writes a draft version; the published content is untouched,
+  // and rebuilding on every ~800ms save would hammer the deploy hook.
+  if (autosave) return false
   if (!onlyPublished) return true
   // Published now, or just unpublished (published -> draft): both need a rebuild
   // so the site reflects the addition or removal.
@@ -48,6 +53,11 @@ async function triggerDeploy(payload: Payload): Promise<void> {
   }
 }
 
+// Admin autosave hits the REST update endpoint with ?autosave=true.
+function isAutosave(req: { query?: Record<string, unknown> }): boolean {
+  return Boolean(req.query?.autosave)
+}
+
 export function createAfterChangeRevalidate(
   options: RevalidateOptions = {},
 ): CollectionAfterChangeHook {
@@ -57,6 +67,7 @@ export function createAfterChangeRevalidate(
         onlyPublished: options.onlyPublished,
         status: doc?._status,
         previousStatus: previousDoc?._status,
+        autosave: isAutosave(req),
       })
     ) {
       await triggerDeploy(req.payload)
@@ -85,6 +96,7 @@ export function createGlobalAfterChangeRevalidate(
         onlyPublished: options.onlyPublished,
         status: doc?._status,
         previousStatus: previousDoc?._status,
+        autosave: isAutosave(req),
       })
     ) {
       await triggerDeploy(req.payload)

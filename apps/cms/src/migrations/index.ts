@@ -1,5 +1,6 @@
 import * as migration_20260627_054159_initial from './20260627_054159_initial';
 import * as migration_20260630_224746_add_payload_jobs from './20260630_224746_add_payload_jobs';
+import * as migration_20260702_024434_add_autosave_drafts from './20260702_024434_add_autosave_drafts';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20260630_224746_add_payload_jobs.up,
     down: migration_20260630_224746_add_payload_jobs.down,
-    name: '20260630_224746_add_payload_jobs'
+    name: '20260630_224746_add_payload_jobs',
+  },
+  {
+    up: migration_20260702_024434_add_autosave_drafts.up,
+    down: migration_20260702_024434_add_autosave_drafts.down,
+    name: '20260702_024434_add_autosave_drafts'
   },
 ];

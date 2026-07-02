@@ -84,6 +84,8 @@ export const Posts: CollectionConfig = {
     drafts: {
       // Enables scheduled publish/unpublish from the admin UI (needs the jobs runner).
       schedulePublish: true,
+      // Draft versions only; the revalidate hooks skip autosave requests.
+      autosave: true,
     },
   },
   timestamps: true,
