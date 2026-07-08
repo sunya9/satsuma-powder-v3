@@ -13,7 +13,7 @@
   "private": true,
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
-    "@tailwindcss/vite": "^4.2.2",
+    "@tailwindcss/vite": "^4.3.2",
     "clsx": "^2.1.1",
     "csstype": "^3.2.3",
     "hono": "^4.12.27",
