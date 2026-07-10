@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { autoIdSlug } from '../fields/slug'
+import { buildPreviewPath } from '../fields/preview'
 import { createAfterChangeRevalidate, createAfterDeleteRevalidate } from '../hooks/revalidate'
 import { createSetPublishedAt } from '../hooks/published-at'
 
@@ -9,6 +10,13 @@ export const Posts: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'authors', '_status', 'publishedAt'],
+    // Opens the web draft-preview route in a new tab (see buildPreviewPath).
+    preview: (data) =>
+      buildPreviewPath({
+        webUrl: process.env.WEB_URL,
+        slug: typeof data?.slug === 'string' ? data.slug : undefined,
+        secret: process.env.PREVIEW_SECRET,
+      }),
   },
   access: {
     read: authenticated,
