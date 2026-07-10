@@ -2,10 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "satsuma-powder-v3-web",
   "compatibility_date": "2026-06-26",
-  // Static-only: the build output (dist) is fully pre-rendered (SSG), so this is
-  // an assets-only Worker (no `main`). `_redirects`/`_headers` in dist are honored.
+  // Hybrid: published pages are pre-rendered (SSG) and served straight from the
+  // static assets. `run_worker_first` routes ONLY /preview/* through the Worker;
+  // every other path (and 404s) is served by the asset layer without invoking it.
+  "main": "./dist-worker/index.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/preview", "/preview/*"]
   },
   "routes": [{ "pattern": "private.unsweets.net", "custom_domain": true }]
 }

@@ -3,8 +3,7 @@ import { Link } from "honox/server";
 import { config } from "#lib/config";
 import { contentHash } from "#lib/hash";
 import { getSite } from "#lib/payload";
-import { LinkButton } from "#components/LinkButton";
-import { Hr } from "#components/Hr";
+import { SiteBody } from "#components/SiteBody";
 import { html } from "hono/html";
 
 export default jsxRenderer(
@@ -75,28 +74,9 @@ export default jsxRenderer(
           <meta name="color-scheme" content="light" />
           <meta name="theme-color" content="hsl(26 54% 19%)" />
         </head>
-        <body class="bg-paper text-ink">
+        <SiteBody site={site} isIndex={isIndex}>
           {children}
-          <footer class="my-20 text-muted">
-            <div class="site-container space-y-4">
-              {!isIndex && (
-                <p>
-                  <LinkButton href="/">ホームに戻る</LinkButton>
-                </p>
-              )}
-              <Hr />
-              <p>
-                ©&nbsp;
-                <a
-                  class="text-link"
-                  href={`https://twitter.com/${site.twitterHandle}`}
-                >
-                  @{site.twitterHandle}
-                </a>
-              </p>
-            </div>
-          </footer>
-        </body>
+        </SiteBody>
       </html>
     );
   },
