@@ -4,6 +4,7 @@ import { raw } from "hono/html";
 import { type Post, type Site } from "#lib/payload";
 import { createPreviewClient } from "#lib/preview-client";
 import { previewSecretMatches } from "#lib/preview";
+import { verifyPreviewToken } from "#lib/preview-token";
 import { PostMain } from "#components/PostMain";
 import { SiteBody } from "#components/SiteBody";
 
@@ -29,15 +30,21 @@ export function registerPreviewRoutes(
   resolveConfig: (c: Context) => PreviewConfig,
 ) {
   // Enable endpoint (Next.js draft-mode equivalent): the CMS preview button lands
-  // here with ?previewSecret&slug. Validate once, move the secret into an httpOnly
-  // cookie, then 302 to the clean content URL so the secret leaves the address bar
-  // (and never enters browser history / referrers).
-  app.get("/preview", (c) => {
+  // here with ?slug&token. The token is a short-lived, slug-bound HMAC (safe to
+  // carry in the URL); on success we move the long-lived secret into an httpOnly
+  // cookie and 302 to the clean content URL, so no reusable secret is ever in a
+  // URL, browser history, or access log.
+  app.get("/preview", async (c) => {
     const { secret } = resolveConfig(c);
-    if (!previewSecretMatches(c.req.query("previewSecret"), secret))
-      return c.notFound();
     const slug = c.req.query("slug");
     if (!slug) return c.notFound();
+    const valid = await verifyPreviewToken({
+      token: c.req.query("token"),
+      slug,
+      secret,
+      now: Date.now(),
+    });
+    if (!valid) return c.notFound();
 
     setCookie(c, PREVIEW_COOKIE, secret!, {
       httpOnly: true,

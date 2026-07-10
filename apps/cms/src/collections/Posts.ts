@@ -16,6 +16,7 @@ export const Posts: CollectionConfig = {
         webUrl: process.env.WEB_URL,
         slug: typeof data?.slug === 'string' ? data.slug : undefined,
         secret: process.env.PREVIEW_SECRET,
+        now: Date.now(),
       }),
   },
   access: {
