@@ -18,6 +18,17 @@ describe('buildPreviewPath', () => {
     )
   })
 
+  it('defaults to a 24h token lifetime', async () => {
+    const now = 1_000_000
+    const url = await buildPreviewPath({
+      webUrl: 'https://w',
+      slug: 'hello',
+      secret: 's3cret',
+      now,
+    })
+    expect(url).toContain(`token=${now + 24 * 60 * 60 * 1000}.`)
+  })
+
   it('sets the token expiry to now + ttl', async () => {
     const url = await buildPreviewPath({
       webUrl: 'https://w',

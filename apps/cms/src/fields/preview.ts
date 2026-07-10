@@ -29,7 +29,9 @@ export async function buildPreviewPath({
   slug,
   secret,
   now,
-  ttlMs = 60_000,
+  // 24h: the token is minted when the admin edit view renders, so a short TTL
+  // would expire before an editor finishes a long session and clicks Preview.
+  ttlMs = 24 * 60 * 60 * 1000,
 }: {
   webUrl?: string
   slug?: string
