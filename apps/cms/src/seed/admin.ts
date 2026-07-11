@@ -28,7 +28,10 @@ async function main() {
   await payload.create({ collection: 'users', data: { email: EMAIL, password: PASSWORD } })
   console.log('✨ Created admin user for local testing')
   console.log(`   email:    ${EMAIL}`)
-  console.log(`   password: ${PASSWORD}`)
+  // Never echo the password itself (flagged by code scanning as clear-text logging).
+  console.log(
+    `   password: ${process.env.SEED_ADMIN_PASSWORD ? '(from SEED_ADMIN_PASSWORD)' : '"password" (default)'}`,
+  )
 }
 
 main()
