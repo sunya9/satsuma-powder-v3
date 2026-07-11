@@ -1,11 +1,71 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# Dependabot configuration.
+# The pnpm workspace has a single root lockfile, so one npm entry at "/" covers
+# apps/cms and apps/web; groups therefore merge updates across both packages.
+# A dependency joins the first matching group, so the framework groups are
+# declared before the dev-dependencies catch-all.
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      # Payload packages share one version and must move in lockstep.
+      payload:
+        patterns:
+          - "payload"
+          - "@payloadcms/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      # eslint-config-next tracks the next version.
+      next:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+      hono:
+        patterns:
+          - "hono"
+          - "honox"
+          - "@hono/*"
+      cloudflare:
+        patterns:
+          - "wrangler"
+          - "@cloudflare/*"
+          - "@opennextjs/cloudflare"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "tailwind-merge"
+      # Remaining minor/patch updates are routine: batch them, split by
+      # dependency type. Majors stay as individual PRs so a breaking change
+      # never hides in a batch (framework groups above intentionally keep
+      # their majors grouped because those packages move in lockstep).
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
