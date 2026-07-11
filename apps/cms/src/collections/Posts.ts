@@ -7,6 +7,8 @@ import { createSetPublishedAt } from '../hooks/published-at'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
+  // Lets admins save/load list-view filters (e.g. draft vs published).
+  enableQueryPresets: true,
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'authors', '_status', 'publishedAt'],
