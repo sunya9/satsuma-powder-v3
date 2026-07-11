@@ -16,6 +16,7 @@ import { Authors } from './collections/Authors'
 import { About } from './globals/About'
 import { SiteSettings } from './globals/SiteSettings'
 import { canRunJobs } from './access/canRunJobs'
+import { cloudflareEmailAdapter } from './email/cloudflare-adapter'
 import { cloudflareLogger } from './logger'
 import type { Config } from './payload-types'
 
@@ -79,6 +80,17 @@ export default buildConfig({
         }),
     },
   },
+  // Enabled only when the send_email binding exists (workerd / wrangler proxy)
+  // AND a from address is configured; otherwise Payload falls back to its
+  // console adapter, which keeps dev/CLI/build working without email setup.
+  email:
+    cloudflare.env.EMAIL && process.env.EMAIL_FROM_ADDRESS
+      ? cloudflareEmailAdapter({
+          binding: cloudflare.env.EMAIL,
+          defaultFromAddress: process.env.EMAIL_FROM_ADDRESS,
+          defaultFromName: process.env.EMAIL_FROM_NAME || 'Payload CMS',
+        })
+      : undefined,
   secret: process.env.PAYLOAD_SECRET || '',
   // Dev keeps the colorized pretty logger; Workers Logs need plain JSON.
   logger: process.env.NODE_ENV === 'production' ? cloudflareLogger : undefined,
