@@ -21,7 +21,7 @@ cp apps/cms/.env.example apps/cms/.env   # PAYLOAD_SECRET などを設定
 cp apps/web/.env.example apps/web/.env    # PAYLOAD_API_KEY などを設定
 ```
 
-cms を起動する（管理画面は http://localhost:3000/admin）。
+cms を起動する（管理画面は [http://localhost:3000/admin](http://localhost:3000/admin)）。
 
 ```sh
 pnpm dev
