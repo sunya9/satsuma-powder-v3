@@ -85,7 +85,6 @@ describe('ghost mappers', () => {
         slug: 'transmission',
         featureImage: 'https://firebasestorage.googleapis.com/x.png',
         publishedAt: '2016-06-05T22:22:14.000Z',
-        visibility: 'public',
         _status: 'published',
       })
     })
@@ -106,15 +105,15 @@ describe('ghost mappers', () => {
       expect(result.excerpt).toBe('短い要約')
     })
 
-    it('falls back to public for unknown visibility', () => {
+    it('ignores Ghost visibility (all posts are public)', () => {
       const result = mapPost({
         id: 'p4',
         title: 'Y',
         slug: 'y',
         status: 'published',
-        visibility: 'something-weird',
+        visibility: 'members',
       })
-      expect(result.visibility).toBe('public')
+      expect(result).not.toHaveProperty('visibility')
     })
   })
 

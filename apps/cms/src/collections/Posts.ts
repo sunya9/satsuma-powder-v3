@@ -72,17 +72,6 @@ export const Posts: CollectionConfig = {
       defaultValue: false,
       admin: { position: 'sidebar' },
     },
-    {
-      name: 'visibility',
-      type: 'select',
-      defaultValue: 'public',
-      options: [
-        { label: 'Public', value: 'public' },
-        { label: 'Members', value: 'members' },
-        { label: 'Paid', value: 'paid' },
-      ],
-      admin: { position: 'sidebar' },
-    },
   ],
   hooks: {
     // Stamp publishedAt the first time a post becomes published.

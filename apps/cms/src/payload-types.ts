@@ -228,7 +228,6 @@ export interface Post {
   tags?: (number | Tag)[] | null;
   publishedAt?: string | null;
   featured?: boolean | null;
-  visibility?: ('public' | 'members' | 'paid') | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -568,7 +567,6 @@ export interface PostsSelect<T extends boolean = true> {
   tags?: T;
   publishedAt?: T;
   featured?: T;
-  visibility?: T;
   meta?:
     | T
     | {

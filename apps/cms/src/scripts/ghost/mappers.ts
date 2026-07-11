@@ -82,28 +82,23 @@ export function mapTag(tag: GhostTag): MappedTag {
   }
 }
 
-export type Visibility = 'public' | 'members' | 'paid'
-const VISIBILITIES = new Set<Visibility>(['public', 'members', 'paid'])
-
 export interface MappedPost {
   title: string
   slug: string
   excerpt?: string
   featureImage?: string
   publishedAt?: string
-  visibility: Visibility
   _status: 'published' | 'draft'
 }
 
+// Ghost visibility (members/paid) is intentionally dropped: all posts are public.
 export function mapPost(post: GhostPost): MappedPost {
-  const visibility = post.visibility as Visibility
   return {
     title: post.title,
     slug: post.slug,
     excerpt: clean(post.custom_excerpt),
     featureImage: clean(post.feature_image),
     publishedAt: clean(post.published_at),
-    visibility: VISIBILITIES.has(visibility) ? visibility : 'public',
     _status: post.status === 'published' ? 'published' : 'draft',
   }
 }
