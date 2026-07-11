@@ -34,7 +34,7 @@
     "@payloadcms/plugin-seo": "3.85.1",
     "@payloadcms/richtext-lexical": "3.85.1",
     "@payloadcms/storage-r2": "3.85.1",
-    "@payloadcms/ui": "3.85.1",
+    "@payloadcms/ui": "3.86.0",
     "cross-env": "^7.0.3",
     "dotenv": "17.4.2",
     "graphql": "^16.8.1",
