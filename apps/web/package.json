@@ -28,8 +28,8 @@
     "@hono/vite-build": "^1.11.1",
     "@hono/vite-dev-server": "^0.25.2",
     "@hono/vite-ssg": "^0.3.3",
-    "vite": "^8.0.9",
-    "vitest": "^4.1.9",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10",
     "wrangler": "^4.83.0"
   }
 }
