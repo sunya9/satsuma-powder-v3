@@ -55,6 +55,10 @@ const cloudflare = isWorkerd
 export default buildConfig({
   admin: {
     user: Users.slug,
+    components: {
+      // Quick draft/published links for Posts, nested in the sidebar.
+      afterNavLinks: ['/components/NavPostFilters#NavPostFilters'],
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
