@@ -17,8 +17,8 @@
     "@tailwindcss/vite": "^4.2.2",
     "clsx": "^2.1.1",
     "csstype": "^3.2.3",
-    "hono": "^4.12.27",
-    "honox": "0.1.56",
+    "hono": "^4.12.29",
+    "honox": "0.1.59",
     "satori": "^0.26.0",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.2.2"
@@ -26,7 +26,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260420.1",
     "@hono/vite-build": "^1.11.1",
-    "@hono/vite-dev-server": "^0.25.2",
+    "@hono/vite-dev-server": "^0.26.1",
     "@hono/vite-ssg": "^0.3.3",
     "vite": "^8.1.4",
     "vitest": "^4.1.10",
