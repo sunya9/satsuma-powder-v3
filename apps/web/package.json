@@ -14,14 +14,14 @@
   "private": true,
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
-    "@tailwindcss/vite": "^4.2.2",
+    "@tailwindcss/vite": "^4.3.2",
     "clsx": "^2.1.1",
     "csstype": "^3.2.3",
     "hono": "^4.12.29",
     "honox": "0.1.59",
     "satori": "^0.26.0",
     "tailwind-merge": "^3.6.0",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260420.1",
