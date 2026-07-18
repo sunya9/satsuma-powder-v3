@@ -138,8 +138,8 @@ importers:
         specifier: 0.1.59
         version: 0.1.59(hono@4.12.29)(miniflare@4.20260630.0)(wrangler@4.105.0(@cloudflare/workers-types@4.20260626.1))
       satori:
-        specifier: ^0.26.0
-        version: 0.26.0
+        specifier: ^0.28.0
+        version: 0.28.0
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -4880,8 +4880,8 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  satori@0.26.0:
-    resolution: {integrity: sha512-tkMFrfIs3l2mQ2JEcyW0ADTy3zGggFRFzi6Ef8YozQSFsFKEqaSO1Y8F9wJg4//PJGQauMalHGTUEkPrFwhVPA==}
+  satori@0.28.0:
+    resolution: {integrity: sha512-FhOx2irXIrxbNpPyE0x/+k3p8G+FVWfaTPAKuwMaB4kk02PehHFumYyJ4NtiLNC7moNAspeDt06S+DqUjJ9Fsg==}
     engines: {node: '>=16'}
 
   saxes@6.0.0:
@@ -11267,7 +11267,7 @@ snapshots:
       immutable: 4.3.9
       source-map-js: 1.2.1
 
-  satori@0.26.0:
+  satori@0.28.0:
     dependencies:
       '@shuding/opentype.js': 1.4.0-beta.0
       css-background-parser: 0.1.0
