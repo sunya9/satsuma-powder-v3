@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode client && vite build && vite build --mode worker",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "pnpm generate-types && tsc --noEmit",
     "test": "vitest run",
-    "preview": "wrangler dev"
+    "preview": "wrangler dev",
+    "generate-types": "wrangler types"
   },
   "private": true,
   "dependencies": {
@@ -24,7 +25,6 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260819.1",
     "@hono/vite-build": "^1.11.1",
     "@hono/vite-dev-server": "^0.26.1",
     "@hono/vite-ssg": "^0.3.3",
