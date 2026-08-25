@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import cloudflareWorkers from "@hono/vite-build/cloudflare-workers";
+import cloudflareAdapter from "@hono/vite-dev-server/cloudflare";
 import ssg from "@hono/vite-ssg";
 import tailwindcss from "@tailwindcss/vite";
 import type { SSGPlugin } from "hono/ssg";
@@ -55,9 +56,14 @@ export default defineConfig(({ mode }) => {
     // (unicode-trie) that break Vite's ESM transform. Load both as Node externals.
     ssr: { external: ["@resvg/resvg-js", "satori"] },
     plugins: [
-      // Default Node dev server: the prod output is static (SSG), so the dev
-      // runtime need not match Workers, and native modules work for OG rendering.
-      honox({ client: { input: ["/app/client.ts", "/app/style.css"] } }),
+      // Node dev server with the cloudflare adapter: code still runs in Node
+      // (native OG modules keep working), but `c.env` is fed real bindings via
+      // wrangler's getPlatformProxy (wrangler.jsonc + .dev.vars), matching the
+      // production Worker's secret resolution.
+      honox({
+        client: { input: ["/app/client.ts", "/app/style.css"] },
+        devServer: { adapter: cloudflareAdapter },
+      }),
       tailwindcss(),
       ssg({ entry, plugins: [failOnErrorResponse] }),
     ],

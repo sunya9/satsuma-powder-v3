@@ -1,4 +1,4 @@
-import type { Context, Hono } from "hono";
+import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { raw } from "hono/html";
 import { type Post, type Site } from "#lib/payload";
@@ -13,29 +13,30 @@ import { SiteBody } from "#components/SiteBody";
 const PREVIEW_COOKIE = "preview_secret";
 const PREVIEW_PATH = "/preview";
 
-// Per-request config. The workerd runtime reads secrets from `c.env`; the honox
-// Node dev server reads them from `process.env`. styleHref also differs: a hashed
-// asset path in the built worker vs. Vite's /app/style.css during dev.
-export interface PreviewConfig {
-  payloadUrl: string;
-  secret?: string;
-  apiKey?: string;
-  styleHref: string;
-}
+// Both hosts (the production Worker and the honox dev server via the cloudflare
+// adapter) expose the preview secrets as Workers bindings on `c.env`. Variables
+// is required by the hono Env augmentation in global.d.ts.
+type PreviewEnv = { Bindings: Env; Variables: {} };
 
-// Mounts the draft-preview routes on a Hono app. Shared by the production Worker
-// (worker.tsx) and the dev server (server.ts) so both stay byte-identical.
-export function registerPreviewRoutes(
-  app: Hono<any>,
-  resolveConfig: (c: Context) => PreviewConfig,
-) {
+// Inlined at build time by Vite; not secret (the CMS URL is public knowledge).
+const PAYLOAD_URL = (
+  import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000"
+).replace(/\/$/, "");
+
+// Builds the draft-preview routes as a self-contained typed sub-app: the
+// production Worker exports it as-is, the dev server mounts it via app.route().
+// Only styleHref differs per host: a hashed asset path in the built worker vs.
+// Vite's /app/style.css during dev.
+export function createPreviewApp(styleHref: string) {
+  const app = new Hono<PreviewEnv>();
+
   // Enable endpoint (Next.js draft-mode equivalent): the CMS preview button lands
   // here with ?slug&token. The token is a short-lived, slug-bound HMAC (safe to
   // carry in the URL); on success we move the long-lived secret into an httpOnly
   // cookie and 302 to the clean content URL, so no reusable secret is ever in a
   // URL, browser history, or access log.
   app.get("/preview", async (c) => {
-    const { secret } = resolveConfig(c);
+    const secret = c.env.PREVIEW_SECRET;
     const slug = c.req.query("slug");
     if (!slug) return c.notFound();
     const valid = await verifyPreviewToken({
@@ -46,7 +47,7 @@ export function registerPreviewRoutes(
     });
     if (!valid) return c.notFound();
 
-    setCookie(c, PREVIEW_COOKIE, secret!, {
+    setCookie(c, PREVIEW_COOKIE, secret, {
       httpOnly: true,
       // Dropped over plain http so the localhost dev servers can set it too.
       secure: new URL(c.req.url).protocol === "https:",
@@ -58,14 +59,14 @@ export function registerPreviewRoutes(
   });
 
   app.get("/preview/blog/:slug", async (c) => {
-    const { payloadUrl, secret, apiKey, styleHref } = resolveConfig(c);
     // Only reachable with the cookie set by /preview above; direct hits 404 so
     // drafts don't even reveal their existence.
-    if (!previewSecretMatches(getCookie(c, PREVIEW_COOKIE), secret))
+    if (!previewSecretMatches(getCookie(c, PREVIEW_COOKIE), c.env.PREVIEW_SECRET))
       return c.notFound();
+    const apiKey = c.env.PAYLOAD_API_KEY;
     if (!apiKey) return c.text("Preview is not configured", 500);
 
-    const client = createPreviewClient({ payloadUrl, apiKey });
+    const client = createPreviewClient({ payloadUrl: PAYLOAD_URL, apiKey });
     const [post, site] = await Promise.all([
       client.getDraftPost(c.req.param("slug")),
       client.getSite(),
@@ -79,6 +80,8 @@ export function registerPreviewRoutes(
       </>,
     );
   });
+
+  return app;
 }
 
 function PreviewDocument({
