@@ -13,7 +13,6 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "migrate:ghost": "pnpm --filter cms migrate:ghost",
     "seed:admin": "pnpm --filter cms seed:admin"
   },
   "devDependencies": {

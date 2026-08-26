@@ -18,7 +18,6 @@
     "generate:types:payload": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "oxlint .",
     "format": "oxfmt",
-    "migrate:ghost": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/ghost/run.ts",
     "seed:admin": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/admin.ts",
     "seed:api-key": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/api-key.ts",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
