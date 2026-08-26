@@ -56,10 +56,10 @@
     "@vitejs/plugin-react": "^6.0.5",
     "jsdom": "30.0.1",
     "tsx": "4.23.12",
-    "typescript": "7.0.2",
+    "typescript": "catalog:",
     "vite-tsconfig-paths": "6.1.1",
-    "vitest": "^4.1.10",
-    "wrangler": "^4.124.0"
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0",
