@@ -119,10 +119,14 @@ describe('ghost mappers', () => {
 
   describe('isMigratablePost', () => {
     it('accepts type=post', () => {
-      expect(isMigratablePost({ id: 'p', title: 't', slug: 's', status: 'published', type: 'post' })).toBe(true)
+      expect(
+        isMigratablePost({ id: 'p', title: 't', slug: 's', status: 'published', type: 'post' }),
+      ).toBe(true)
     })
     it('rejects type=page', () => {
-      expect(isMigratablePost({ id: 'p', title: 't', slug: 's', status: 'published', type: 'page' })).toBe(false)
+      expect(
+        isMigratablePost({ id: 'p', title: 't', slug: 's', status: 'published', type: 'page' }),
+      ).toBe(false)
     })
     it('treats missing type as post', () => {
       expect(isMigratablePost({ id: 'p', title: 't', slug: 's', status: 'published' })).toBe(true)

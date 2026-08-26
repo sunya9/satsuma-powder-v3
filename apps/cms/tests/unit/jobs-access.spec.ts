@@ -10,7 +10,9 @@ describe('canRunJobs', () => {
   })
 
   it('allows a matching Bearer token when there is no user', () => {
-    expect(canRunJobs({ hasUser: false, authHeader: `Bearer ${SECRET}`, secret: SECRET })).toBe(true)
+    expect(canRunJobs({ hasUser: false, authHeader: `Bearer ${SECRET}`, secret: SECRET })).toBe(
+      true,
+    )
   })
 
   it('denies a wrong or missing token', () => {
@@ -20,7 +22,9 @@ describe('canRunJobs', () => {
   })
 
   it('denies everything (without a user) when CRON_SECRET is not configured', () => {
-    expect(canRunJobs({ hasUser: false, authHeader: `Bearer ${SECRET}`, secret: undefined })).toBe(false)
+    expect(canRunJobs({ hasUser: false, authHeader: `Bearer ${SECRET}`, secret: undefined })).toBe(
+      false,
+    )
     expect(canRunJobs({ hasUser: false, authHeader: 'Bearer ', secret: undefined })).toBe(false)
     expect(canRunJobs({ hasUser: false, authHeader: null, secret: '' })).toBe(false)
   })

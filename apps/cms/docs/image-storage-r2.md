@@ -21,6 +21,7 @@ S3_SECRET_ACCESS_KEY=...
 ```
 
 R2 側の準備：
+
 1. Cloudflare で R2 バケットを作成。
 2. R2 API トークン（アクセスキー/シークレット）を発行。
 3. アカウントIDを使って `S3_ENDPOINT` を組み立てる。

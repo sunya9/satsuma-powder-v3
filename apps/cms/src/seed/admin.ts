@@ -9,7 +9,9 @@ const PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'password'
 
 async function main() {
   if (process.env.NODE_ENV === 'production') {
-    console.error('🚫 seed:admin cannot run in production (NODE_ENV=production). Local testing only.')
+    console.error(
+      '🚫 seed:admin cannot run in production (NODE_ENV=production). Local testing only.',
+    )
     process.exit(1)
   }
 

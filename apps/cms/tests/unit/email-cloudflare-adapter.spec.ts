@@ -45,8 +45,8 @@ describe('cloudflareEmailAdapter', () => {
   it('propagates binding errors to the caller', async () => {
     const send = vi.fn().mockRejectedValue(new Error('E_SENDER_NOT_VERIFIED'))
     const { adapter } = buildAdapter(send)
-    await expect(
-      adapter.sendEmail({ to: 'user@example.com', subject: 'Hi' }),
-    ).rejects.toThrow('E_SENDER_NOT_VERIFIED')
+    await expect(adapter.sendEmail({ to: 'user@example.com', subject: 'Hi' })).rejects.toThrow(
+      'E_SENDER_NOT_VERIFIED',
+    )
   })
 })

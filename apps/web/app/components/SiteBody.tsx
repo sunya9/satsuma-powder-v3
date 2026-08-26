@@ -24,10 +24,7 @@ export function SiteBody({
           <Hr />
           <p>
             ©&nbsp;
-            <a
-              class="text-link"
-              href={`https://twitter.com/${site.twitterHandle}`}
-            >
+            <a class="text-link" href={`https://twitter.com/${site.twitterHandle}`}>
               @{site.twitterHandle}
             </a>
           </p>

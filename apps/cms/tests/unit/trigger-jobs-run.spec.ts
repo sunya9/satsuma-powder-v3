@@ -7,10 +7,7 @@ describe('triggerJobsRun', () => {
   it('requests the payload jobs run endpoint with the cron secret', async () => {
     const fetch = vi.fn().mockResolvedValue(okResponse)
 
-    await triggerJobsRun(
-      { fetch },
-      { serverURL: 'https://cms.example.com', cronSecret: 's3cret' },
-    )
+    await triggerJobsRun({ fetch }, { serverURL: 'https://cms.example.com', cronSecret: 's3cret' })
 
     expect(fetch).toHaveBeenCalledOnce()
     const request = fetch.mock.calls[0][0] as Request
@@ -20,7 +17,9 @@ describe('triggerJobsRun', () => {
   })
 
   it('logs an error when the run endpoint responds non-ok', async () => {
-    const fetch = vi.fn().mockResolvedValue(new Response('nope', { status: 500, statusText: 'Internal Server Error' }))
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(new Response('nope', { status: 500, statusText: 'Internal Server Error' }))
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     await triggerJobsRun({ fetch }, { serverURL: 'https://cms.example.com', cronSecret: 's3cret' })

@@ -229,7 +229,9 @@ async function main() {
     } catch (error) {
       console.error('   ❌ html→Lexical conversion sample failed:', error)
     }
-    console.log(`   body images ≈ ${totalImages} + feature/author images to be ingested into media.`)
+    console.log(
+      `   body images ≈ ${totalImages} + feature/author images to be ingested into media.`,
+    )
     console.log('🚫 --dry-run: skipping DB writes and image downloads.')
     return
   }
@@ -245,10 +247,7 @@ async function main() {
 
   // Download an external image into media, deduped by sourceUrl; returns its media id.
   const mediaCache = new Map<string, PayloadID | undefined>()
-  const ensureMedia = async (
-    sourceUrl?: string,
-    alt?: string,
-  ): Promise<PayloadID | undefined> => {
+  const ensureMedia = async (sourceUrl?: string, alt?: string): Promise<PayloadID | undefined> => {
     if (!sourceUrl) return undefined
     if (mediaCache.has(sourceUrl)) return mediaCache.get(sourceUrl)
 
@@ -276,7 +275,12 @@ async function main() {
       const doc = await payload.create({
         collection: 'media',
         data: { alt: alt || file.name, sourceUrl },
-        file: { data: file.buffer, mimetype: file.mimetype, name: file.name, size: file.buffer.length },
+        file: {
+          data: file.buffer,
+          mimetype: file.mimetype,
+          name: file.name,
+          size: file.buffer.length,
+        },
       })
       const id = doc.id as PayloadID
       summary.media.created += 1
@@ -285,7 +289,9 @@ async function main() {
     } catch (error) {
       summary.media.failed += 1
       mediaCache.set(sourceUrl, undefined)
-      console.warn(`   ⚠️  image ingest failed (skipped): ${sourceUrl.slice(0, 60)} : ${(error as Error).message}`)
+      console.warn(
+        `   ⚠️  image ingest failed (skipped): ${sourceUrl.slice(0, 60)} : ${(error as Error).message}`,
+      )
       return undefined
     }
   }

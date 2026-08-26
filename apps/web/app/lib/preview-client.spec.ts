@@ -33,9 +33,7 @@ describe("createPreviewClient.getDraftPost", () => {
     expect(url.searchParams.get("draft")).toBe("true");
     expect(url.searchParams.get("depth")).toBe("2");
     expect(url.searchParams.get("limit")).toBe("1");
-    expect(new Headers(init.headers).get("authorization")).toBe(
-      "users API-Key key-123",
-    );
+    expect(new Headers(init.headers).get("authorization")).toBe("users API-Key key-123");
   });
 
   it("returns the first matching draft document", async () => {
@@ -63,18 +61,14 @@ describe("createPreviewClient.getDraftPost", () => {
 
 describe("createPreviewClient.getSite", () => {
   it("reads site-settings with API-Key auth", async () => {
-    const fetchFn = vi.fn(async () =>
-      jsonResponse({ title: "サイト", description: "desc" }),
-    );
+    const fetchFn = vi.fn(async () => jsonResponse({ title: "サイト", description: "desc" }));
     const client = createPreviewClient({ ...CONFIG, fetchFn });
 
     const site = await client.getSite();
 
     const [input, init] = fetchFn.mock.calls[0] as unknown as FetchArgs;
     expect(input).toContain("/api/globals/site-settings");
-    expect(new Headers(init.headers).get("authorization")).toBe(
-      "users API-Key key-123",
-    );
+    expect(new Headers(init.headers).get("authorization")).toBe("users API-Key key-123");
     expect(site.title).toBe("サイト");
   });
 });

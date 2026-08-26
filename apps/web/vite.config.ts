@@ -52,10 +52,7 @@ export default defineConfig(({ mode }) => {
     return {
       // style.css must stay a build input: builtStyleHref() and the SSG pages
       // resolve the hashed stylesheet from this build's manifest.
-      plugins: [
-        client({ input: ["/app/client.ts", "/app/style.css"] }),
-        tailwindcss(),
-      ],
+      plugins: [client({ input: ["/app/client.ts", "/app/style.css"] }), tailwindcss()],
     };
   } else {
     return {

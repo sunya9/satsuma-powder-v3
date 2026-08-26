@@ -1,16 +1,14 @@
 import type { Author, Media, Post as CmsPost, Tag } from "@cms/payload-types";
 
-const PAYLOAD_URL = (
-  import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000"
-).replace(/\/$/, "");
+const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000").replace(
+  /\/$/,
+  "",
+);
 
 // Build-time-only secret (never VITE_-prefixed, so it stays out of any client bundle).
-const API_KEY = (
-  globalThis as { process?: { env?: Record<string, string | undefined> } }
-).process?.env?.PAYLOAD_API_KEY;
-const authHeaders: HeadersInit = API_KEY
-  ? { Authorization: `users API-Key ${API_KEY}` }
-  : {};
+const API_KEY = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+  ?.env?.PAYLOAD_API_KEY;
+const authHeaders: HeadersInit = API_KEY ? { Authorization: `users API-Key ${API_KEY}` } : {};
 
 // Only published posts on the public site (an authenticated request can otherwise see drafts).
 const PUBLISHED = { "where[_status][equals]": "published" } as const;
@@ -38,16 +36,11 @@ interface ListResponse<T> {
   nextPage: number | null;
 }
 
-async function api<T>(
-  collection: string,
-  params: Record<string, string | number>,
-): Promise<T> {
+async function api<T>(collection: string, params: Record<string, string | number>): Promise<T> {
   const url = new URL(`${PAYLOAD_URL}/api/${collection}`);
-  for (const [key, value] of Object.entries(params))
-    url.searchParams.set(key, String(value));
+  for (const [key, value] of Object.entries(params)) url.searchParams.set(key, String(value));
   const res = await fetch(url.toString(), { headers: authHeaders });
-  if (!res.ok)
-    throw new Error(`Payload API ${res.status}: ${url.pathname}${url.search}`);
+  if (!res.ok) throw new Error(`Payload API ${res.status}: ${url.pathname}${url.search}`);
   return res.json() as Promise<T>;
 }
 
@@ -55,9 +48,7 @@ export function mediaUrl(media?: Media | null): string | undefined {
   // Serve directly from R2 when configured, so the runtime never touches the cms.
   if (R2_PUBLIC && media?.filename) return `${R2_PUBLIC}/${media.filename}`;
   if (!media?.url) return undefined;
-  return media.url.startsWith("http")
-    ? media.url
-    : `${PAYLOAD_URL}${media.url}`;
+  return media.url.startsWith("http") ? media.url : `${PAYLOAD_URL}${media.url}`;
 }
 
 export interface About {
@@ -79,8 +70,7 @@ export function getSite(): Promise<Site> {
     const url = new URL(`${PAYLOAD_URL}/api/globals/site-settings`);
     url.searchParams.set("depth", "1");
     const res = await fetch(url.toString(), { headers: authHeaders });
-    if (!res.ok)
-      throw new Error(`SiteSettings ${res.status} (check PAYLOAD_API_KEY)`);
+    if (!res.ok) throw new Error(`SiteSettings ${res.status} (check PAYLOAD_API_KEY)`);
     const d = (await res.json()) as {
       title?: string;
       description?: string;
@@ -101,9 +91,7 @@ export function getSite(): Promise<Site> {
 
 // Fetched once per build: all published posts with relations, ordered by -publishedAt.
 // Every post route reads from this instead of issuing its own query (cuts ~600 requests to ~2).
-let fullPostsPromise:
-  | Promise<{ ordered: Post[]; bySlug: Map<string, Post> }>
-  | undefined;
+let fullPostsPromise: Promise<{ ordered: Post[]; bySlug: Map<string, Post> }> | undefined;
 function allFullPosts() {
   fullPostsPromise ??= (async () => {
     const ordered: Post[] = [];
@@ -154,21 +142,15 @@ export const payloadRepo = {
   },
 
   // Neighbors come from the in-memory ordered list (-publishedAt).
-  async getOlderPost(
-    publishedAt?: string | null,
-  ): Promise<PostSummary | undefined> {
+  async getOlderPost(publishedAt?: string | null): Promise<PostSummary | undefined> {
     if (!publishedAt) return undefined;
     const { ordered } = await allFullPosts();
     return ordered.find((p) => (p.publishedAt ?? "") < publishedAt);
   },
 
-  async getNewerPost(
-    publishedAt?: string | null,
-  ): Promise<PostSummary | undefined> {
+  async getNewerPost(publishedAt?: string | null): Promise<PostSummary | undefined> {
     if (!publishedAt) return undefined;
     const { ordered } = await allFullPosts();
-    return [...ordered]
-      .reverse()
-      .find((p) => (p.publishedAt ?? "") > publishedAt);
+    return [...ordered].reverse().find((p) => (p.publishedAt ?? "") > publishedAt);
   },
 };

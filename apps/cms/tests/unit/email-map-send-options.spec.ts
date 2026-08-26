@@ -70,7 +70,12 @@ describe('mapSendEmailOptions', () => {
         subject: 'Hi',
         attachments: [
           { filename: 'report.csv', content: 'a,b', contentType: 'text/csv' },
-          { filename: 'logo.png', content: Buffer.from([1, 2]), contentType: 'image/png', cid: 'logo' },
+          {
+            filename: 'logo.png',
+            content: Buffer.from([1, 2]),
+            contentType: 'image/png',
+            cid: 'logo',
+          },
         ],
       },
       DEFAULTS,

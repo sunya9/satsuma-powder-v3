@@ -19,9 +19,10 @@ const PREVIEW_PATH = "/preview";
 type PreviewEnv = { Bindings: Env; Variables: {} };
 
 // Inlined at build time by Vite; not secret (the CMS URL is public knowledge).
-const PAYLOAD_URL = (
-  import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000"
-).replace(/\/$/, "");
+const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000").replace(
+  /\/$/,
+  "",
+);
 
 // Builds the draft-preview routes as a self-contained typed sub-app: the
 // production Worker exports it as-is, the dev server mounts it via app.route().
@@ -84,15 +85,7 @@ export function createPreviewApp(styleHref: string) {
   return app;
 }
 
-function PreviewDocument({
-  site,
-  post,
-  styleHref,
-}: {
-  site: Site;
-  post: Post;
-  styleHref: string;
-}) {
+function PreviewDocument({ site, post, styleHref }: { site: Site; post: Post; styleHref: string }) {
   return (
     <html lang="ja">
       <head>

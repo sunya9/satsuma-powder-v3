@@ -21,15 +21,12 @@ export default createRoute(
       payloadRepo.getNewerPost(post.publishedAt).catch(() => undefined),
     ]);
 
-    return c.render(
-      <PostMain post={post} olderPost={olderPost} newerPost={newerPost} />,
-      {
-        title: post.title,
-        description: post.excerpt ?? undefined,
-        path: `/blog/${post.slug}`,
-        type: "article",
-        image: `${config.url}/blog/${post.slug}/opengraph-image.png?${contentHash(post.title + (post.publishedAt ?? ""))}`,
-      },
-    );
+    return c.render(<PostMain post={post} olderPost={olderPost} newerPost={newerPost} />, {
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      path: `/blog/${post.slug}`,
+      type: "article",
+      image: `${config.url}/blog/${post.slug}/opengraph-image.png?${contentHash(post.title + (post.publishedAt ?? ""))}`,
+    });
   },
 );

@@ -16,9 +16,7 @@ function renderText(node: Node) {
   const fmt: number = node.format ?? 0;
   let content: unknown = node.text;
   if (fmt & IS_CODE)
-    content = (
-      <code class="rounded bg-cream px-1.5 py-0.5 text-xs">{content}</code>
-    );
+    content = <code class="rounded bg-cream px-1.5 py-0.5 text-xs">{content}</code>;
   if (fmt & IS_BOLD) content = <strong>{content}</strong>;
   if (fmt & IS_ITALIC) content = <em>{content}</em>;
   if (fmt & IS_UNDERLINE) content = <u>{content}</u>;
@@ -49,9 +47,7 @@ function instagramEmbedUrl(node: Node): string | undefined {
     const raw = n.type === "link" ? n.fields?.url : undefined;
     const m =
       typeof raw === "string"
-        ? raw.match(
-            /^https?:\/\/(?:www\.)?instagram\.com\/(?:p|reel|tv)\/[^/?#]+/i,
-          )
+        ? raw.match(/^https?:\/\/(?:www\.)?instagram\.com\/(?:p|reel|tv)\/[^/?#]+/i)
         : null;
     if (m) url = `${m[0]}/`;
     for (const c of n.children ?? []) visit(c);

@@ -44,9 +44,7 @@ async function triggerDeploy(payload: Payload): Promise<void> {
   try {
     const res = await fetch(url, { method: 'POST' })
     if (!res.ok) {
-      payload.logger.error(
-        `SSG revalidation deploy hook failed: ${res.status} ${res.statusText}`,
-      )
+      payload.logger.error(`SSG revalidation deploy hook failed: ${res.status} ${res.statusText}`)
     }
   } catch (err) {
     payload.logger.error({ err }, 'SSG revalidation deploy hook request threw')

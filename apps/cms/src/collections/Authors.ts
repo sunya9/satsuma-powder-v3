@@ -22,7 +22,9 @@ export const Authors: CollectionConfig = {
       name: 'profileImage',
       type: 'upload',
       relationTo: 'media',
-      admin: { description: '著者プロフィール画像。移行時に外部画像 (Gravatar 等) を media へ取り込む。' },
+      admin: {
+        description: '著者プロフィール画像。移行時に外部画像 (Gravatar 等) を media へ取り込む。',
+      },
     },
     { name: 'email', type: 'email' },
     { name: 'website', type: 'text' },

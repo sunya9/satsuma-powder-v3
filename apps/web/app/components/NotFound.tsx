@@ -13,9 +13,7 @@ export function NotFound() {
         <AppHeaderTitle>{NOT_FOUND_TITLE}</AppHeaderTitle>
       </AppHeader>
       <AppMain class="space-y-8">
-        <p>
-          お探しのページは見つかりませんでした。良かったらサイト内で探してみてください。
-        </p>
+        <p>お探しのページは見つかりませんでした。良かったらサイト内で探してみてください。</p>
         <LinkButton href="/">トップに戻る</LinkButton>
       </AppMain>
     </>

@@ -14,18 +14,13 @@ interface ListResponse<T> {
   docs: T[];
 }
 
-export function createPreviewClient({
-  payloadUrl,
-  apiKey,
-  fetchFn = fetch,
-}: PreviewClientConfig) {
+export function createPreviewClient({ payloadUrl, apiKey, fetchFn = fetch }: PreviewClientConfig) {
   const base = payloadUrl.replace(/\/$/, "");
   const headers: HeadersInit = { Authorization: `users API-Key ${apiKey}` };
 
   async function get<T>(url: URL): Promise<T> {
     const res = await fetchFn(url.toString(), { headers });
-    if (!res.ok)
-      throw new Error(`Payload API ${res.status}: ${url.pathname}${url.search}`);
+    if (!res.ok) throw new Error(`Payload API ${res.status}: ${url.pathname}${url.search}`);
     return res.json() as Promise<T>;
   }
 

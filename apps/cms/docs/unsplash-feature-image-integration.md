@@ -35,12 +35,12 @@ Posts（および将来的に Tags）の `featureImage` に、Ghost のエディ
 
 ## 2. 具体ファイル
 
-| ファイル | 役割 |
-|---|---|
-| `src/endpoints/unsplash.ts` | (1) 検索プロキシ: `Authorization: Client-ID ${process.env.UNSPLASH_ACCESS_KEY}` で `https://api.unsplash.com/search/photos?query=&page=` を叩く。(2) 取り込み: 選択写真を server 側でダウンロード→`media` へ create→media ID を返す（`ensureMedia` 相当）。`payload.config.ts` の `endpoints` に登録 |
-| `src/components/UnsplashPicker.tsx` | `'use client'`。検索ボックス＋結果サムネイルグリッド。選択時に取り込みエンドポイントを呼び、返った **media ID** を `@payloadcms/ui` の `useField({ path })` で `featureImage` にセット |
-| `src/collections/Posts.ts` | `featureImage`(upload) に `admin.components.Field: 'src/components/UnsplashPicker#UnsplashPicker'` を追加（標準の upload UI を Unsplash 検索付きに差し替え） |
-| `.env` / 配線 | `UNSPLASH_ACCESS_KEY` 追加 → `pnpm generate:importmap` でコンポーネント登録 |
+| ファイル                            | 役割                                                                                                                                                                                                                                                                                                 |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/endpoints/unsplash.ts`         | (1) 検索プロキシ: `Authorization: Client-ID ${process.env.UNSPLASH_ACCESS_KEY}` で `https://api.unsplash.com/search/photos?query=&page=` を叩く。(2) 取り込み: 選択写真を server 側でダウンロード→`media` へ create→media ID を返す（`ensureMedia` 相当）。`payload.config.ts` の `endpoints` に登録 |
+| `src/components/UnsplashPicker.tsx` | `'use client'`。検索ボックス＋結果サムネイルグリッド。選択時に取り込みエンドポイントを呼び、返った **media ID** を `@payloadcms/ui` の `useField({ path })` で `featureImage` にセット                                                                                                               |
+| `src/collections/Posts.ts`          | `featureImage`(upload) に `admin.components.Field: 'src/components/UnsplashPicker#UnsplashPicker'` を追加（標準の upload UI を Unsplash 検索付きに差し替え）                                                                                                                                         |
+| `.env` / 配線                       | `UNSPLASH_ACCESS_KEY` 追加 → `pnpm generate:importmap` でコンポーネント登録                                                                                                                                                                                                                          |
 
 → `featureImage` は **upload(media)**。選んだ Unsplash 写真は media（=R2）へ取り込まれ、ストレージ一本化方針と整合する。ToS のクレジット情報は media のフィールド（例: `sourceUrl` や追加の photographer 系）に保存可能。
 

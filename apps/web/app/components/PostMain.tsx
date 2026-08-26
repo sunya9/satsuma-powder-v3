@@ -53,17 +53,11 @@ export function PostMain({
       {hasRelated && (
         <nav aria-label="前後の記事" class="mt-8 grid grid-cols-2 gap-2">
           {newerPost && <NavLink post={newerPost} class="col-start-1" rel="prev" />}
-          {olderPost && (
-            <NavLink post={olderPost} class="col-start-2 text-right" rel="next" />
-          )}
+          {olderPost && <NavLink post={olderPost} class="col-start-2 text-right" rel="next" />}
         </nav>
       )}
-      {newerPost && (
-        <link rel="prefetch" href={`/blog/${newerPost.slug}`} as="document" />
-      )}
-      {olderPost && (
-        <link rel="prefetch" href={`/blog/${olderPost.slug}`} as="document" />
-      )}
+      {newerPost && <link rel="prefetch" href={`/blog/${newerPost.slug}`} as="document" />}
+      {olderPost && <link rel="prefetch" href={`/blog/${olderPost.slug}`} as="document" />}
     </AppMain>
   );
 }
@@ -76,17 +70,11 @@ function NavLink({
   return (
     <a
       href={`/blog/${post.slug}`}
-      class={cn(
-        "block border border-line p-3 no-underline hover:border-cream",
-        className,
-      )}
+      class={cn("block border border-line p-3 no-underline hover:border-cream", className)}
       {...props}
     >
       {post.publishedAt && (
-        <time
-          datetime={post.publishedAt}
-          class="tabular-nums block text-muted text-sm"
-        >
+        <time datetime={post.publishedAt} class="tabular-nums block text-muted text-sm">
           {formatDate(post.publishedAt)}
         </time>
       )}

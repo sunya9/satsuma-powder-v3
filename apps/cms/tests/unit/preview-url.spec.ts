@@ -65,7 +65,9 @@ describe('buildPreviewPath', () => {
   // Fail closed: no preview button rather than a broken/insecure URL.
   it('returns null when webUrl, slug, or secret is missing', async () => {
     expect(await buildPreviewPath({ webUrl: '', slug: 'x', secret: 's', now: 0 })).toBeNull()
-    expect(await buildPreviewPath({ webUrl: 'https://w', slug: '', secret: 's', now: 0 })).toBeNull()
+    expect(
+      await buildPreviewPath({ webUrl: 'https://w', slug: '', secret: 's', now: 0 }),
+    ).toBeNull()
     expect(
       await buildPreviewPath({ webUrl: 'https://w', slug: 'x', secret: undefined, now: 0 }),
     ).toBeNull()

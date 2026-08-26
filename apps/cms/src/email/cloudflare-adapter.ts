@@ -22,7 +22,10 @@ export function cloudflareEmailAdapter({
     defaultFromName,
     sendEmail: (message) =>
       binding.send(
-        mapSendEmailOptions(message, { fromAddress: defaultFromAddress, fromName: defaultFromName }),
+        mapSendEmailOptions(message, {
+          fromAddress: defaultFromAddress,
+          fromName: defaultFromName,
+        }),
       ),
   })
 }

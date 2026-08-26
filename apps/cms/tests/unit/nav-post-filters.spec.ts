@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import {
-  buildPostsListHref,
-  getActiveStatus,
-  STATUS_PARAM,
-} from '@/components/nav-post-filters'
+import { buildPostsListHref, getActiveStatus, STATUS_PARAM } from '@/components/nav-post-filters'
 
 describe('buildPostsListHref', () => {
   it('links to the plain list view when no status is given', () => {
