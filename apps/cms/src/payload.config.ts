@@ -18,11 +18,6 @@ import { SiteSettings } from './globals/SiteSettings'
 import { canRunJobs } from './access/canRunJobs'
 import { cloudflareEmailAdapter } from './email/cloudflare-adapter'
 import { cloudflareLogger } from './logger'
-import type { Config } from './payload-types'
-
-declare module 'payload' {
-  export interface GeneratedTypes extends Config {}
-}
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

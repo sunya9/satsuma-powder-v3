@@ -9,10 +9,6 @@ declare global {
 }
 
 declare module "hono" {
-  interface Env {
-    Variables: {};
-    Bindings: {};
-  }
   interface ContextRenderer {
     (
       children: unknown,

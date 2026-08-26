@@ -17,6 +17,7 @@ export function Articles({ posts, withoutYear, class: className }: Props) {
           aria-setsize={posts.length}
           aria-labelledby={String(post.id)}
           class="block py-3"
+          key={post.id}
         >
           {post.publishedAt && (
             <time

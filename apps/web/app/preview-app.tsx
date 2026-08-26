@@ -8,34 +8,17 @@ import { verifyPreviewToken } from "#lib/preview-token";
 import { PostMain } from "#components/PostMain";
 import { SiteBody } from "#components/SiteBody";
 
-// Draft-mode cookie: holds the shared secret so it never rides in the URL after
-// the initial redirect. Path-scoped to /preview so it's sent nowhere else.
 const PREVIEW_COOKIE = "preview_secret";
 const PREVIEW_PATH = "/preview";
 
-// Both hosts (the production Worker and the honox dev server via the cloudflare
-// adapter) expose the preview secrets as Workers bindings on `c.env`. Variables
-// is required by the hono Env augmentation in global.d.ts.
-type PreviewEnv = { Bindings: Env; Variables: {} };
-
-// Inlined at build time by Vite; not secret (the CMS URL is public knowledge).
 const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000").replace(
   /\/$/,
   "",
 );
 
-// Builds the draft-preview routes as a self-contained typed sub-app: the
-// production Worker exports it as-is, the dev server mounts it via app.route().
-// Only styleHref differs per host: a hashed asset path in the built worker vs.
-// Vite's /app/style.css during dev.
 export function createPreviewApp(styleHref: string) {
-  const app = new Hono<PreviewEnv>();
+  const app = new Hono<{ Bindings: Env }>();
 
-  // Enable endpoint (Next.js draft-mode equivalent): the CMS preview button lands
-  // here with ?slug&token. The token is a short-lived, slug-bound HMAC (safe to
-  // carry in the URL); on success we move the long-lived secret into an httpOnly
-  // cookie and 302 to the clean content URL, so no reusable secret is ever in a
-  // URL, browser history, or access log.
   app.get("/preview", async (c) => {
     const secret = c.env.PREVIEW_SECRET;
     const slug = c.req.query("slug");
@@ -91,7 +74,6 @@ function PreviewDocument({ site, post, styleHref }: { site: Site; post: Post; st
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        {/* Drafts must never be indexed or leak their URL via analytics. */}
         <meta name="robots" content="noindex,nofollow" />
         <title>
           {post.title}（プレビュー）| {site.title}

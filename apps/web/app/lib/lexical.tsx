@@ -6,11 +6,10 @@ import {
   IS_ITALIC,
   IS_STRIKETHROUGH,
   IS_UNDERLINE,
+  type LexicalNode as Node,
   safeUrl,
 } from "./lexical-shared";
 import { mediaUrl, type LexicalState, type Media } from "./payload";
-
-type Node = Record<string, any>;
 
 function renderText(node: Node) {
   const fmt: number = node.format ?? 0;
@@ -33,7 +32,7 @@ const HEADING_SIZE: Record<string, string> = {
   h6: "text-base",
 };
 
-function renderChildren(children: Node[]) {
+function renderChildren(children?: Node[]) {
   return (children ?? []).map((child) => renderNode(child));
 }
 
@@ -71,7 +70,7 @@ function renderNode(node: Node): unknown {
     }
 
     case "heading": {
-      const tag = HEADING_SIZE[node.tag] ? node.tag : "h2";
+      const tag = node.tag && HEADING_SIZE[node.tag] ? node.tag : "h2";
       const Tag = tag as "h2";
       return (
         <Tag class={`${HEADING_SIZE[tag]} my-4 text-strong text-balance`}>

@@ -27,7 +27,7 @@ export default createRoute(async (c) => {
         {[...byYear.entries()].map(([year, yearPosts]) => {
           const yearId = `year-${year}`;
           return (
-            <section aria-labelledby={yearId} class="relative">
+            <section aria-labelledby={yearId} class="relative" key={yearId}>
               <h2
                 id={yearId}
                 class="sticky top-0 pt-4 mt-4 text-3xl font-normal text-strong bg-paper z-10"

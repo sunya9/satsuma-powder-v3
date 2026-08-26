@@ -1,4 +1,4 @@
-import type { Child, JSX, PropsWithChildren } from "hono/jsx";
+import type { JSX, PropsWithChildren } from "hono/jsx";
 import { cn } from "#lib/util";
 
 export function AppHeader({ children }: PropsWithChildren) {

@@ -5,11 +5,10 @@ import {
   IS_ITALIC,
   IS_STRIKETHROUGH,
   IS_UNDERLINE,
+  type LexicalNode as Node,
   safeUrl,
 } from "./lexical-shared";
 import { mediaUrl, type LexicalState, type Media } from "./payload";
-
-type Node = Record<string, any>;
 
 function escapeHtml(s: string): string {
   return s
@@ -45,7 +44,7 @@ function node(n: Node): string {
       return inner ? `<p>${inner}</p>` : "";
     }
     case "heading": {
-      const tag = /^h[1-6]$/.test(n.tag) ? n.tag : "h2";
+      const tag = n.tag && /^h[1-6]$/.test(n.tag) ? n.tag : "h2";
       return `<${tag}>${children(n.children)}</${tag}>`;
     }
     case "quote":
