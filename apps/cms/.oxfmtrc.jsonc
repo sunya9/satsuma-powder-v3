@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "semi": false,
+  "ignorePatterns": [
+    "src/migrations/**",
+    "src/payload-types.ts",
+    "src/payload-generated-schema.ts",
+    "src/app/(payload)/admin/importMap.js",
+    "cloudflare-env.d.ts",
+  ],
+}

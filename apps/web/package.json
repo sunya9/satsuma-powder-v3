@@ -1,5 +1,6 @@
 {
   "name": "web",
+  "private": true,
   "type": "module",
   "imports": {
     "#*": "./app/*"
@@ -12,7 +13,6 @@
     "preview": "wrangler dev",
     "generate-types": "wrangler types"
   },
-  "private": true,
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.3.3",

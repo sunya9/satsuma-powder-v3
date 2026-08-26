@@ -22,11 +22,9 @@ updates:
           - "react-dom"
           - "@types/react"
           - "@types/react-dom"
-      # eslint-config-next tracks the next version.
       next:
         patterns:
           - "next"
-          - "eslint-config-next"
       hono:
         patterns:
           - "hono"

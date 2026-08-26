@@ -16,7 +16,8 @@
     "generate:types": "pnpm run generate:types:cloudflare && pnpm run generate:types:payload",
     "generate:types:cloudflare": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "generate:types:payload": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
-    "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
+    "lint": "oxlint .",
+    "format": "oxfmt",
     "migrate:ghost": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/ghost/run.ts",
     "seed:admin": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/admin.ts",
     "seed:api-key": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/api-key.ts",
@@ -45,7 +46,6 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
     "@playwright/test": "1.62.1",
     "@testing-library/react": "16.3.2",
     "@types/jsdom": "^30.0.0",
@@ -54,10 +54,7 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
-    "eslint": "^9.16.0",
-    "eslint-config-next": "16.3.1",
     "jsdom": "30.0.1",
-    "prettier": "^3.9.6",
     "tsx": "4.23.12",
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "6.1.1",

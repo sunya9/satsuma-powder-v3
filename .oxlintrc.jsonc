@@ -1,0 +1,44 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "unicorn", "oxc"],
+  "settings": {
+    "next": { "rootDir": "apps/cms/" },
+  },
+  "rules": {
+    "typescript/ban-ts-comment": "warn",
+    "typescript/no-empty-object-type": "warn",
+    "typescript/no-explicit-any": "warn",
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false,
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^(_|ignore)",
+      },
+    ],
+  },
+  "overrides": [
+    {
+      "files": ["apps/cms/**"],
+      "plugins": ["nextjs"],
+    },
+  ],
+  "ignorePatterns": [
+    "apps/cms/.next/**",
+    "apps/cms/.open-next/**",
+    "apps/cms/.wrangler/**",
+    "apps/cms/src/migrations/**",
+    "apps/cms/src/payload-types.ts",
+    "apps/cms/src/payload-generated-schema.ts",
+    "apps/cms/src/app/(payload)/admin/importMap.js",
+    "apps/cms/cloudflare-env.d.ts",
+    "apps/web/dist/**",
+    "apps/web/dist-worker/**",
+    "apps/web/.wrangler/**",
+    "apps/web/worker-configuration.d.ts",
+  ],
+}
