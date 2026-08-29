@@ -20,7 +20,7 @@
     "csstype": "^3.2.3",
     "hono": "^4.13.4",
     "honox": "0.1.61",
-    "satori": "^0.29.0",
+    "satori": "^0.33.4",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3"
   },
