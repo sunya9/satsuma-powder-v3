@@ -16,8 +16,8 @@
     "seed:admin": "pnpm --filter cms seed:admin"
   },
   "devDependencies": {
-    "oxfmt": "^0.65.0",
-    "oxlint": "^1.80.0"
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0"
   },
   "engines": {
     "node": ">=24",
