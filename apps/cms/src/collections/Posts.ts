@@ -33,7 +33,7 @@ export const Posts: CollectionConfig = {
       name: 'excerpt',
       type: 'textarea',
       admin: {
-        description: 'Ghost の custom_excerpt 相当。一覧やSNS共有で使う短い要約。',
+        description: '一覧やSNS共有で使う短い要約。',
       },
     },
     {
@@ -41,7 +41,7 @@ export const Posts: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       admin: {
-        description: 'アイキャッチ画像。移行時に Ghost の feature_image を media へ取り込む。',
+        description: 'アイキャッチ画像。',
       },
     },
     {

@@ -7,15 +7,7 @@ import { describe, it, beforeAll, expect } from 'vitest'
 
 let payload: Payload
 
-/**
- * Integration test verifying the Posts schema behavior for the Ghost migration.
- * - The three collections: Posts / Tags / Authors
- * - Automatic slug generation
- * - draft/publish (versions.drafts)
- * - Relations (authors / tags)
- * - SEO meta (plugin-seo)
- */
-describe('Blog schema (Ghost migration)', () => {
+describe('Blog schema', () => {
   beforeAll(async () => {
     payload = await getPayload({ config: await config })
 
@@ -29,13 +21,13 @@ describe('Blog schema (Ghost migration)', () => {
   it('auto-assigns a slug when none is provided', async () => {
     const post = await payload.create({
       collection: 'posts',
-      data: { title: 'Hello Ghost Migration' },
+      data: { title: 'Hello' },
     })
 
     expect(post.id).toBeDefined()
     // Not derived from the title — an auto-assigned id.
     expect(post.slug).toMatch(/^[a-z0-9]+$/)
-    expect(post.slug).not.toBe('hello-ghost-migration')
+    expect(post.slug).not.toBe('hello')
   })
 
   it('keeps an explicit slug', async () => {

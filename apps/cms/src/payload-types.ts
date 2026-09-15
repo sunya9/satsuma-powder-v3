@@ -215,11 +215,11 @@ export interface Post {
     [k: string]: unknown;
   } | null;
   /**
-   * Ghost の custom_excerpt 相当。一覧やSNS共有で使う短い要約。
+   * 一覧やSNS共有で使う短い要約。
    */
   excerpt?: string | null;
   /**
-   * アイキャッチ画像。移行時に Ghost の feature_image を media へ取り込む。
+   * アイキャッチ画像。
    */
   featureImage?: (number | null) | Media;
   authors?: (number | Author)[] | null;
