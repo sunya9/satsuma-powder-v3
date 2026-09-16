@@ -1,11 +1,15 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
+import { createStripExif } from '../hooks/strip-exif'
 
 // Images are served publicly straight from R2, so the cms API itself can stay private.
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
     read: authenticated,
+  },
+  hooks: {
+    beforeOperation: [createStripExif()],
   },
   fields: [
     {
