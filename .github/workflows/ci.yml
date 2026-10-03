@@ -41,3 +41,20 @@ jobs:
         run: pnpm --filter cms test:int
         env:
           PAYLOAD_SECRET: ci-test-secret
+
+      # A Payload/plugin upgrade can change the schema; `payload migrate` only
+      # applies committed files, so an uncommitted diff would silently ship.
+      - name: Check for missing migrations
+        working-directory: apps/cms
+        run: |
+          pnpm payload migrate:create ci_schema_check --skip-empty
+          if [ -n "$(git status --porcelain src/migrations)" ]; then
+            git status --porcelain src/migrations
+            echo "::error::Schema changed without a migration. Run 'pnpm payload migrate:create <name>' in apps/cms and commit the result."
+            exit 1
+          fi
+        env:
+          PAYLOAD_SECRET: ci-test-secret
+          DATABASE_URL: file:${{ runner.temp }}/migration-check.db
+          # Disables the dev-only schema push in payload.config.ts.
+          NODE_ENV: production
