@@ -4,6 +4,7 @@ import * as migration_20260702_024434_add_autosave_drafts from './20260702_02443
 import * as migration_20260711_024303_add_query_presets from './20260711_024303_add_query_presets';
 import * as migration_20260711_025117_remove_post_visibility from './20260711_025117_remove_post_visibility';
 import * as migration_20260711_040608_remove_query_presets from './20260711_040608_remove_query_presets';
+import * as migration_20261003_112011_add_reset_password_requested_at from './20261003_112011_add_reset_password_requested_at';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260711_040608_remove_query_presets.up,
     down: migration_20260711_040608_remove_query_presets.down,
-    name: '20260711_040608_remove_query_presets'
+    name: '20260711_040608_remove_query_presets',
+  },
+  {
+    up: migration_20261003_112011_add_reset_password_requested_at.up,
+    down: migration_20261003_112011_add_reset_password_requested_at.down,
+    name: '20261003_112011_add_reset_password_requested_at'
   },
 ];
