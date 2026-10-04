@@ -45,8 +45,9 @@
   // and only after the domain is onboarded (npx wrangler email sending enable
   // <domain>), otherwise sends fail with E_SENDER_NOT_VERIFIED instead of
   // falling back to console logging. EMAIL_FROM_NAME is optional.
-  // WEB_URL + PREVIEW_SECRET (secret) feed admin.preview; without both the
-  // preview button stays hidden (buildPreviewPath is fail-closed).
+  // WEB_URL feeds admin.preview (tokens are signed with a key derived from
+  // PAYLOAD_SECRET); without it the preview button stays hidden
+  // (buildPreviewPath is fail-closed).
   "vars": {
     "SERVER_URL": "https://payload-cms.unsweets.net",
     "WEB_URL": "https://private.unsweets.net",

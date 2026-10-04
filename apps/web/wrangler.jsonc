@@ -16,7 +16,7 @@
     "command": "pnpm build",
   },
   "secrets": {
-    "required": ["PREVIEW_SECRET", "PAYLOAD_API_KEY"],
+    "required": ["PAYLOAD_API_KEY"],
   },
   "routes": [{ "pattern": "private.unsweets.net", "custom_domain": true }],
 }

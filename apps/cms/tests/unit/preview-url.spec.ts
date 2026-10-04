@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { buildPreviewPath } from '@/fields/preview'
 
 describe('buildPreviewPath', () => {
-  // Fixed vector shared with apps/web preview-token — both must agree on the
-  // HMAC message `${slug}:${exp}` and `${exp}.${hex}` token layout.
+  // Fixed vector also checked by verifyPreviewToken (preview-token.spec) — both
+  // must agree on the HMAC message `${slug}:${exp}` and `${exp}.${hex}` layout.
   it('builds a /preview enable URL with a slug-bound HMAC token', async () => {
     expect(
       await buildPreviewPath({

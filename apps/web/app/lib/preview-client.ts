@@ -25,6 +25,20 @@ export function createPreviewClient({ payloadUrl, apiKey, fetchFn = fetch }: Pre
   }
 
   return {
+    // The signing key lives only in the CMS, so every check is a round trip.
+    // Any failure reads as "invalid" so an unreachable CMS never unlocks a draft.
+    async verifyPreviewToken({ slug, token }: { slug: string; token: string }): Promise<boolean> {
+      const url = new URL(`${base}/api/posts/preview-token/verify`);
+      url.searchParams.set("slug", slug);
+      url.searchParams.set("token", token);
+      try {
+        const res = await fetchFn(url.toString(), { headers });
+        return res.status === 200;
+      } catch {
+        return false;
+      }
+    },
+
     async getDraftPost(slug: string): Promise<Post | undefined> {
       const url = new URL(`${base}/api/posts`);
       url.searchParams.set("where[slug][equals]", slug);

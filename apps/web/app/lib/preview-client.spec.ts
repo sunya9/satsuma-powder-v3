@@ -72,3 +72,49 @@ describe("createPreviewClient.getSite", () => {
     expect(site.title).toBe("サイト");
   });
 });
+
+describe("createPreviewClient.verifyPreviewToken", () => {
+  it("asks the CMS verify endpoint with slug, token and API-Key auth", async () => {
+    const fetchFn = vi.fn(async () => jsonResponse({ ok: true }));
+    const client = createPreviewClient({ ...CONFIG, fetchFn });
+
+    await client.verifyPreviewToken({ slug: "日本語", token: "123.abc" });
+
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+    const [input, init] = fetchFn.mock.calls[0] as unknown as FetchArgs;
+    const url = new URL(input);
+    expect(url.origin + url.pathname).toBe(
+      "https://cms.example.com/api/posts/preview-token/verify",
+    );
+    expect(url.searchParams.get("slug")).toBe("日本語");
+    expect(url.searchParams.get("token")).toBe("123.abc");
+    expect(new Headers(init.headers).get("authorization")).toBe("users API-Key key-123");
+  });
+
+  it("returns true only for a 200 response", async () => {
+    const client = createPreviewClient({
+      ...CONFIG,
+      fetchFn: vi.fn(async () => jsonResponse({ ok: true })),
+    });
+    await expect(client.verifyPreviewToken({ slug: "a", token: "t" })).resolves.toBe(true);
+  });
+
+  it.each([401, 404, 500])("returns false for a %i response", async (status) => {
+    const client = createPreviewClient({
+      ...CONFIG,
+      fetchFn: vi.fn(async () => jsonResponse({ ok: false }, { status })),
+    });
+    await expect(client.verifyPreviewToken({ slug: "a", token: "t" })).resolves.toBe(false);
+  });
+
+  // Fail closed: an unreachable CMS must not unlock a draft.
+  it("returns false when the request fails", async () => {
+    const client = createPreviewClient({
+      ...CONFIG,
+      fetchFn: vi.fn(async () => {
+        throw new TypeError("network down");
+      }),
+    });
+    await expect(client.verifyPreviewToken({ slug: "a", token: "t" })).resolves.toBe(false);
+  });
+});

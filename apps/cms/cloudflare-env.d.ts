@@ -13,7 +13,6 @@ interface __BaseEnv_CloudflareEnv {
 	S3_REGION: string;
 	S3_ACCESS_KEY_ID: string;
 	S3_SECRET_ACCESS_KEY: string;
-	PREVIEW_SECRET: string;
 	WEB_URL: string;
 	WORKER_SELF_REFERENCE: Service<typeof import("./custom-worker").default>;
 }
@@ -28,7 +27,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "SERVER_URL" | "PAYLOAD_SECRET" | "DATABASE_URL" | "S3_BUCKET" | "S3_ENDPOINT" | "S3_REGION" | "S3_ACCESS_KEY_ID" | "S3_SECRET_ACCESS_KEY" | "PREVIEW_SECRET" | "WEB_URL">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "SERVER_URL" | "PAYLOAD_SECRET" | "DATABASE_URL" | "S3_BUCKET" | "S3_ENDPOINT" | "S3_REGION" | "S3_ACCESS_KEY_ID" | "S3_SECRET_ACCESS_KEY" | "WEB_URL">> {}
 }
 
 // Begin runtime types

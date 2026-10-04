@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { autoIdSlug } from '../fields/slug'
-import { buildPreviewPath } from '../fields/preview'
+import { buildPreviewPath, derivePreviewKey, resolvePreviewVerification } from '../fields/preview'
 import { createAfterChangeRevalidate, createAfterDeleteRevalidate } from '../hooks/revalidate'
 import { createSetPublishedAt } from '../hooks/published-at'
 
@@ -11,14 +11,31 @@ export const Posts: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'authors', '_status', 'publishedAt'],
     // Opens the web draft-preview route in a new tab (see buildPreviewPath).
-    preview: (data) =>
+    preview: async (data, { req }) =>
       buildPreviewPath({
         webUrl: process.env.WEB_URL,
         slug: typeof data?.slug === 'string' ? data.slug : undefined,
-        secret: process.env.PREVIEW_SECRET,
+        secret: await derivePreviewKey(req.payload.secret),
         now: Date.now(),
       }),
   },
+  endpoints: [
+    {
+      // Called by the web preview Worker (API key) so the signing key stays in the CMS.
+      path: '/preview-token/verify',
+      method: 'get',
+      handler: async (req) => {
+        const { status, body } = await resolvePreviewVerification({
+          authenticated: Boolean(req.user),
+          slug: req.searchParams.get('slug'),
+          token: req.searchParams.get('token'),
+          secret: await derivePreviewKey(req.payload.secret),
+          now: Date.now(),
+        })
+        return Response.json(body, { status })
+      },
+    },
+  ],
   access: {
     read: authenticated,
   },
