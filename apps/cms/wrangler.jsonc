@@ -3,6 +3,8 @@
   "name": "satsuma-powder-v3-cms",
   "main": "custom-worker.ts",
   "compatibility_date": "2026-06-26",
+  "workers_dev": false,
+  "preview_urls": false,
   // Triggers Payload's jobs runner so scheduled publish/unpublish executes.
   "triggers": { "crons": ["*/5 * * * *"] },
   "services": [
