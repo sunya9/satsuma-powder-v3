@@ -145,11 +145,11 @@ importers:
         specifier: ^3.2.3
         version: 3.2.3
       hono:
-        specifier: ^4.13.12
-        version: 4.13.12
+        specifier: ^4.13.13
+        version: 4.13.13
       honox:
         specifier: 0.1.61
-        version: 0.1.61(hono@4.13.12)(miniflare@4.20260714.0(@types/node@26.6.3))(supports-color@10.2.2)(wrangler@4.136.3(@types/node@26.6.3))
+        version: 0.1.61(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.3))(supports-color@10.2.2)(wrangler@4.136.3(@types/node@26.6.3))
       satori:
         specifier: ^0.33.5
         version: 0.33.5
@@ -162,13 +162,13 @@ importers:
     devDependencies:
       '@hono/vite-build':
         specifier: ^1.11.1
-        version: 1.11.1(hono@4.13.12)
+        version: 1.11.1(hono@4.13.13)
       '@hono/vite-dev-server':
         specifier: ^0.26.1
-        version: 0.26.1(hono@4.13.12)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))
+        version: 0.26.1(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))
       '@hono/vite-ssg':
         specifier: ^0.3.3
-        version: 0.3.3(hono@4.13.12)
+        version: 0.3.3(hono@4.13.13)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -3514,8 +3514,8 @@ packages:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
 
-  hono@4.13.12:
-    resolution: {integrity: sha512-6E2QDAc9Ick9Sq77ZrGS/dk2WUYni91aufTw6LJKpV7w8kW5/GxVUc650FOADOmlwg3K+f7Pun6XlV+pYmW6gw==}
+  hono@4.13.13:
+    resolution: {integrity: sha512-CQ46U0ZkAGmbT/4UxdzzGJpacP2IeKgY4a5/tOI9AABbpOMfK739wfDXmv1usCk+3RkKj1hQy4/fjhiwa2xlrA==}
     engines: {node: '>=16.9.0'}
 
   honox@0.1.61:
@@ -6188,35 +6188,35 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@hono/node-server@1.19.17(hono@4.13.12)':
+  '@hono/node-server@1.19.17(hono@4.13.13)':
     dependencies:
-      hono: 4.13.12
+      hono: 4.13.13
 
-  '@hono/vite-build@1.11.1(hono@4.13.12)':
+  '@hono/vite-build@1.11.1(hono@4.13.13)':
     dependencies:
-      hono: 4.13.12
+      hono: 4.13.13
 
-  '@hono/vite-dev-server@0.25.3(hono@4.13.12)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))':
+  '@hono/vite-dev-server@0.25.3(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))':
     dependencies:
-      '@hono/node-server': 1.19.17(hono@4.13.12)
-      hono: 4.13.12
+      '@hono/node-server': 1.19.17(hono@4.13.13)
+      hono: 4.13.13
       minimatch: 9.0.9
     optionalDependencies:
       miniflare: 4.20260714.0(@types/node@26.6.3)
       wrangler: 4.136.3(@types/node@26.6.3)
 
-  '@hono/vite-dev-server@0.26.1(hono@4.13.12)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))':
+  '@hono/vite-dev-server@0.26.1(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))':
     dependencies:
-      '@hono/node-server': 1.19.17(hono@4.13.12)
-      hono: 4.13.12
+      '@hono/node-server': 1.19.17(hono@4.13.13)
+      hono: 4.13.13
       minimatch: 9.0.9
     optionalDependencies:
       miniflare: 4.20260714.0(@types/node@26.6.3)
       wrangler: 4.136.3(@types/node@26.6.3)
 
-  '@hono/vite-ssg@0.3.3(hono@4.13.12)':
+  '@hono/vite-ssg@0.3.3(hono@4.13.13)':
     dependencies:
-      hono: 4.13.12
+      hono: 4.13.13
 
   '@img/colour@1.1.0': {}
 
@@ -8621,16 +8621,16 @@ snapshots:
     dependencies:
       parse-passwd: 1.0.0
 
-  hono@4.13.12: {}
+  hono@4.13.13: {}
 
-  honox@0.1.61(hono@4.13.12)(miniflare@4.20260714.0(@types/node@26.6.3))(supports-color@10.2.2)(wrangler@4.136.3(@types/node@26.6.3)):
+  honox@0.1.61(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.3))(supports-color@10.2.2)(wrangler@4.136.3(@types/node@26.6.3)):
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
       '@babel/traverse': 7.29.0(supports-color@10.2.2)
       '@babel/types': 7.29.0
-      '@hono/vite-dev-server': 0.25.3(hono@4.13.12)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))
-      hono: 4.13.12
+      '@hono/vite-dev-server': 0.25.3(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.3))(wrangler@4.136.3(@types/node@26.6.3))
+      hono: 4.13.13
       jsonc-parser: 3.3.1
       precinct: 12.2.0(supports-color@10.2.2)
     optionalDependencies:
