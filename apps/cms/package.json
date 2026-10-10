@@ -36,11 +36,11 @@
     "@payloadcms/storage-r2": "3.90.2",
     "@payloadcms/ui": "3.90.2",
     "cross-env": "^10.1.0",
-    "dotenv": "18.0.5",
+    "dotenv": "18.0.6",
     "graphql": "^17.0.2",
     "next": "16.4.0",
     "payload": "3.90.2",
-    "pino": "10.3.1",
+    "pino": "10.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
