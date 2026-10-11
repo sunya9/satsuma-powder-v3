@@ -1,6 +1,5 @@
 // Create/refresh the build user whose API key the web SSG build uses to read the API.
 // WEB_API_KEY must match the web build's PAYLOAD_API_KEY.
-import 'dotenv/config'
 import { getPayload } from 'payload'
 
 import config from '../payload.config'
@@ -34,9 +33,4 @@ async function main() {
   }
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error)
-    process.exit(1)
-  })
+await main()
