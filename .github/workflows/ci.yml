@@ -56,5 +56,6 @@ jobs:
         env:
           PAYLOAD_SECRET: ci-test-secret
           DATABASE_URL: file:${{ runner.temp }}/migration-check.db
+          MEDIA_PUBLIC_URL: https://media.test
           # Disables the dev-only schema push in payload.config.ts.
           NODE_ENV: production

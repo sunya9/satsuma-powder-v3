@@ -7,3 +7,5 @@ try {
 
 // Use a dedicated test DB so tests don't touch the dev DB. Override after .env is loaded.
 process.env.DATABASE_URL = 'file:./test.db'
+
+process.env.MEDIA_PUBLIC_URL ??= 'https://media.test'

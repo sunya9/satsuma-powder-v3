@@ -51,6 +51,7 @@
   "vars": {
     "SERVER_URL": "https://payload-cms.unsweets.net",
     "WEB_URL": "https://private.unsweets.net",
+    "MEDIA_PUBLIC_URL": "https://konamikan-cdn.unsweets.net",
   },
   // No "routes" yet: attach payload-cms.unsweets.net from the dashboard.
   // The old payload.unsweets.net stays on Vercel until decommission.

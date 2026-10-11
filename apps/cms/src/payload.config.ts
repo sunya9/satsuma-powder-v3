@@ -48,6 +48,11 @@ const cloudflare = isWorkerd
   ? await getCloudflareContext({ async: true })
   : await getCloudflareContextFromWrangler()
 
+const mediaPublicUrl = process.env.MEDIA_PUBLIC_URL?.replace(/\/$/, '')
+if (!mediaPublicUrl) {
+  throw new Error('MEDIA_PUBLIC_URL is required (public base URL of the media bucket)')
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -118,7 +123,13 @@ export default buildConfig({
     // simulation from wrangler (object keys match what storage-s3 wrote).
     r2Storage({
       bucket: cloudflare.env.R2,
-      collections: { media: true },
+      collections: {
+        media: {
+          // Files are public on the R2 custom domain; skip Payload's authenticated file proxy.
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename }) => `${mediaPublicUrl}/${filename}`,
+        },
+      },
     }),
   ],
 })
