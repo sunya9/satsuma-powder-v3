@@ -1,91 +1,29 @@
-import type { Author, Media, Post as CmsPost, Tag } from "@cms/payload-types";
+import {
+  createPayloadClient,
+  PAYLOAD_URL,
+  type Post,
+  type PostSummary,
+  type Site,
+} from "#lib/payload-client";
 
-const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000").replace(
-  /\/$/,
-  "",
-);
+export { mediaUrl } from "#lib/payload-client";
+export type { About, LexicalState, Media, Post, PostSummary, Site } from "#lib/payload-client";
 
-// Build-time-only secret (never VITE_-prefixed, so it stays out of any client bundle).
-const API_KEY = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
-  ?.env?.PAYLOAD_API_KEY;
-const authHeaders: HeadersInit = API_KEY ? { Authorization: `users API-Key ${API_KEY}` } : {};
+// Build-time only: this module is reached from the SSG routes alone, never from
+// the Worker bundle, so it may read Node's process. The key stays out of every
+// client bundle because it is not VITE_-prefixed.
+const client = createPayloadClient({
+  payloadUrl: PAYLOAD_URL,
+  apiKey: process.env.PAYLOAD_API_KEY,
+});
 
 // Only published posts on the public site (an authenticated request can otherwise see drafts).
 const PUBLISHED = { "where[_status][equals]": "published" } as const;
 
-// Public R2 base URL. When set, images are served directly from R2 (no cms at runtime).
-const R2_PUBLIC = (import.meta.env.VITE_R2_PUBLIC_URL ?? "").replace(/\/$/, "");
-
-// Derived from the generated cms types; slug and relations narrowed for the
-// web's published, depth=2 data.
-export type { Media };
-export type LexicalState = NonNullable<CmsPost["content"]>;
-export type PostSummary = Pick<CmsPost, "id" | "title" | "publishedAt"> & {
-  slug: string;
-};
-export type Post = PostSummary &
-  Pick<CmsPost, "content" | "excerpt"> & {
-    featureImage?: Media | null;
-    authors?: Author[] | null;
-    tags?: Tag[] | null;
-  };
-
-interface ListResponse<T> {
-  docs: T[];
-  hasNextPage: boolean;
-  nextPage: number | null;
-}
-
-async function api<T>(collection: string, params: Record<string, string | number>): Promise<T> {
-  const url = new URL(`${PAYLOAD_URL}/api/${collection}`);
-  for (const [key, value] of Object.entries(params)) url.searchParams.set(key, String(value));
-  const res = await fetch(url.toString(), { headers: authHeaders });
-  if (!res.ok) throw new Error(`Payload API ${res.status}: ${url.pathname}${url.search}`);
-  return res.json() as Promise<T>;
-}
-
-export function mediaUrl(media?: Media | null): string | undefined {
-  // Serve directly from R2 when configured, so the runtime never touches the cms.
-  if (R2_PUBLIC && media?.filename) return `${R2_PUBLIC}/${media.filename}`;
-  if (!media?.url) return undefined;
-  return media.url.startsWith("http") ? media.url : `${PAYLOAD_URL}${media.url}`;
-}
-
-export interface About {
-  content?: LexicalState | null;
-}
-
-export interface Site {
-  title: string;
-  description: string;
-  twitterHandle: string;
-  iconUrl?: string;
-  coverUrl?: string;
-}
-
 // Memoized once per build/process: site metadata lives in the cms SiteSettings global.
 let sitePromise: Promise<Site> | undefined;
 export function getSite(): Promise<Site> {
-  sitePromise ??= (async () => {
-    const url = new URL(`${PAYLOAD_URL}/api/globals/site-settings`);
-    url.searchParams.set("depth", "1");
-    const res = await fetch(url.toString(), { headers: authHeaders });
-    if (!res.ok) throw new Error(`SiteSettings ${res.status} (check PAYLOAD_API_KEY)`);
-    const d = (await res.json()) as {
-      title?: string;
-      description?: string;
-      twitterHandle?: string;
-      icon?: Media | null;
-      coverImage?: Media | null;
-    };
-    return {
-      title: d.title ?? "",
-      description: d.description ?? "",
-      twitterHandle: d.twitterHandle ?? "",
-      iconUrl: mediaUrl(d.icon),
-      coverUrl: mediaUrl(d.coverImage),
-    };
-  })();
+  sitePromise ??= client.site();
   return sitePromise;
 }
 
@@ -97,7 +35,7 @@ function allFullPosts() {
     const ordered: Post[] = [];
     let page = 1;
     while (true) {
-      const res = await api<ListResponse<Post>>("posts", {
+      const res = await client.posts({
         depth: 2,
         limit: 100,
         page,
@@ -114,17 +52,7 @@ function allFullPosts() {
 }
 
 export const payloadRepo = {
-  async getAbout(): Promise<About | undefined> {
-    try {
-      const url = new URL(`${PAYLOAD_URL}/api/globals/about`);
-      url.searchParams.set("depth", "2");
-      const res = await fetch(url.toString(), { headers: authHeaders });
-      if (!res.ok) return undefined;
-      return (await res.json()) as About;
-    } catch {
-      return undefined;
-    }
-  },
+  getAbout: () => client.about(),
 
   async getPosts(size = Infinity): Promise<PostSummary[]> {
     const { ordered } = await allFullPosts();

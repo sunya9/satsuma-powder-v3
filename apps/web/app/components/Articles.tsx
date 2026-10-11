@@ -1,5 +1,5 @@
 import { formatDate } from "#lib/date";
-import type { PostSummary } from "#lib/payload";
+import type { PostSummary } from "#lib/payload-client";
 
 interface Props {
   posts: PostSummary[];

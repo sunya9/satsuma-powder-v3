@@ -1,7 +1,7 @@
 import type { JSX } from "hono/jsx";
 import { formatDate } from "#lib/date";
 import { LexicalContent } from "#lib/lexical";
-import { mediaUrl, type Post, type PostSummary } from "#lib/payload";
+import { mediaUrl, type Post, type PostSummary } from "#lib/payload-client";
 import { cn } from "#lib/util";
 import { AppMain } from "#components/AppMain";
 

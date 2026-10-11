@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "hono/jsx";
-import type { Site } from "#lib/payload";
+import type { Site } from "#lib/payload-client";
 import { LinkButton } from "#components/LinkButton";
 import { Hr } from "#components/Hr";
 

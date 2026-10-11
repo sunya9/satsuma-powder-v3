@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createPreviewClient } from "#lib/preview-client";
+import { createPayloadClient } from "#lib/payload-client";
 
 const CONFIG = {
   payloadUrl: "https://cms.example.com",
@@ -18,12 +18,12 @@ function jsonResponse(body: unknown, init?: ResponseInit): Response {
 // the client actually calls fetch with.
 type FetchArgs = [string, RequestInit];
 
-describe("createPreviewClient.getDraftPost", () => {
+describe("createPayloadClient.draftPost", () => {
   it("queries the latest draft by slug with API-Key auth", async () => {
     const fetchFn = vi.fn(async () => jsonResponse({ docs: [{ id: 1 }] }));
-    const client = createPreviewClient({ ...CONFIG, fetchFn });
+    const client = createPayloadClient({ ...CONFIG, fetchFn });
 
-    await client.getDraftPost("hello-world");
+    await client.draftPost("hello-world");
 
     expect(fetchFn).toHaveBeenCalledTimes(1);
     const [input, init] = fetchFn.mock.calls[0] as unknown as FetchArgs;
@@ -39,32 +39,73 @@ describe("createPreviewClient.getDraftPost", () => {
   it("returns the first matching draft document", async () => {
     const post = { id: 7, slug: "draft-post", title: "下書き" };
     const fetchFn = vi.fn(async () => jsonResponse({ docs: [post] }));
-    const client = createPreviewClient({ ...CONFIG, fetchFn });
+    const client = createPayloadClient({ ...CONFIG, fetchFn });
 
-    await expect(client.getDraftPost("draft-post")).resolves.toEqual(post);
+    await expect(client.draftPost("draft-post")).resolves.toEqual(post);
   });
 
   it("returns undefined when no document matches", async () => {
     const fetchFn = vi.fn(async () => jsonResponse({ docs: [] }));
-    const client = createPreviewClient({ ...CONFIG, fetchFn });
+    const client = createPayloadClient({ ...CONFIG, fetchFn });
 
-    await expect(client.getDraftPost("missing")).resolves.toBeUndefined();
+    await expect(client.draftPost("missing")).resolves.toBeUndefined();
   });
 
   it("throws when the CMS responds with an error status", async () => {
     const fetchFn = vi.fn(async () => jsonResponse({}, { status: 401 }));
-    const client = createPreviewClient({ ...CONFIG, fetchFn });
+    const client = createPayloadClient({ ...CONFIG, fetchFn });
 
-    await expect(client.getDraftPost("any")).rejects.toThrow(/401/);
+    await expect(client.draftPost("any")).rejects.toThrow(/401/);
   });
 });
 
-describe("createPreviewClient.getSite", () => {
+describe("createPayloadClient.posts", () => {
+  it("sets every given param on the query string with API-Key auth", async () => {
+    const fetchFn = vi.fn(async () =>
+      jsonResponse({ docs: [], hasNextPage: false, nextPage: null }),
+    );
+    const client = createPayloadClient({ ...CONFIG, fetchFn });
+
+    await client.posts({
+      depth: 2,
+      limit: 100,
+      page: 3,
+      sort: "-publishedAt",
+      "where[_status][equals]": "published",
+    });
+
+    const [input, init] = fetchFn.mock.calls[0] as unknown as FetchArgs;
+    const url = new URL(input);
+    expect(url.origin + url.pathname).toBe("https://cms.example.com/api/posts");
+    expect(url.searchParams.get("depth")).toBe("2");
+    expect(url.searchParams.get("limit")).toBe("100");
+    expect(url.searchParams.get("page")).toBe("3");
+    expect(url.searchParams.get("sort")).toBe("-publishedAt");
+    expect(url.searchParams.get("where[_status][equals]")).toBe("published");
+    expect(new Headers(init.headers).get("authorization")).toBe("users API-Key key-123");
+  });
+});
+
+describe("createPayloadClient without an API key", () => {
+  it("sends no Authorization header", async () => {
+    const fetchFn = vi.fn(async () =>
+      jsonResponse({ docs: [], hasNextPage: false, nextPage: null }),
+    );
+    const client = createPayloadClient({ ...CONFIG, apiKey: undefined, fetchFn });
+
+    await client.posts({ depth: 2 });
+
+    const [, init] = fetchFn.mock.calls[0] as unknown as FetchArgs;
+    expect(new Headers(init.headers).has("authorization")).toBe(false);
+  });
+});
+
+describe("createPayloadClient.site", () => {
   it("reads site-settings with API-Key auth", async () => {
     const fetchFn = vi.fn(async () => jsonResponse({ title: "サイト", description: "desc" }));
-    const client = createPreviewClient({ ...CONFIG, fetchFn });
+    const client = createPayloadClient({ ...CONFIG, fetchFn });
 
-    const site = await client.getSite();
+    const site = await client.site();
 
     const [input, init] = fetchFn.mock.calls[0] as unknown as FetchArgs;
     expect(input).toContain("/api/globals/site-settings");
@@ -73,10 +114,10 @@ describe("createPreviewClient.getSite", () => {
   });
 });
 
-describe("createPreviewClient.verifyPreviewToken", () => {
+describe("createPayloadClient.verifyPreviewToken", () => {
   it("asks the CMS verify endpoint with slug, token and API-Key auth", async () => {
     const fetchFn = vi.fn(async () => jsonResponse({ ok: true }));
-    const client = createPreviewClient({ ...CONFIG, fetchFn });
+    const client = createPayloadClient({ ...CONFIG, fetchFn });
 
     await client.verifyPreviewToken({ slug: "日本語", token: "123.abc" });
 
@@ -92,7 +133,7 @@ describe("createPreviewClient.verifyPreviewToken", () => {
   });
 
   it("returns true only for a 200 response", async () => {
-    const client = createPreviewClient({
+    const client = createPayloadClient({
       ...CONFIG,
       fetchFn: vi.fn(async () => jsonResponse({ ok: true })),
     });
@@ -100,7 +141,7 @@ describe("createPreviewClient.verifyPreviewToken", () => {
   });
 
   it.each([401, 404, 500])("returns false for a %i response", async (status) => {
-    const client = createPreviewClient({
+    const client = createPayloadClient({
       ...CONFIG,
       fetchFn: vi.fn(async () => jsonResponse({ ok: false }, { status })),
     });
@@ -109,7 +150,7 @@ describe("createPreviewClient.verifyPreviewToken", () => {
 
   // Fail closed: an unreachable CMS must not unlock a draft.
   it("returns false when the request fails", async () => {
-    const client = createPreviewClient({
+    const client = createPayloadClient({
       ...CONFIG,
       fetchFn: vi.fn(async () => {
         throw new TypeError("network down");
