@@ -1,15 +1,14 @@
-import { createRoute } from "honox/factory";
-import { config } from "#lib/config";
-import { payloadRepo } from "#lib/payload";
+import { createRoute } from "#lib/app-env";
 
 export default createRoute(async (c) => {
-  const posts = await payloadRepo.getPosts();
+  const posts = await c.var.payload.getPosts();
+  const siteUrl = c.var.env.siteUrl;
   const latest = posts[0]?.publishedAt;
 
   const urls = [
-    { loc: config.url, lastmod: latest },
-    { loc: `${config.url}/blog`, lastmod: latest },
-    ...posts.map((p) => ({ loc: `${config.url}/blog/${p.slug}`, lastmod: p.publishedAt })),
+    { loc: siteUrl, lastmod: latest },
+    { loc: `${siteUrl}/blog`, lastmod: latest },
+    ...posts.map((p) => ({ loc: `${siteUrl}/blog/${p.slug}`, lastmod: p.publishedAt })),
   ];
 
   const body = urls

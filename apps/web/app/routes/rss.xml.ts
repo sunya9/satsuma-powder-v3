@@ -1,19 +1,21 @@
-import { createRoute } from "honox/factory";
-import { config } from "#lib/config";
+import { createRoute } from "#lib/app-env";
 import { lexicalToHtml } from "#lib/lexical-html";
-import { getSite, mediaUrl, payloadRepo } from "#lib/payload";
 
 const cdata = (s?: string | null) =>
   `<![CDATA[${String(s ?? "").replace(/\]\]>/g, "]]]]><![CDATA[>")}]]>`;
 const attr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
 export default createRoute(async (c) => {
-  const [posts, site] = await Promise.all([payloadRepo.getRecentFull(15), getSite()]);
+  const [posts, site] = await Promise.all([
+    c.var.payload.getRecentFull(15),
+    c.var.payload.getSite(),
+  ]);
+  const siteUrl = c.var.env.siteUrl;
 
   const items = posts
     .map((post) => {
-      const link = `${config.url}/blog/${post.slug}`;
-      const image = mediaUrl(post.featureImage);
+      const link = `${siteUrl}/blog/${post.slug}`;
+      const image = post.featureImage?.url;
       const author = post.authors?.[0]?.name ?? "";
       const category = post.tags?.[0]?.name ?? "";
       return (
@@ -38,16 +40,16 @@ export default createRoute(async (c) => {
     "<channel>" +
     `<title>${cdata(site.title)}</title>` +
     `<description>${cdata(site.description)}</description>` +
-    `<link>${config.url}/</link>` +
+    `<link>${siteUrl}/</link>` +
     "<language>ja</language>" +
     (posts[0]?.publishedAt
       ? `<lastBuildDate>${new Date(posts[0].publishedAt).toUTCString()}</lastBuildDate>`
       : "") +
     (site.iconUrl
-      ? `<image><url>${attr(site.iconUrl)}</url><title>${cdata(site.title)}</title><link>${config.url}/</link></image>`
+      ? `<image><url>${attr(site.iconUrl)}</url><title>${cdata(site.title)}</title><link>${siteUrl}/</link></image>`
       : "") +
     "<generator>HonoX</generator>" +
-    `<atom:link href="${config.url}/rss.xml" rel="self" type="application/rss+xml"/>` +
+    `<atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>` +
     "<ttl>60</ttl>" +
     items +
     "</channel></rss>";

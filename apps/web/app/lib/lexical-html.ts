@@ -8,7 +8,7 @@ import {
   type LexicalNode as Node,
   safeUrl,
 } from "./lexical-shared";
-import { mediaUrl, type LexicalState, type Media } from "./payload";
+import type { LexicalState, Media } from "#lib/payload-client";
 
 function escapeHtml(s: string): string {
   return s
@@ -59,7 +59,7 @@ function node(n: Node): string {
     case "autolink":
       return `<a href="${escapeHtml(safeUrl(n.fields?.url))}">${children(n.children)}</a>`;
     case "upload": {
-      const src = mediaUrl(n.value as Media);
+      const src = (n.value as Media)?.url;
       if (!src) return "";
       const alt = escapeHtml((n.value as Media)?.alt ?? "");
       return `<img src="${escapeHtml(src)}" alt="${alt}" loading="lazy">`;

@@ -1,7 +1,7 @@
 import type { JSX } from "hono/jsx";
 import { formatDate } from "#lib/date";
 import { LexicalContent } from "#lib/lexical";
-import { mediaUrl, type Post, type PostSummary } from "#lib/payload-client";
+import type { Post, PostSummary } from "#lib/payload-client";
 import { cn } from "#lib/util";
 import { AppMain } from "#components/AppMain";
 
@@ -22,9 +22,9 @@ export function PostMain({
     <AppMain>
       <article>
         <header>
-          {post.featureImage && (
+          {post.featureImage?.url && (
             <img
-              src={mediaUrl(post.featureImage)}
+              src={post.featureImage.url}
               alt={post.featureImage.alt || undefined}
               class="object-cover aspect-[1.618/1] h-auto w-full mb-8"
               width={post.featureImage.width || undefined}

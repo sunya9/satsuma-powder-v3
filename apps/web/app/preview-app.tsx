@@ -1,13 +1,8 @@
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { raw } from "hono/html";
-import {
-  createPayloadClient,
-  PAYLOAD_URL,
-  type PayloadClient,
-  type Post,
-  type Site,
-} from "#lib/payload-client";
+import type { SiteEnv } from "#lib/env";
+import { createPayloadClient, type PayloadClient, type Post, type Site } from "#lib/payload-client";
 import { previewCookieMaxAge } from "#lib/preview-cookie";
 import { PostMain } from "#components/PostMain";
 import { SiteBody } from "#components/SiteBody";
@@ -15,17 +10,17 @@ import { SiteBody } from "#components/SiteBody";
 const PREVIEW_COOKIE = "preview_token";
 const PREVIEW_PATH = "/preview";
 
-type PreviewEnv = { Bindings: Env; Variables: { payload: PayloadClient } };
+// Not `payload`: in dev this app shares the honox context, where that name is the SSG repo.
+type PreviewEnv = { Bindings: Env; Variables: { previewClient: PayloadClient } };
 
-export function createPreviewApp(styleHref: string) {
+export function createPreviewApp({ styleHref, env }: { styleHref: string; env: SiteEnv }) {
   const app = new Hono<PreviewEnv>();
 
-  // Every route here needs the CMS client. In dev this app is mounted after the
-  // honox page routes, so the middleware never runs for a page that already matched.
+  // Unscoped is safe: in dev the honox page routes are registered first and match before this.
   app.use(async (c, next) => {
     const apiKey = c.env.PAYLOAD_API_KEY;
     if (!apiKey) return c.text("Preview is not configured", 500);
-    c.set("payload", createPayloadClient({ payloadUrl: PAYLOAD_URL, apiKey }));
+    c.set("previewClient", createPayloadClient({ payloadUrl: env.payloadUrl, apiKey }));
     await next();
   });
 
@@ -33,7 +28,7 @@ export function createPreviewApp(styleHref: string) {
     const slug = c.req.query("slug");
     const token = c.req.query("token");
     if (!slug || !token) return c.notFound();
-    if (!(await c.var.payload.verifyPreviewToken({ slug, token }))) return c.notFound();
+    if (!(await c.var.previewClient.verifyPreviewToken({ slug, token }))) return c.notFound();
 
     // Only the slug-bound token goes in the cookie; it's re-verified per request.
     setCookie(c, PREVIEW_COOKIE, token, {
@@ -53,7 +48,7 @@ export function createPreviewApp(styleHref: string) {
     const token = getCookie(c, PREVIEW_COOKIE);
     if (!token) return c.notFound();
 
-    const client = c.var.payload;
+    const client = c.var.previewClient;
     const slug = c.req.param("slug");
     if (!(await client.verifyPreviewToken({ slug, token }))) return c.notFound();
 

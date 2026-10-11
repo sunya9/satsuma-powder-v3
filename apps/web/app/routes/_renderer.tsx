@@ -1,18 +1,20 @@
+import type { Context } from "hono";
 import { jsxRenderer } from "hono/jsx-renderer";
 import { Link } from "honox/server";
-import { config } from "#lib/config";
+import type { AppEnv } from "#lib/app-env";
 import { contentHash } from "#lib/hash";
-import { getSite } from "#lib/payload";
 import { SiteBody } from "#components/SiteBody";
 import { html } from "hono/html";
 
-export default jsxRenderer(async ({ children, title, description, path, image, type }) => {
-  const site = await getSite();
+export default jsxRenderer(async (props, c: Context<AppEnv>) => {
+  const { children, title, description, path, image, type } = props;
+  const site = await c.var.payload.getSite();
+  const siteUrl = c.var.env.siteUrl;
   const pageTitle = title && title !== site.title ? `${title} | ${site.title}` : site.title;
   const desc = description ?? site.description;
-  const url = `${config.url}${path ?? ""}`;
+  const url = `${siteUrl}${path ?? ""}`;
   const ogImage =
-    image ?? `${config.url}/opengraph-image.png?${contentHash(site.title + site.description)}`;
+    image ?? `${siteUrl}/opengraph-image.png?${contentHash(site.title + site.description)}`;
   const ogType = type ?? "website";
   const isIndex = !path;
   return (
@@ -39,7 +41,7 @@ export default jsxRenderer(async ({ children, title, description, path, image, t
         <link
           rel="alternate"
           type="application/rss+xml"
-          href={`${config.url}/rss.xml`}
+          href={`${siteUrl}/rss.xml`}
           title={`${site.title}のRSS`}
         />
 

@@ -1,12 +1,5 @@
 import type { Author, Media, Post as CmsPost, Tag } from "@cms/payload-types";
 
-export const PAYLOAD_URL = (import.meta.env.VITE_PAYLOAD_URL ?? "http://localhost:3000").replace(
-  /\/$/,
-  "",
-);
-
-const R2_PUBLIC = (import.meta.env.VITE_R2_PUBLIC_URL ?? "").replace(/\/$/, "");
-
 // Derived from the generated cms types; slug and relations narrowed for the
 // web's published, depth=2 data.
 export type { Media };
@@ -37,13 +30,6 @@ export interface ListResponse<T> {
   docs: T[];
   hasNextPage: boolean;
   nextPage: number | null;
-}
-
-export function mediaUrl(media?: Media | null): string | undefined {
-  // Serve directly from R2 when configured, so the runtime never touches the cms.
-  if (R2_PUBLIC && media?.filename) return `${R2_PUBLIC}/${media.filename}`;
-  if (!media?.url) return undefined;
-  return media.url.startsWith("http") ? media.url : `${PAYLOAD_URL}${media.url}`;
 }
 
 export interface PayloadClientConfig {
@@ -96,8 +82,8 @@ export function createPayloadClient({ payloadUrl, apiKey, fetchFn = fetch }: Pay
         title: d.title ?? "",
         description: d.description ?? "",
         twitterHandle: d.twitterHandle ?? "",
-        iconUrl: mediaUrl(d.icon),
-        coverUrl: mediaUrl(d.coverImage),
+        iconUrl: d.icon?.url ?? undefined,
+        coverUrl: d.coverImage?.url ?? undefined,
       };
     },
 

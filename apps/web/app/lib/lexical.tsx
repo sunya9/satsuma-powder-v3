@@ -9,7 +9,7 @@ import {
   type LexicalNode as Node,
   safeUrl,
 } from "./lexical-shared";
-import { mediaUrl, type LexicalState, type Media } from "./payload";
+import type { LexicalState, Media } from "#lib/payload-client";
 
 function renderText(node: Node) {
   const fmt: number = node.format ?? 0;
@@ -134,7 +134,7 @@ function renderNode(node: Node): unknown {
 
     case "upload": {
       const media = node.value as Media;
-      const src = mediaUrl(media);
+      const src = media?.url;
       if (!src) return null;
       return (
         <img

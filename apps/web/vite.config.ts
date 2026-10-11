@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 import type { SSGPlugin } from "hono/ssg";
 import honox from "honox/vite";
 import client from "honox/vite/client";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 
 const entry = "./app/server.ts";
 
@@ -33,13 +33,22 @@ function builtStyleHref(): string {
 }
 
 export default defineConfig(({ mode }) => {
+  // Vite keeps .env out of process.env; merge it in so the SSG build and dev
+  // server read site config the same way as any Node process. The Worker has no
+  // process at all, so its build inlines the public keys as a plain object.
+  Object.assign(process.env, loadEnv(mode, process.cwd(), ""));
+  const workerEnv = JSON.stringify({
+    PAYLOAD_URL: process.env.PAYLOAD_URL,
+    SITE_URL: process.env.SITE_URL,
+  });
+
   // Third build target: the runtime Worker that serves the preview route and
   // proxies everything else to the static assets. Kept separate from the SSG
   // build so it excludes the OG routes (native satori/resvg don't run on
   // Workers) and outputs a standalone worker bundle.
   if (mode === "worker") {
     return {
-      define: { __STYLE_HREF__: JSON.stringify(builtStyleHref()) },
+      define: { "process.env": workerEnv, __STYLE_HREF__: JSON.stringify(builtStyleHref()) },
       plugins: [
         cloudflareWorkers({
           entry: "./app/worker.tsx",

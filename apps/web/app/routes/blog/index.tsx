@@ -1,13 +1,13 @@
-import { createRoute } from "honox/factory";
 import { Articles } from "#components/Articles";
+import { createRoute } from "#lib/app-env";
 import { getYearJST } from "#lib/date";
-import { payloadRepo, type PostSummary } from "#lib/payload";
+import type { PostSummary } from "#lib/payload-client";
 import { AppHeader, AppHeaderTitle } from "#components/AppHeader";
 import { AppMain } from "#components/AppMain";
 
 export default createRoute(async (c) => {
   // posts are publishedAt-desc, so Map insertion order is already year-desc.
-  const posts = await payloadRepo.getPosts();
+  const posts = await c.var.payload.getPosts();
   const byYear = new Map<number, PostSummary[]>();
   for (const post of posts) {
     if (!post.publishedAt) continue;

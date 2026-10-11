@@ -1,16 +1,15 @@
-import { createRoute } from "honox/factory";
+import { createRoute } from "#lib/app-env";
 import { Articles } from "../components/Articles";
 import { LexicalContent } from "../lib/lexical";
-import { getSite, payloadRepo } from "../lib/payload";
 import { AppHeader, AppHeaderTitle } from "#components/AppHeader";
 import { AppMain } from "#components/AppMain";
 import { LinkButton } from "#components/LinkButton";
 
 export default createRoute(async (c) => {
   const [posts, about, site] = await Promise.all([
-    payloadRepo.getPosts(5),
-    payloadRepo.getAbout(),
-    getSite(),
+    c.var.payload.getPosts(5),
+    c.var.payload.getAbout(),
+    c.var.payload.getSite(),
   ]);
   return c.render(
     <>
