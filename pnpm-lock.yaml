@@ -124,8 +124,8 @@ importers:
         specifier: ^4.13.13
         version: 4.13.13
       honox:
-        specifier: 0.1.61
-        version: 0.1.61(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.4))(supports-color@10.2.2)(wrangler@4.148.0(@types/node@26.6.4))
+        specifier: 0.1.62
+        version: 0.1.62(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.4))(supports-color@10.2.2)(wrangler@4.148.0(@types/node@26.6.4))
       satori:
         specifier: ^0.47.1
         version: 0.47.1
@@ -3582,11 +3582,11 @@ packages:
     resolution: {integrity: sha512-CQ46U0ZkAGmbT/4UxdzzGJpacP2IeKgY4a5/tOI9AABbpOMfK739wfDXmv1usCk+3RkKj1hQy4/fjhiwa2xlrA==}
     engines: {node: '>=16.9.0'}
 
-  honox@0.1.61:
-    resolution: {integrity: sha512-HMvVTyAIJYIWjHUvdowQvnMVA3I1HKeKD71TVCAKiTdUI+xU7cYRryMK+ASmnRb7lFV6Yak4/d1VqXjJnEYSvg==}
+  honox@0.1.62:
+    resolution: {integrity: sha512-fPvoP9MhjMA38gM+NhfOZTFOcxMeI764l+k5o79gETOcpobzkSLrPZnx2JlVLAbaj0LuUrMjcN5Lh3acAEgCUg==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
-      hono: '>=4.*'
+      hono: '>=4.* || ^5.0.0-0'
 
   html-encoding-sniffer@7.0.0:
     resolution: {integrity: sha512-UikN5yr7xsCDAq87Or5or0PAlD3HJJOKVzM05az588WnpDJ4Ux7a2A53Qi6gofGg2/EtvF/H4hCi/TXfCW4Y6w==}
@@ -8709,7 +8709,7 @@ snapshots:
 
   hono@4.13.13: {}
 
-  honox@0.1.61(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.4))(supports-color@10.2.2)(wrangler@4.148.0(@types/node@26.6.4)):
+  honox@0.1.62(hono@4.13.13)(miniflare@4.20260714.0(@types/node@26.6.4))(supports-color@10.2.2)(wrangler@4.148.0(@types/node@26.6.4)):
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
