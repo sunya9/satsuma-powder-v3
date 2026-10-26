@@ -9,6 +9,7 @@
     "ci": "payload migrate && pnpm run build:cf",
     "build:cf": "opennextjs-cloudflare build",
     "preview": "pnpm run build:cf && opennextjs-cloudflare preview",
+    "smoke": "bash scripts/smoke-test.sh",
     "migrate": "payload migrate",
     "dev": "next dev",
     "devsafe": "rm -rf .next && next dev",
@@ -28,7 +29,7 @@
     "test:int": "vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.20.9",
+    "@opennextjs/cloudflare": "^1.20.13",
     "@payloadcms/db-sqlite": "3.90.2",
     "@payloadcms/next": "3.90.2",
     "@payloadcms/plugin-seo": "3.90.2",
@@ -36,7 +37,7 @@
     "@payloadcms/storage-r2": "3.90.2",
     "@payloadcms/ui": "3.90.2",
     "graphql": "^17.0.2",
-    "next": "16.4.0",
+    "next": "16.4.3",
     "payload": "3.90.2",
     "pino": "10.4.0",
     "react": "19.3.0",
