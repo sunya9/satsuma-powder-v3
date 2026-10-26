@@ -59,3 +59,33 @@ jobs:
           MEDIA_PUBLIC_URL: https://media.test
           # Disables the dev-only schema push in payload.config.ts.
           NODE_ENV: production
+
+  # A passing `opennextjs-cloudflare build` doesn't mean the Worker boots:
+  # next 16.4.0 with an older OpenNext built fine but 500'd on every request.
+  # Next/OpenNext bumps must go red here instead of in production.
+  cms-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build Worker
+        working-directory: apps/cms
+        run: pnpm run build:cf
+        env:
+          PAYLOAD_SECRET: ci-test-secret
+          DATABASE_URL: file:${{ runner.temp }}/smoke.db
+          MEDIA_PUBLIC_URL: https://media.test
+
+      - name: Boot Worker and probe
+        working-directory: apps/cms
+        run: pnpm run smoke
