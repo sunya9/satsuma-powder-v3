@@ -18,7 +18,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "clsx": "^2.1.1",
     "csstype": "^3.2.3",
-    "hono": "^4.13.13",
+    "hono": "^4.13.14",
     "honox": "0.1.62",
     "satori": "^0.63.2",
     "tailwind-merge": "^3.7.0",
