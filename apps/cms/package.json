@@ -37,7 +37,7 @@
     "@payloadcms/storage-r2": "3.92.1",
     "@payloadcms/ui": "3.92.1",
     "graphql": "^17.0.2",
-    "next": "16.4.5",
+    "next": "16.4.6",
     "payload": "3.92.1",
     "pino": "10.4.0",
     "react": "19.3.1",
