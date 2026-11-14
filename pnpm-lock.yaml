@@ -121,11 +121,11 @@ importers:
         specifier: ^3.2.3
         version: 3.2.3
       hono:
-        specifier: ^4.13.16
-        version: 4.13.16
+        specifier: ^4.13.17
+        version: 4.13.17
       honox:
         specifier: 0.1.62
-        version: 0.1.62(hono@4.13.16)(miniflare@4.20260714.0(@types/node@26.6.6))(supports-color@10.2.2)(wrangler@4.157.0(@types/node@26.6.6))
+        version: 0.1.62(hono@4.13.17)(miniflare@4.20260714.0(@types/node@26.6.6))(supports-color@10.2.2)(wrangler@4.157.0(@types/node@26.6.6))
       satori:
         specifier: ^0.63.2
         version: 0.63.2
@@ -138,13 +138,13 @@ importers:
     devDependencies:
       '@hono/vite-build':
         specifier: ^1.11.1
-        version: 1.11.1(hono@4.13.16)
+        version: 1.11.1(hono@4.13.17)
       '@hono/vite-dev-server':
         specifier: ^0.26.1
-        version: 0.26.1(hono@4.13.16)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))
+        version: 0.26.1(hono@4.13.17)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))
       '@hono/vite-ssg':
         specifier: ^0.3.3
-        version: 0.3.3(hono@4.13.16)
+        version: 0.3.3(hono@4.13.17)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -2335,9 +2335,6 @@ packages:
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
 
-  '@types/node@26.6.5':
-    resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
-
   '@types/node@26.6.6':
     resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
 
@@ -3422,8 +3419,8 @@ packages:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
 
-  hono@4.13.16:
-    resolution: {integrity: sha512-AOLOEhvrV+iH92xXCnFr/5+3KjPKcI3xP63XJtX5spAnkznPdHijlIsUTpi7/9EhWqrTCekw5c5zh1K+YsVw7A==}
+  hono@4.13.17:
+    resolution: {integrity: sha512-vZIcbkvjOR5hHRWERbGkr8fGfF0GGM1ooYkuH448iO3b2AdVEr3AXZSw4Z3Kn+1L5z0CVoVeyV29VGYmFh05kQ==}
     engines: {node: '>=16.9.0'}
 
   honox@0.1.62:
@@ -5958,35 +5955,35 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@hono/node-server@1.19.18(hono@4.13.16)':
+  '@hono/node-server@1.19.18(hono@4.13.17)':
     dependencies:
-      hono: 4.13.16
+      hono: 4.13.17
 
-  '@hono/vite-build@1.11.1(hono@4.13.16)':
+  '@hono/vite-build@1.11.1(hono@4.13.17)':
     dependencies:
-      hono: 4.13.16
+      hono: 4.13.17
 
-  '@hono/vite-dev-server@0.25.3(hono@4.13.16)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))':
+  '@hono/vite-dev-server@0.25.3(hono@4.13.17)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))':
     dependencies:
-      '@hono/node-server': 1.19.18(hono@4.13.16)
-      hono: 4.13.16
+      '@hono/node-server': 1.19.18(hono@4.13.17)
+      hono: 4.13.17
       minimatch: 9.0.9
     optionalDependencies:
       miniflare: 4.20260714.0(@types/node@26.6.6)
       wrangler: 4.157.0(@types/node@26.6.6)
 
-  '@hono/vite-dev-server@0.26.1(hono@4.13.16)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))':
+  '@hono/vite-dev-server@0.26.1(hono@4.13.17)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))':
     dependencies:
-      '@hono/node-server': 1.19.18(hono@4.13.16)
-      hono: 4.13.16
+      '@hono/node-server': 1.19.18(hono@4.13.17)
+      hono: 4.13.17
       minimatch: 9.0.9
     optionalDependencies:
       miniflare: 4.20260714.0(@types/node@26.6.6)
       wrangler: 4.157.0(@types/node@26.6.6)
 
-  '@hono/vite-ssg@0.3.3(hono@4.13.16)':
+  '@hono/vite-ssg@0.3.3(hono@4.13.17)':
     dependencies:
-      hono: 4.13.16
+      hono: 4.13.17
 
   '@img/colour@1.1.0': {}
 
@@ -7358,10 +7355,6 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@26.6.5':
-    dependencies:
-      undici-types: 8.9.0
-
   '@types/node@26.6.6':
     dependencies:
       undici-types: 8.9.0
@@ -7394,7 +7387,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 26.6.5
+      '@types/node': 26.6.6
 
   '@typescript-eslint/project-service@8.67.0(supports-color@10.2.2)(typescript@5.7.3)':
     dependencies:
@@ -7648,7 +7641,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 26.6.5
+      '@types/node': 26.6.6
 
   busboy@1.6.0:
     dependencies:
@@ -8302,7 +8295,7 @@ snapshots:
 
   happy-dom@20.14.6:
     dependencies:
-      '@types/node': 26.6.5
+      '@types/node': 26.6.6
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       buffer-image-size: 0.6.4
@@ -8337,16 +8330,16 @@ snapshots:
     dependencies:
       parse-passwd: 1.0.0
 
-  hono@4.13.16: {}
+  hono@4.13.17: {}
 
-  honox@0.1.62(hono@4.13.16)(miniflare@4.20260714.0(@types/node@26.6.6))(supports-color@10.2.2)(wrangler@4.157.0(@types/node@26.6.6)):
+  honox@0.1.62(hono@4.13.17)(miniflare@4.20260714.0(@types/node@26.6.6))(supports-color@10.2.2)(wrangler@4.157.0(@types/node@26.6.6)):
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
       '@babel/traverse': 7.29.0(supports-color@10.2.2)
       '@babel/types': 7.29.0
-      '@hono/vite-dev-server': 0.25.3(hono@4.13.16)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))
-      hono: 4.13.16
+      '@hono/vite-dev-server': 0.25.3(hono@4.13.17)(miniflare@4.20260714.0(@types/node@26.6.6))(wrangler@4.157.0(@types/node@26.6.6))
+      hono: 4.13.17
       jsonc-parser: 3.3.1
       precinct: 12.2.0(supports-color@10.2.2)
     optionalDependencies:
