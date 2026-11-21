@@ -29,7 +29,7 @@
     "test:int": "vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.20.16",
+    "@opennextjs/cloudflare": "^1.20.17",
     "@payloadcms/db-sqlite": "3.94.0",
     "@payloadcms/next": "3.94.0",
     "@payloadcms/plugin-seo": "3.94.0",
