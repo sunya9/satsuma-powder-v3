@@ -109,11 +109,11 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4
       hono:
-        specifier: ^4.13.19
-        version: 4.13.19
+        specifier: ^4.13.22
+        version: 4.13.22
       honox:
-        specifier: 0.1.62
-        version: 0.1.62(hono@4.13.19)(miniflare@4.20260714.0)(supports-color@10.2.2)(wrangler@4.164.0(@types/node@26.6.6))
+        specifier: 0.1.63
+        version: 0.1.63(hono@4.13.22)(miniflare@4.20260714.0)(supports-color@10.2.2)(wrangler@4.164.0(@types/node@26.6.6))
       satori:
         specifier: ^0.63.2
         version: 0.63.2
@@ -126,13 +126,13 @@ importers:
     devDependencies:
       '@hono/vite-build':
         specifier: ^1.11.1
-        version: 1.11.1(hono@4.13.19)
+        version: 1.11.1(hono@4.13.22)
       '@hono/vite-dev-server':
         specifier: ^0.26.1
-        version: 0.26.1(hono@4.13.19)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))
+        version: 0.26.1(hono@4.13.22)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))
       '@hono/vite-ssg':
         specifier: ^0.3.3
-        version: 0.3.3(hono@4.13.19)
+        version: 0.3.3(hono@4.13.22)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -3837,12 +3837,12 @@ packages:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
 
-  hono@4.13.19:
-    resolution: {integrity: sha512-KmXvQAXwcAHV+muzbIwoJ23niEB5nMoDVr9WcRkU8mvjUECm/1+7v4Jgp7P7a+H6MLFrh+vXrGonGrGS+RQfkA==}
+  hono@4.13.22:
+    resolution: {integrity: sha512-wncKd5/40Pj8grx0RZ2fgNIicFEmVFwIHT5UFLTnphR8I6AQWFf9c2JoM6ZJ9g8y4pMzg3sNlCVNe0m2Yclg0Q==}
     engines: {node: '>=16.9.0'}
 
-  honox@0.1.62:
-    resolution: {integrity: sha512-fPvoP9MhjMA38gM+NhfOZTFOcxMeI764l+k5o79gETOcpobzkSLrPZnx2JlVLAbaj0LuUrMjcN5Lh3acAEgCUg==}
+  honox@0.1.63:
+    resolution: {integrity: sha512-lWxCkD5f6/FvrNkRPvNXU0uYxGrnnYGMd8jo3TWkbexmOh7ugKTxt94r4A3mDZEQpqm+AIQxOLBbRS5NBPzFLg==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: '>=4.* || ^5.0.0-0'
@@ -4553,10 +4553,6 @@ packages:
 
   postcss@8.5.23:
     resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
-    engines: {node: ^10 || ^12 || >=14}
-
-  postcss@8.5.26:
-    resolution: {integrity: sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.33:
@@ -6516,35 +6512,35 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@hono/node-server@1.19.19(hono@4.13.19)':
+  '@hono/node-server@1.19.19(hono@4.13.22)':
     dependencies:
-      hono: 4.13.19
+      hono: 4.13.22
 
-  '@hono/vite-build@1.11.1(hono@4.13.19)':
+  '@hono/vite-build@1.11.1(hono@4.13.22)':
     dependencies:
-      hono: 4.13.19
+      hono: 4.13.22
 
-  '@hono/vite-dev-server@0.25.3(hono@4.13.19)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))':
+  '@hono/vite-dev-server@0.25.3(hono@4.13.22)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))':
     dependencies:
-      '@hono/node-server': 1.19.19(hono@4.13.19)
-      hono: 4.13.19
+      '@hono/node-server': 1.19.19(hono@4.13.22)
+      hono: 4.13.22
       minimatch: 9.0.9
     optionalDependencies:
       miniflare: 4.20260714.0
       wrangler: 4.164.0(@types/node@26.6.6)
 
-  '@hono/vite-dev-server@0.26.1(hono@4.13.19)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))':
+  '@hono/vite-dev-server@0.26.1(hono@4.13.22)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))':
     dependencies:
-      '@hono/node-server': 1.19.19(hono@4.13.19)
-      hono: 4.13.19
+      '@hono/node-server': 1.19.19(hono@4.13.22)
+      hono: 4.13.22
       minimatch: 9.0.9
     optionalDependencies:
       miniflare: 4.20260714.0
       wrangler: 4.164.0(@types/node@26.6.6)
 
-  '@hono/vite-ssg@0.3.3(hono@4.13.19)':
+  '@hono/vite-ssg@0.3.3(hono@4.13.22)':
     dependencies:
-      hono: 4.13.19
+      hono: 4.13.22
 
   '@img/colour@1.1.0': {}
 
@@ -8181,7 +8177,7 @@ snapshots:
       '@vue/shared': 3.5.41
       estree-walker: 2.0.2
       magic-string: 0.30.21
-      postcss: 8.5.26
+      postcss: 8.5.33
       source-map-js: 1.2.2
 
   '@vue/compiler-ssr@3.5.41':
@@ -8511,11 +8507,11 @@ snapshots:
     dependencies:
       node-source-walk: 7.0.2
 
-  detective-postcss@7.0.1(postcss@8.5.26):
+  detective-postcss@7.0.1(postcss@8.5.33):
     dependencies:
       is-url: 1.2.4
-      postcss: 8.5.26
-      postcss-values-parser: 6.0.2(postcss@8.5.26)
+      postcss: 8.5.33
+      postcss-values-parser: 6.0.2(postcss@8.5.33)
 
   detective-sass@6.0.2:
     dependencies:
@@ -9029,16 +9025,16 @@ snapshots:
     dependencies:
       parse-passwd: 1.0.0
 
-  hono@4.13.19: {}
+  hono@4.13.22: {}
 
-  honox@0.1.62(hono@4.13.19)(miniflare@4.20260714.0)(supports-color@10.2.2)(wrangler@4.164.0(@types/node@26.6.6)):
+  honox@0.1.63(hono@4.13.22)(miniflare@4.20260714.0)(supports-color@10.2.2)(wrangler@4.164.0(@types/node@26.6.6)):
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
       '@babel/traverse': 7.29.0(supports-color@10.2.2)
       '@babel/types': 7.29.0
-      '@hono/vite-dev-server': 0.25.3(hono@4.13.19)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))
-      hono: 4.13.19
+      '@hono/vite-dev-server': 0.25.3(hono@4.13.22)(miniflare@4.20260714.0)(wrangler@4.164.0(@types/node@26.6.6))
+      hono: 4.13.22
       jsonc-parser: 3.3.1
       precinct: 12.2.0(supports-color@10.2.2)
     optionalDependencies:
@@ -9901,20 +9897,14 @@ snapshots:
 
   postcss-value-parser@4.2.0: {}
 
-  postcss-values-parser@6.0.2(postcss@8.5.26):
+  postcss-values-parser@6.0.2(postcss@8.5.33):
     dependencies:
       color-name: 1.1.4
       is-url-superb: 4.0.0
-      postcss: 8.5.26
+      postcss: 8.5.33
       quote-unquote: 1.0.0
 
   postcss@8.5.23:
-    dependencies:
-      nanoid: 3.3.18
-      picocolors: 1.1.1
-      source-map-js: 1.2.2
-
-  postcss@8.5.26:
     dependencies:
       nanoid: 3.3.18
       picocolors: 1.1.1
@@ -9933,7 +9923,7 @@ snapshots:
       detective-amd: 6.1.0
       detective-cjs: 6.1.1
       detective-es6: 5.0.2
-      detective-postcss: 7.0.1(postcss@8.5.26)
+      detective-postcss: 7.0.1(postcss@8.5.33)
       detective-sass: 6.0.2
       detective-scss: 5.0.2
       detective-stylus: 5.0.1
@@ -9941,7 +9931,7 @@ snapshots:
       detective-vue2: 2.3.0(supports-color@10.2.2)(typescript@5.7.3)
       module-definition: 6.0.2
       node-source-walk: 7.0.2
-      postcss: 8.5.26
+      postcss: 8.5.33
       typescript: 5.7.3
     transitivePeerDependencies:
       - supports-color
